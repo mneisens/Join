@@ -1,0 +1,125 @@
+@media (min-width: 1200px) {
+  .board-main-div {
+    padding-left: 296px;
+    padding-top: 175.5px;
+  }
+  .board-header-main {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    max-width: 1056px;
+  }
+  .board-header-row1 {
+    margin: 0;
+  }
+  .board-header-row2 {
+    display: flex;
+    gap: 32px;
+    margin-left: -100px;
+  }
+  .board-input-box {
+    width: 312px;
+  }
+  .btn-board-add-task {
+    display: flex;
+  }
+  .board-mobile-btn-addTask {
+    display: none;
+  }
+}
+
+@media (min-width: 1373px) {
+  .board-main-bg p {
+    font-size: 20px;
+    line-height: 24px;
+  }
+  .board-main-div {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    flex-direction: column;
+    max-width: 1208px;
+    height: calc(100vh - 96px);
+
+    padding-left: 232px;
+    padding-top: 175.5px;
+  }
+  .board-header-main {
+    min-width: 1056px;
+  }
+  .board-header-row2 {
+    margin-left: 0;
+  }
+
+  .board-content-main-div {
+    width: 1208px;
+    height: calc(100vh - 175.5px - 73.19px - 24px);
+    gap: 24px;
+    flex-direction: row;
+    justify-content: center;
+
+    overflow-y: auto;
+  }
+
+  .board-content-main-header-background {
+    position: absolute;
+    top: 270px;
+    left: 0;
+    background-color: var(--colorBgSecondary);
+    height: 40px;
+    width: 1390px;
+    z-index: 1;
+  }
+
+  .board-kanban-card-main {
+    position: relative;
+  }
+
+  .board-kanban-header {
+    width: 244px;
+    position: sticky;
+    top: 0;
+    z-index: 2;
+  }
+  .board-kanban-header p {
+    font-size: 20px;
+    font-weight: 700;
+    line-height: 24px;
+    color: #42526e;
+  }
+  .board-kanban-header img {
+    width: 24px;
+    height: 24px;
+  }
+  .board-kanban-add-btn {
+    width: 28px;
+    height: 28px;
+  }
+  .board-cards-container {
+    display: flex;
+    flex-direction: column;
+    overflow-x: visible;
+    overflow-y: auto;
+
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
+
+    /* max-height: calc(100vh - 175.5px - 73.19px - 24px - 24px - 16px - 16px); */
+  }
+  .board-cards-container::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, Opera */
+  }
+  .board-no-tasks-toDo-box {
+    width: 100%;
+  }
+}
+
+@media (min-width: 1480px) {
+  .board-main-div {
+    padding-left: 296px;
+  }
+  .board-content-main-header-background{
+    width: 1450px;
+  }
+}

@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JOIN | Add tasks</title>
+
+    <link rel="stylesheet" href="./style/fonts.css">
+    <link rel="stylesheet" href="./style/style.css">
+    <link rel="stylesheet" href="./style/addTask.css">
+    <link rel="stylesheet" href="./style/addTaskMobile.css">
+    <link rel="icon" href="./assets/img/join_logo.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+
+<body onload="loadAddTasks()">
+    <div html-template="./templates/nav_template.html"></div>
+
+    <div class="full-page">
+        <main>
+            <div class="form-btns">
+                <div class="head-addTask">Add Task</div>
+                <form id="myForm" class="form-addTask">
+                    <div class="main-content">
+                        <div class="main-addTask">
+                            <div class="left-side-addTask">
+                                <label class="font-label-form-addTask">Title<span class="star">*</span></label>
+                                <input type="text" id="input-title-addTask" class="input-title-addTask"
+                                    placeholder="Enter a title" required />
+                                <label class="input-description-addtask font-label-form-addTask">Description</label>
+                                <textarea id="textarea-addTask" class="textarea-addTask" cols="30" rows="10"
+                                    placeholder="Enter a Description"></textarea>
+                                <label class="font-label-form-addTask">Assigned to</label>
+                                <div id="assigned-addTask">
+                                    <input type="text" id="selectedCategory" class="assigned-addTask"
+                                        placeholder="Select Category" oninput="filterOptions(this.value)">
+                                    <div id="optionsContainer">
+                                        <div id="selectedAbbreviations" class="selectedAbbreviations"></div>
+                                    </div>
+                                </div>
+                                <div id="showName" class="showName"></div>
+                            </div>
+                            <div class="devider-addTask"></div>
+                            <div class="right-side-addTask">
+                                <label class="font-label-form-addTask">Due date <span class="star">*</span></label>
+                                <input id="date-addTask" class="date-addTask" type="date" required />
+                                <label class="font-label-form-addTask">Prio</label>
+                                <div class="prio-addTask">
+                                    <button type="button" id="urgent">
+                                        Urgent
+                                        <img id="prio-up-orange" class="AddTaskBtnIcons" src="./assets/img/addTask/Priority_symbols_up.png" alt="" />
+                                        <img id="prio-up-white" class="AddTaskBtnIcons d-none"
+                                            src="./assets/img/addTask/Priority_symbols_up_white.png" alt="">
+                                    </button>
+                                    <button type="button" id="medium">
+                                        Medium
+                                        <img id="prio-medium-ye" class="AddTaskBtnIcons" src="./assets/img/addTask/Medium_yellow.png" alt="" />
+                                        <img id="prio-medium-white" class="AddTaskBtnIcons d-none"
+                                            src="./assets/img/addTask/Medium_white.png" alt="">
+                                    </button>
+                                    <button type="button" id="low">
+                                        Low
+                                        <img id="prio-down-green" class="AddTaskBtnIcons" src="./assets/img/addTask/Priority_symbols_down.png" alt="" />
+                                        <img id="prio-down-white" class="AddTaskBtnIcons d-none"
+                                            src="./assets/img/addTask/Priority_symbols_down_white.png" alt="">
+                                    </button>
+                                </div>
+                                <label class="font-label-form-addTask">Category<span class="star">*</span></label>
+                                <div class="select-wrapper">
+                                    <select id="category" class="assigned-addTask" required>
+                                        <option value="">Bitte wählen ...</option>
+                                        <option>Technical Task</option>
+                                        <option>User Story</option>
+                                    </select>
+                                </div>
+                                <label class="font-label-form-addTask">Subtasks</label>
+                                <div class="input-subtask-img">
+                                    <div class="input-container">
+                                        <input type="text" id="input-title-addTasks" placeholder="Add a subtask">
+                                        <img onclick="addSubtask()" src="./assets/img/addTask/plus.png" alt="Add"
+                                            class="add-subtask-icon">
+                                    </div>
+                                </div>
+                                <ul id="addedTasks" class="addedTasks"></ul>
+                            </div>
+                        </div>
+
+                        <div class="btn-handle-bottom">
+                            <div class="create-new-task">
+                                <span><span class="star">*</span>This field is required</span>
+                                <div class="btn-clear-create">
+                                    <button type="button" id="clearButton" class="btn-clear" onclick="clearInput()">Clear
+                                        X</button>
+                                    <button type="submit" id="saveTasks" class="btn-create-task-desktop">Create Task <img
+                                            src="./assets/img/addTask/check.png" alt="" /></button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="added-to-board" class="added-to-board d-none">
+                            <span>Task added to board</span>
+                            <img src="./assets/img/addTask/added_to_board.png" alt="" />
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <div id="contact-succesfully-created" class="contact-succesfully-created" style="display: none">
+                Task added to board
+            </div>
+        </main>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/8.0.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.0.0/firebase-firestore.js"></script>
+    <script src="./js/addTask.js"></script>
+    <script src="./js/script.js"></script>
+    <script src="./js/htmltemplates/addTask.js"></script>
+    <script src="./js/addDummyDate.js"></script>
+    <script type="module" src="./js/guest.js"></script>
+
+</body>
+
+</html>

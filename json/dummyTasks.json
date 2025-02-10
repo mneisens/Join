@@ -1,0 +1,157 @@
+[
+    {
+        "assignedTo": [
+            {
+                "name": "John Doe"
+            },
+            {
+                "name": "Lisa Brown"
+            },
+            {
+                "name": "Sarah Miller"
+            }
+        ],
+        "category": "Technical Task",
+        "categoryAbbreviations": [
+            "BW",
+            "CK",
+            "LL"
+        ],
+        "description": "Als Benutzer möchte ich neue Kontakte zu meiner Liste hinzufügen können, um mit ihnen auf Join zu arbeiten Es gibt eine 'Hinzufügen'-Option oder ein entsprechendes Symbol. Ein Formular öffnet sich, in dem ich Informationen wie Name, E-Mail und Telefonnummer eingeben kann. Nach dem Ausfüllen des Formulars und Bestätigen werden die Kontaktdaten gespeichert und in der Liste angezeigt.",
+        "dueDate": "09/06/2024",
+        "header": "DESIGN - Add/Edit Contacts",
+        "kanbanCategory": "Todo",
+        "priority": "low",
+        "subtasks": [],
+        "taskId": "F2XW7sPnAyqEhbvIsDqW"
+    },
+    {
+        "assignedTo": [
+            {
+                "name": "Michael Neisens"
+            }
+        ],
+        "category": "User Story",
+        "categoryAbbreviations": [
+            "MN"
+        ],
+        "description": "Als Benutzer möchte ich Subtasks zu meinen Hauptaufgaben hinzufügen, bearbeiten und organisieren können, um meine Aufgaben detaillierter zu strukturieren und den Fortschritt besser nachverfolgen zu können.\nIm Task-Formular gibt es einen speziellen Abschnitt mit einem Eingabefeld für Subtasks.\nBei Fokus auf dem Subtaskfeld wird durch Drücken der Eingabetaste oder durch Klicken das Häkchen-Symbol der eingegebene Subtask zur Liste der Subtasks für diese Hauptaufgabe hinzugefügt. Ein \"X\"-Symbol im Eingabefeld dient zum Zurücksetzen des Eingabefeldes, ohne einen Subtask hinzuzufügen.\nNach dem Hinzufügen eines Subtasks wird das Eingabefeld automatisch geleert und steht für die Eingabe eines weiteren Subtasks bereit.\nBeim Überfahren (Hover) eines Subtasks mit der Maus werden ein Stift-Icon und ein \"X\"-Icon sichtbar.\nDas Stift-Icon ermöglicht es den Benutzern, den Titel eines bestehenden Subtasks zu bearbeiten.\nDas \"Mülleimer\"-Symbol ermöglicht es, einen bereits hinzugefügten Subtask zu löschen.",
+        "dueDate": "07/06/2024",
+        "header": "DESIGN - Subtasks - Kanbanboard",
+        "kanbanCategory": "Done",
+        "priority": "medium",
+        "subtasks": [],
+        "taskId": "J1Dh08memf1oNzHMZUUQ"
+    },
+    {
+        "assignedTo": [
+            {
+                "name": "Marius Winterscheid"
+            }
+        ],
+        "category": "User Story",
+        "categoryAbbreviations": [
+            "MW"
+        ],
+        "description": "Als Benutzer möchte ich meine Tasks auf einem Kanban-Board angezeigt bekommen.\nDas Board hat ein Layout mit vier Spalten: ToDo, In Progress, Awaiting Feedback und Done.\nWenn eine Spalte ohne Tasks steht hier eine Info, dass keine Tasks in dem jeweiligen Status sich befinden\nJeder Task zeigt Kategorie, Titel, eine Vorschau der Beschreibung, alle zugewiesenen Benutzer mit Initialen und die Priorität des Tasks.\nIch kann die vollständige Beschreibung und alle Infos zu einem Tasks anzeigen, wenn ich auf einen Task klicke.\nEs gibt ein \"+\"-Icon in jeder Spalte, dass das Hinzufügen eines neuen Tasks ermöglicht.",
+        "dueDate": "07/06/2024",
+        "header": "DESIGN - Board - Kanbanboard",
+        "kanbanCategory": "InProgress",
+        "priority": "urgent",
+        "subtasks": [
+            {
+                "done": true,
+                "subtask": "Jeder Tasks bei Boardview muss die gleiche Größe haben"
+            },
+            {
+                "done": false,
+                "subtask": "In MobilView sollte die drag&drop funktionieren"
+            },
+            {
+                "done": false,
+                "subtask": "Edit Task muss noch implementiert werden"
+            }
+        ],
+        "taskId": "SuYQjQhuF41Q0jG7PBrv"
+    },
+    {
+        "assignedTo": [
+            {
+                "name": "Csaba Miska"
+            },
+            {
+                "name": "Marius Winterscheid"
+            }
+        ],
+        "category": "User Story",
+        "categoryAbbreviations": [
+            "CM",
+            "MW"
+        ],
+        "description": "Als Benutzer möchte ich die wichtigsten Informationen zu Anzahl der Tasks in dem jeweiligen Status und den Task mit der nächsten Deadline auf meinem Dashboard sehen, wenn ich mich anmelde.\n\n- Das Dashboard zeigt die Anzahl der Tasks bis zur nächsten Deadline an.\n- Das Dashboard zeigt die Anzahl der Tasks in den Phasen ToDo, In Progress, Awaiting Feedback und Done.\n- Abhängig von der Tageszeit wird eine Begrüßungsnachricht (z.B. \"Good morning, [Benutzername]\") angezeigt.",
+        "dueDate": "07/06/2024",
+        "header": "JS - Summary User",
+        "kanbanCategory": "AwaitFeedback",
+        "priority": "medium",
+        "subtasks": [],
+        "taskId": "VVElVHMLSMeAYV1V0Pin"
+    },
+    {
+        "assignedTo": [
+            {
+                "name": "Csaba Miska"
+            }
+        ],
+        "category": "User Story",
+        "categoryAbbreviations": [
+            "CM"
+        ],
+        "description": "ls Benutzer möchte ich die Datenschutzerklärung der Anwendung einsehen können, um zu verstehen, wie meine Daten verwendet und geschützt werden.\nEs gibt einen Bereich in Join, wo Benutzer die \"Privacy Policy\" einsehen können.\nDurch Anklicken des Links werde ich zu einer Seite weitergeleitet, die detaillierte Informationen darüber enthält, wie meine Daten gesammelt, verwendet und geschützt werden.",
+        "dueDate": "08/06/2024",
+        "header": "DESIGN - Privacy Policy",
+        "kanbanCategory": "InProgress",
+        "priority": "low",
+        "subtasks": [
+            {
+                "done": true,
+                "subtask": "Ohne LogIn öffnet sich in einer neuen Tag"
+            },
+            {
+                "done": false,
+                "subtask": "Ohne LogIn wird die Menü und Header Elemente nicht sehbar"
+            }
+        ],
+        "taskId": "eHPsxWxgjNAtE5FWX9w4"
+    },
+    {
+        "assignedTo": [
+            {
+                "name": "Csaba Miska"
+            },
+            {
+                "name": "Marius Winterscheid"
+            },
+            {
+                "name": "Michael Neisens"
+            }
+        ],
+        "category": "Technical Task",
+        "categoryAbbreviations": [
+            "CM",
+            "MW",
+            "MN"
+        ],
+        "description": "Noch ein letzte Besprecheung, vor die Abgabe. Alle Funktionen nochmal zusammen prüfen.",
+        "dueDate": "05/06/2024",
+        "header": "Project Abgabe",
+        "kanbanCategory": "Todo",
+        "priority": "medium",
+        "subtasks": [
+            {
+                "done": true,
+                "subtask": "Test 234"
+            }
+        ],
+        "taskId": "ev6AolAsJFCBmBlPH6Xv"
+    }
+]

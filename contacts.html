@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JOIN | Contacts</title>
+    <link rel="stylesheet" href="./style/fonts.css">
+    <link rel="stylesheet" href="./style/style.css">
+    <link rel="stylesheet" href="./style/contacts.css">
+    <link rel="stylesheet" href="./style/contactsMobile.css">
+    <link rel="stylesheet" href="./style/createMyContact.css">
+    <link rel="icon" href="./assets/img/join_logo.png">
+</head>
+
+<body onload="loadContact()">
+    <div html-template="./templates/nav_template.html"></div>
+
+    <div class="mainContact">
+        <div id="contactListContainer" class="contactListContainer">
+            <button id="newContactDesktopBtn" onclick="openAddContacts()" class="newContactDesktopBtn">
+                <div class="newContactDesktopBtnContainer">Add new contact <img src="./assets/icon/person_add.png"
+                        class="newContactDesktopIcon"></div>
+            </button>
+            <div id="myContactContainer" class="myContactContainer"></div>
+            <div id="contactsListContainer" class="contactsListContainer"></div>
+        </div>
+
+        <div id="showContactContainer" class="showContactContainer">
+            <div id="showContactContent" class="showContactContent">
+                <div class="showContactHeadLineContainer">
+                    <div class="showContactHeadline">Contacts</div>
+                    <div class="showContactHeadlineDistancerHorizontal"></div>
+                    <div class="showContactHeadlineText">Better with a team</div>
+                    <div class="showContactHeadlineDistancerVertical"></div>
+                </div>
+                <div id="showContactInfoContentContainer"></div>
+            </div>
+
+        </div>
+        <div id="showContactBackContainer" class="showContactBackContainer">
+            <img class="showContainerBackIcon" onclick="hideShowContactInfo()"
+                src="./assets/img/contacts/back-arrow.png">
+        </div>
+        <div id="newContactMobilBtn" class="newContactMobilBtn" onclick="openAddContacts()" ><img class="newContactMobilIcon" src="./assets/img/contacts/person_add.png">
+        </div>
+        <div id="newContactInfoMobilBtn" class="newContactMobilBtn d-none" onclick="showEditMobilBtn()" ><img class="editContactMobilIcon" src="./assets/img/contacts/more_vert.png">
+        </div>
+    </div>
+
+    <div id="newContactContainer" class="popUpContainer d-none" onclick="hideAddContact()">
+        <div id="newContact" class="popUp" onclick="stopPropagation(event)">
+            <div class="popUpCloseMobilContainer">
+                <img class="popUpCloseMobil" src="./assets/img/contacts/close.png" onclick="hideAddContact()">
+            </div>
+            <div class="popUpHeader">
+                <img src="./assets/img/join_mobil_logo.png" class="popUpLogo">
+                <div class="popUpHeadline">Add contact</div>
+                <div class="popUpText">Tasks are better with a team!</div>
+                <div class="popUpDistacer"></div>
+            </div>
+            <div class="popUpContent">
+                <div class="popUpInitial">
+                    <div class="popUpInitialContainer" id="contactLogo" style="background-color: var(--icon-color);">
+                        <div class="popUpInitials" id="contactFirstInitials"></div>
+                        <div class="popUpInitials" id="contactSecondInitials"></div>
+                    </div>
+                </div>
+                <form id="form-create-new-contact" class="popUpForm" onsubmit="addContact(); return false"
+                    onkeyup="renderbtnCreate(); renderContactInitials()">
+                    <div class="formInputContainer">
+                        <input required autocomplete="off" id="inputName" class="formInput" placeholder="Name"
+                            type="text" onkeyup="renderAddContactIcon()">
+                        <img src="./assets/icon/person.png" alt="person" class="personIcon">
+                    </div>
+                    <div class="formInputContainer">
+                        <input required autocomplete="off" id="inputEmail" class="formInput" placeholder="Email"
+                            type="email">
+                        <img src="./assets/icon/mail.png" alt="mail" class="mailIcon">
+                    </div>
+                    <div class="formInputContainer">
+                        <input required autocomplete="off" id="inputPhone" class="formInput" placeholder="Phone"
+                            type="text" oninput="this.value = this.value.replace(/[^0-9.]/g, '');">
+                        <img src="./assets/img/contacts/call.png" alt="phone" class="phoneIcon">
+                    </div>
+                    <div class="popUpBtnContainer">
+                        <button id="btnCancel" class="popUpCancelBtn" onclick="hideAddContact()">Cancel X</button>
+                        <button type="submit" id="btnCreate" class="popUpBtn">Create Contact <img
+                                src="./assets/icon/check.png" alt=""></button>
+                    </div>
+                </form>
+                <div class="popUpCloseContainer">
+                    <img class="popUpClose" src="./assets/img/contacts/close_grey.png" onclick="hideAddContact()">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="editContactContainer" class="popUpContainer d-none" onclick="closeEditOrDeletePopUp()">
+        <div id="editContactPopUp" class="popUp" onclick="stopPropagation(event)">
+            <div class="popUpCloseMobilContainer">
+                <img class="popUpCloseMobil" src="./assets/img/contacts/close.png" onclick="closeEditOrDeletePopUp()">
+            </div>
+            <div class="popUpHeader">
+                <div id="popUpHeadline" class="popUpHeadline">Edit contact</div>
+                <div class="popUpDistacer"></div>
+            </div>
+            <div class="popUpContent">
+                <div class="popUpInitial">
+                    <div class="popUpInitialContainer" id="editLogo" style="background-color: var(--icon-color);">
+                        <div class="popUpInitials" id="editFirtsContactInitials"></div>
+                        <div class="popUpInitials" id="editSecondContactInitials"></div>
+                    </div>
+                </div>
+                <div id="popUpContent">
+
+                </div>
+                <div class="popUpCloseContainer">
+                    <img class="popUpClose" src="./assets/img/contacts/close_grey.png" onclick="hideEditContact()">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="deleteContactContainer" class="popUpContainer d-none" onclick="hideDeleteContact()">
+        <div id="deleteContact" class="popUp" onclick="stopPropagation(event)">
+            <div class="popUpCloseMobilContainer">
+                <img class="popUpCloseMobil" src="./assets/img/contacts/close.png" onclick="hideDeleteContact()">
+            </div>
+            <div class="popUpHeader">
+                <div class="popUpHeadline">Delete contact</div>
+                <div class="popUpDistacer"></div>
+            </div>
+            <div class="popUpContent">
+                <div class="popUpInitial">
+                    <div class="popUpInitialContainer" id="deleteLogo" style="background-color: var(--icon-color);">
+                        <div class="popUpInitials" id="deleteContactInitials"></div>
+                    </div>
+                </div>
+                <div class="popUpMessageContainer">
+                    <div class="popUpMessage">Are you sure you want to delete the contact <span id="deleteContactName"
+                            class="popUpDeleteContact"></span>?
+                    </div>
+                    <input type="text" value="" id="deleteContactId" class="d-none">
+                    <div class="popUpBtnContainer">
+                        <button type="button" id="btnDeleteCancel" class="popUpCancelBtn"
+                            onclick="hideDeleteContact()">Cancel</button>
+                        <button type="button" id="btnDel" class="popUpBtn" onclick="startDeleteContactDirekt()">Delete<img
+                                src="./assets/icon/check.png" alt=""></button>
+                    </div>
+                </div>
+                <div class="popUpCloseContainer">
+                    <img class="popUpClose" src="./assets/img/contacts/close_grey.png"
+                        onclick="hideDeleteContact()">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="contactSuccesfullyBox" class="d-none">
+        Contact succesfully created
+    </div>
+
+    </div>
+    </main>
+    <script src="./js/contacts.js"></script>
+    <script src="./js/script.js"></script>
+    <script src="./js/htmltemplates/contactsHtml.js"></script>
+    <script src="./js/contacts_event.js"></script>
+    <script src="./js/addDummyDate.js"></script>
+    <script type="module" src="./js/guest.js"></script>
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+        import { getFirestore } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyBrslTwOvrS4_tnF6uODjT1KQuWR4ttzFY",
+            authDomain: "join193-5ae20.firebaseapp.com",
+            databaseURL: "https://join193-5ae20-default-rtdb.europe-west1.firebasedatabase.app",
+            projectId: "join193-5ae20",
+            storageBucket: "join193-5ae20.appspot.com",
+            messagingSenderId: "330884835484",
+            appId: "1:330884835484:web:20d71dc457ab9659d0a559"
+        };
+
+        import { doc, setDoc, getDocs, deleteDoc, updateDoc, collection } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        
+        let contactsListContainer = document.getElementById('contactsListContainer');
+        let myContactContainer = document.getElementById('myContactContainer');
+        let editNameInput = document.getElementById('editNameInput');
+
+        async function addContact() {
+            try {
+                const contactRef = collection(db, 'UserAuthList', userCreds.uid, 'contacts');
+                const newDocRef = doc(contactRef);
+                const docID = newDocRef.id;
+                const contactData = {
+                    name: getNameFromInput(),
+                    email: getEmailFromInput(),
+                    phone: getPhoneFromInput(),
+                    id: docID,
+                    color: getColorFromInput(),
+                    initials: renderContactInitials()
+                };
+                await setDoc(newDocRef, contactData);
+                resetForm();
+                hideAddContact();
+                slideInContactSuccesfullyBox();
+                await showContacts();
+                scrollToNewContact(docID);
+                showContactInfos(contactData);
+            } catch (error) {
+            }
+        }
+
+        async function showContacts() {
+            try {
+                const contactRef = collection(db, 'UserAuthList', userCreds.uid, 'contacts');
+                const querySnapshot = await getDocs(contactRef);
+                contactsListContainer.innerHTML = '';
+                if (!querySnapshot.empty) {
+                    let contacts = [];
+                    querySnapshot.forEach((doc) => {
+                        const data = doc.data();
+                        contacts.push(data);
+                    });
+                    renderCalendarContacts(contacts);
+                } else {
+                }
+            } catch (error) {
+            }
+        }
+
+        async function updateContacts(contactID, updatedData) {
+            try {
+                const docRef = doc(db, 'UserAuthList', userCreds.uid, 'contacts', contactID);
+                await updateDoc(docRef, updatedData);
+            } catch (error) {
+            }
+        }
+
+        async function deleteContacts(contactID) {
+            try {
+                const docRef = doc(db, 'UserAuthList', userCreds.uid, 'contacts', contactID);
+                await deleteDoc(docRef);
+            } catch (error) {
+            }
+        }
+
+        async function getMyContacts() {
+            try {
+                const contactRef = collection(db, 'UserAuthList', userCreds.uid, 'myContact');
+                const querySnapshot = await getDocs(contactRef);
+                myContactContainer.innerHTML = '';
+                if (!querySnapshot.empty) {
+                    let myContacts = [];
+                    querySnapshot.forEach((doc) => {
+                        const data = doc.data();
+                        myContacts.push(data);
+                    });
+                    renderMyContact(myContacts);
+                } else {
+
+                }
+            } catch (error) {
+            }
+        }
+
+        async function updateMyContact(contactID, updatedMyData) {
+            try {
+                const docRef = doc(db, 'UserAuthList', userCreds.uid, 'myContact', contactID);
+                await updateDoc(docRef, updatedMyData);
+                getMyContacts();
+            } catch (error) {
+            }
+        }
+
+        async function updateMyAccount() {
+            try {
+                const docRef = doc(db, 'UserAuthList', userCreds.uid);
+                await updateDoc(docRef, {
+                    name: getNameFromEditInput()
+                });
+                sessionStorage.setItem("user-info", JSON.stringify({ name: getNameFromEditInput() }));
+            } catch (error) {
+                console.log(error);
+            }
+        }
+
+        window.updateMyAccount = updateMyAccount;
+        window.updateMyContact = updateMyContact;
+        window.deleteContacts = deleteContacts;
+        window.updateContacts = updateContacts;
+        window.showContacts = showContacts;
+        window.addContact = addContact;
+        window.getMyContacts = getMyContacts;
+    </script>
+</body>
+
+</html>

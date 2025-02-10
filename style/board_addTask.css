@@ -1,0 +1,252 @@
+/* Add Task Mobile */
+@media (max-width: 1200px) {
+    main {
+      flex-grow: 1;
+      width: 100%;
+      /* overflow-y: auto; */
+    }
+
+    .add-task-board {
+        width: 90% !important;
+        max-height: 100vh;
+        /* overflow-y: auto;  */
+    }
+  
+    #optionsContainer {
+      box-sizing: border-box;
+      width: 100%;
+    }
+    
+    .form-btns{
+      background-color: white;
+    }
+
+    .showName div {
+      width: 40px !important;
+    }
+  
+    .main-addTask {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 100%;
+      max-height: 100%;
+    }
+  
+    .head-addTask {
+      position: relative;
+      margin-top: 0!important;
+      font-size: 58px;
+      font-weight: 700;
+      padding-left: 16px;
+    }
+  
+    .form-addTask {
+      box-sizing: border-box;
+      width: 100%;
+      flex-direction: column;
+      padding: 0 16px;
+      margin-left: 0;
+      margin-right: 0;
+    }
+  
+    .devider-addTask {
+      display: none;
+    }
+  
+    .nav-desktop {
+      display: none;
+    }
+  
+    .mobile-nav {
+      background-color: rgba(42, 54, 71, 1);
+      height: 80px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: fixed;
+      bottom: 0;
+      width: 100%;
+    }
+  
+    .mobile-nav a {
+      box-sizing: border-box;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      height: 76px;
+      width: 80px;
+      border-radius: 16px;
+      padding: 15px 0;
+      gap: 4px;
+      text-align: center;
+      text-decoration: none;
+      color: rgba(205, 205, 205, 1);
+    }
+  
+    .mobile-nav a img {
+      height: 24px;
+      width: 24px;
+    }
+  
+    .header {
+      height: 80px;
+    }
+  
+    .nav-Login {
+      width: 40px;
+      height: 40px;
+    }
+  
+    .font-label-form-addTask {
+      font-size: 16px;
+    }
+  
+    .input-title-addTask {
+      height: 40px;
+      margin-bottom: 16px;
+    }
+  
+    .input-title-addTask,
+    .textarea-addTask,
+    .assigned-addTask,
+    .date-addTask {
+      width: 100%;
+    }
+  
+    .prio-addTask button {
+      width: 121px;
+      height: 41px;
+    }
+  
+    .create-new-task {
+      flex-direction: column;
+      max-width: 100%;
+      gap: 10px;
+      align-items: flex-start;
+    }
+  
+    .btn-clear-create {
+      width: 100%;
+      margin-left: 0;
+      justify-content: space-between;
+    }
+  
+    .btn-handle-bottom {
+      justify-content: center;
+      width: 100%;
+      position: static;
+    }
+  
+    .btn-clear {
+      display: none;
+    }
+  
+    .assigned-addTask {
+      width: 100%;
+    }
+  
+    .left-side-addTask,
+    .right-side-addTask {
+      width: 100%;
+      margin-left: 0;
+      margin-right: 0;
+    }
+
+  
+    .option {
+      width: 100% !important;
+    }
+  }
+  
+  @media (max-width: 500px) {
+    .create-new-task {
+      gap: 10px;
+      flex-direction: column;
+    }
+  
+    .header-title {
+      display: none;
+    }
+  }
+  
+  @media (max-width: 450px) {
+    .prio-addTask {
+      flex-direction: column;
+      gap: 16px;
+    }
+    #urgent{
+      width: 100%;
+    }
+    #medium{
+      width: 100%;
+    }
+    #low{
+      width: 100%;
+    }
+    .btn-handle-bottom{
+      height: 100%;
+    }
+
+  }
+  
+  .close-addTask {
+    position: absolute;
+   top: 40px;
+   right: 20px;
+   width: 32px;
+   z-index: 100000;
+}
+
+main {
+  margin-left: 0;
+  margin-bottom: 0;
+}
+
+/* add-Task */
+.add-task-board {
+  background-color: white;
+  width: 1160px;
+  height: 870px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  box-shadow: 0px 0px 4px 0px rgba(0, 0, 0, 0.1);
+  border-radius: 30px;
+  z-index: 1000;
+  display: flex; /* Stellen Sie sicher, dass dies bei Bedarf angezeigt wird */
+  box-sizing: border-box;
+  padding: 10px;
+}
+
+main{
+  background-color: white;
+}
+
+.head-addTask {
+  background-color: white;
+  z-index: 1010;
+}
+
+.btn-handle-bottom{
+  position: static!important;
+}
+
+.addedTasks{
+  max-height: 180px;
+}
+
+.btn-clear{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.add-task-bord-border {
+  overflow-y: auto;
+  max-height: 100vh; /* oder eine spezifische Höhe, abhängig von Ihrem Design */
+  width: 100%; /* passt die Breite an den Elterncontainer an */
+  height: 850px; /* etwas weniger als der .add-task-board Container, um innerhalb der Grenzen zu bleiben */
+  box-sizing: border-box;
+}

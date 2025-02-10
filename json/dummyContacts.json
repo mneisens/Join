@@ -1,0 +1,72 @@
+[
+    {
+        "color": "rgb(255, 199, 1)",
+        "email": "michael@neisens",
+        "initials": "MN",
+        "name": "Michael Neisens",
+        "phone": "01234567890"
+    },
+    {
+        "color": "rgb(147, 39, 255)",
+        "email": "marius@winterscheid",
+        "initials": "MW",
+        "name": "Marius Winterscheid",
+        "phone": "01234567890"
+    },
+    {
+        "color": "rgb(122, 232, 166)",
+        "email": "miskacs90@icloud.com",
+        "initials": "CM",
+        "name": "Csaba Miska",
+        "phone": "015204171284"
+    },
+    {
+        "color": "rgb(255, 70, 70)",
+        "email": "john.doe@example.com",
+        "initials": "JD",
+        "name": "John Doe",
+        "phone": "01234567890"
+    },
+    {
+        "color": "rgb(255, 199, 1)",
+        "email": "jane.smith@example.com",
+        "initials": "JS",
+        "name": "Jane Smith",
+        "phone": "01234567890"
+    },
+    {
+        "color": "rgb(147, 39, 255)",
+        "email": "robert.johnson@example.com",
+        "initials": "RJ",
+        "name": "Robert Johnson",
+        "phone": "01234567890"
+    },
+    {
+        "color": "rgb(31, 215, 193)",
+        "email": "lisa.brown@example.com",
+        "initials": "LB",
+        "name": "Lisa Brown",
+        "phone": "56712398700"
+    },
+    {
+        "color": "rgb(255, 187, 43)",
+        "email": "michael.davis@example.com",
+        "initials": "MD",
+        "name": "Michael Davis",
+        "phone": "987982345"
+    },
+    {
+        "color": "rgb(174, 214, 241)",
+        "email": "sarah.miller@example.com",
+        "initials": "SM",
+        "name": "Sarah Miller",
+        "phone": "987123233102"
+    },
+    {
+        "color": "rgb(31, 215, 193)",
+        "email": "david.wilson@example.com",
+        "initials": "DW",
+        "name": "David Wilson",
+        "phone": "9871234560"
+    }
+]

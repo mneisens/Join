@@ -1,0 +1,543 @@
+.popUpContainer {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 2;
+    background-color: rgba(0, 0, 0, 0.25);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.popUp {
+    width: 1212px;
+    height: 592px;
+    border: none;
+    border-radius: 30px;
+    display: flex;
+    align-items: center;
+}
+
+.popUpCloseContainer {
+    display: flex;
+    justify-content: center;
+    align-items: start;
+    height: 100%;
+    margin-right: 48px;
+    margin-top: 48px;
+}
+
+.popUpCloseMobilContainer {
+    display: none;
+    justify-content: end;
+    width: 100%;
+    margin-left: -25.43px;
+    margin-bottom: -25.43px;
+}
+
+.popUpClose {
+    position: absolute;
+    width: 32px;
+    height: 32px;
+}
+
+.popUpClose:hover {
+    cursor: pointer;
+    transform: scale(1.1);
+}
+
+.popUpCloseMobil {
+    position: absolute;
+    width: 24px;
+    height: 24px;
+}
+
+.popUpCloseMobil:hover {
+    cursor: pointer;
+    transform: scale(1.1);
+}
+
+.popUpHeader {
+    width: 467px;
+    height: 100%;
+    background-color: var(--main-color-dark-blue);
+    border-radius: 30px 0 0 30px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: start;
+    padding-left: 48px;
+    padding-right: 53px;
+}
+
+.popUpHeadline {
+    font-size: 61px;
+    font-weight: 700;
+    color: var(--bg-color-white);
+    margin-bottom: 8px;
+}
+
+.popUpLogo {
+    width: 55.6px;
+    height: 66.48px;
+    margin-bottom: 12.2px;
+}
+
+.popUpText {
+    font-size: 27px;
+    font-weight: 400;
+    color: var(--bg-color-white);
+    margin-bottom: 16px;
+}
+
+.popUpDistacer {
+    width: 90px;
+    height: 3px;
+    background-color: var(--main-color-light-blue);
+}
+
+.popUpContent {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    background-color: var(--bg-color-white);
+    border-radius: 0 30px 30px 0;
+}
+
+.popUpInitial {
+    margin-left: 83px;
+    margin-right: 72px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.popUpInitialContainer {
+    width: 120px;
+    height: 120px;
+    border-radius: 70px;
+    border: 3px solid var(--bg-color-white);
+    background-color: var(--main-color-light-blue);
+    box-shadow: 0px 0px 4px 0px rgba(0, 0, 0, 0.1);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.popUpInitials {
+    color: var(--bg-color-white);
+    font-size: 48px;
+    font-weight: 400;
+}
+
+.popUpForm {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin-top: 64px;
+    margin-right: 48px;
+    width: 100%;
+}
+
+.formInputContainer {
+    display: flex;
+    align-items: center;
+    margin-bottom: 32px;
+}
+
+.formInput {
+    width: 422px;
+    height: 48px;
+    border: 1px solid var(--main-color-light-gray);
+    border-radius: 10px;
+    box-sizing: border-box;
+    padding-top: 12px;
+    padding-bottom: 12px;
+    padding-left: 21px;
+    padding-right: 56px;
+    font-family: 'Inter';
+    font-size: 20px;
+    font-weight: 400;
+}
+
+.formInput::placeholder {
+    color: var(--main-color-light-gray);
+}
+
+.formInput:hover {
+    border-color: var(--main-color-light-blue);
+}
+
+.formInput:focus {
+    outline: none;
+    border-color: var(--main-color-light-blue);
+}
+
+.personIcon {
+    margin-left: -41px;
+    padding-right: 21px;
+    width: 16px;
+    height: 16px;
+}
+
+.mailIcon {
+    margin-left: -41px;
+    padding-right: 21px;
+    width: 20px;
+    height: 16px;
+}
+
+.phoneIcon {
+    margin-left: -41px;
+    padding-right: 21px;
+    width: 18px;
+    height: 18px;
+}
+
+.popUpMessageContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin-top: 64px;
+    margin-right: 48px;
+    width: 100%;
+}
+
+.popUpMessage {
+    font-size: 21px;
+    margin-bottom: 32px;
+}
+
+.popUpDeleteContact {
+    color: var(--main-color-light-blue);
+    font-weight: 400;
+}
+
+.popUpBtnContainer {
+    margin-top: 12px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 422px;
+    gap: 24px;
+}
+
+.popUpBtn {
+    width: 214px;
+    height: 55px;
+    border: none;
+    border-radius: 8px;
+    padding: 15px, 24px, 15px, 24px;
+    gap: 10px;
+    background-color: var(--main-color-dark-blue);
+    color: white;
+    font-size: 21px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.popUpBtn:hover {
+    background-color: var(--main-color-light-blue);
+    box-shadow: var(--btn-box-shadow);
+    cursor: pointer;
+}
+
+.popUpCancelBtn {
+    width: 177px;
+    height: 55px;
+    border: 1px solid var(--main-color-dark-blue);
+    border-radius: 8px;
+    padding: 15px, 24px, 15px, 24px;
+    gap: 10px;
+    background-color: var(--bg-color-white);
+    color: var(--main-color-dark-blue);
+    font-size: 21px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.popUpCancelBtn:hover {
+    border: 1px solid var(--main-color-light-blue);
+    box-shadow: var(--btn-box-shadow);
+    color: var(--main-color-light-blue);
+    cursor: pointer;
+}
+
+.btn_disabled {
+    background-color: var(--icon-color) !important;
+    cursor: default !important;
+    box-shadow: none !important;
+}
+
+@keyframes slide-in-bottom {
+    0% {
+        -webkit-transform: translateY(1000px);
+        transform: translateY(1000px);
+        opacity: 1;
+    }
+
+    100% {
+        -webkit-transform: translateY(0);
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+.slideInBottom {
+    animation: slide-in-bottom 0.2s cubic-bezier(0.250, 0.460, 0.450, 0.940) both;
+}
+
+@keyframes slide-out-bottom {
+    0% {
+        -webkit-transform: translateY(0);
+        transform: translateY(0);
+        opacity: 1;
+    }
+
+    100% {
+        -webkit-transform: translateY(1000px);
+        transform: translateY(1000px);
+        opacity: 0;
+    }
+}
+
+.slideOutBottom {
+    animation: slide-out-bottom 0.2s cubic-bezier(0.550, 0.085, 0.680, 0.530) both;
+}
+
+.d-none {
+    display: none;
+}
+
+
+@media (max-width: 1250px) {
+    .popUp {
+        width: 396px;
+        height: 760px;
+        flex-direction: column;
+        align-items: start;
+        justify-content: center;
+        box-sizing: border-box;
+    }
+
+    .popUpHeader {
+        width: 396px;
+        height: 351px;
+        border-radius: 30px 30px 0 0;
+        padding-left: 0;
+        padding-right: 0;
+        padding-bottom: 124px;
+    }
+
+    .popUpHeadline {
+        font-size: 47px;
+        margin-top: 124px;
+        margin-left: 24px;
+    }
+
+    .popUpLogo {
+        display: none;
+    }
+
+    .popUpText {
+        font-size: 20px;
+        margin-left: 24px;
+    }
+
+    .popUpDistacer {
+        margin-left: 24px;
+    }
+
+    .popUpContent {
+        width: 396px;
+        flex-direction: column;
+        border-radius: 0 0 30px 30px;
+    }
+
+    .popUpInitial {
+        margin-left: 0;
+        margin-right: 0;
+        margin-top: -60px;
+    }
+
+    .popUpForm {
+        margin-top: 32px;
+        margin-left: 15.5px;
+        margin-right: 15.5px;
+        width: 364px;
+    }
+
+    .popUpMessageContainer {
+        display: flex;
+        align-items: center;
+        margin-top: 32px;
+        margin-left: 15.5px;
+        margin-right: 15.5px;
+        width: 364px;
+        height: 100%;
+    }
+
+    .popUpMessage {
+        font-size: 21px;
+        padding-left: 24px;
+        margin-bottom: 80px;
+    }
+    
+    .formInputContainer {
+        margin-bottom: 24px;
+    }
+
+    .formInput {
+        width: 364px;
+        height: 41px;
+    }
+
+    .popUpBtnContainer {
+        margin-top: 12px;
+        margin-bottom: 62px;
+        width: 100%;
+        gap: 16px;
+    }
+
+    .popUpBtn {
+        width: 190px;
+        height: 50px;
+        font-size: 20px;
+    }
+
+    .popUpCancelBtn {
+        width: 110px;
+        height: 50px;
+        font-size: 20px;
+    }
+
+    .popUpCloseContainer {
+        display: none;
+    }
+
+    .popUpCloseMobilContainer {
+        display: flex;
+    }
+}
+
+@media (max-width: 420px) {
+    .popUp {
+        width: 312px;
+        height: 640px;
+    }
+
+    .popUpHeader {
+        width: 312px;
+        height: 351px;
+        padding-bottom: 96px;
+    }
+
+    .popUpHeadline {
+        font-size: 32px;
+        margin-top: 124px;
+        margin-left: 24px;
+    }
+
+    .popUpText {
+        font-size: 16px;
+        margin-left: 24px;
+    }
+
+    .popUpDistacer {
+        width: 60px;
+        height: 2px;
+    }
+
+    .popUpContent {
+        width: 312px;
+    }
+
+    .popUpInitialContainer {
+        width: 100px;
+        height: 100px;
+        border: 2px solid var(--bg-color-white);
+    }
+
+    .popUpInitials {
+        font-size: 40px;
+    }
+
+    .popUpForm {
+        margin-top: 24px;
+        margin-left: 8px;
+        margin-right: 8px;
+        width: 296px;
+    }
+
+    .popUpMessageContainer {
+        display: flex;
+        align-items: center;
+        margin-top: 32px;
+        margin-left: 8px;
+        margin-right: 8px;
+        width: 296px;
+        height: 100%;
+    }
+
+    .popUpMessage {
+        font-size: 21px;
+        padding-left: 24px;
+        margin-bottom: 80px;
+    }
+
+    .formInputContainer {
+        margin-bottom: 20px;
+    }
+
+    .formInput {
+        width: 296px;
+        height: 36px;
+        padding-top: 12px;
+        padding-bottom: 12px;
+        padding-left: 16px;
+        padding-right: 51px;
+        font-size: 16px;
+    }
+
+    .popUpBtnContainer {
+        margin-top: 8px;
+        margin-bottom: 32px;
+        width: 100%;
+        gap: 12px;
+    }
+
+    .popUpBtn {
+        width: 160px;
+        height: 48px;
+        font-size: 16px;
+    }
+
+    .popUpCancelBtn {
+        width: 90px;
+        height: 48px;
+        font-size: 16px;
+    }
+}
+
+@media (max-width: 380px) {
+    .popUp {
+        height: 600px;
+    }
+
+    .popUpInitial {
+        margin-top: -45px;
+    }
+
+    .popUpInitialContainer {
+        width: 90px;
+        height: 90px;
+    }
+}

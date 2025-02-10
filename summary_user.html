@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JOIN | Summary user</title>
+
+    <link rel="stylesheet" href="./style/style.css">
+    <link rel="stylesheet" href="./style/summary.css">
+    <link rel="stylesheet" href="./style/summaryMobile.css">
+    <link rel="stylesheet" href="./style/fonts.css">
+    <link rel="stylesheet" href="./style/createMyContact.css">
+    <link rel="icon" href="./assets/img/join_logo.png">
+</head>
+
+<body onload="loadSummaryUser()">
+    <div html-template="./templates/nav_template.html"></div>
+
+    <div class="sum-bg-main">
+        <!-- summary board headline -->
+        <div class="sum-header-main-div">
+            <div class="summary-header">
+                <h2 class="board-h2">Join 360</h2>
+                <img class="sum-header-seperator-blueY" src="./assets/img/summary/seperatorBlueY.svg" alt="blue line">
+                <p>Key Metrics at a Glance</p>
+            </div>
+
+            <img class="sum-header-seperator-blueX" src="./assets/img/summary/seperatorBlueX.svg" alt="blue line">
+        </div>
+
+        <!-- summary board content -->
+        <div class="sum-content-div">
+            <div class="sum-cards-main-div">
+                <div class="sum-cards-div-1">
+                    <!-- todo card -->
+                    <div onclick="window.location.href='board.html'" id="sumCardTodo" class="sum-card-first-row">
+                        <div id="sumCardTodoIcon"></div>
+                        <div class="sum-card-sec-lay1">
+                            <div class="board-h3" id="sumCardTodoInt">0</div>
+                            <p>To-do</p>
+                        </div>
+                    </div>
+                    <!-- done card -->
+                    <div onclick="window.location.href='board.html'" id="sumCardDone" class="sum-card-first-row">
+                        <div id="sumCardDoneIcon"></div>
+                        <!-- <img src="../assets/img/summary/checkmarkBlueBack.svg" alt="checkmark"> -->
+                        <div class="sum-card-sec-lay1">
+                            <div class="board-h3" id="sumCardDoneInt">0</div>
+                            <p>Done</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- urgent card -->
+                <div onclick="window.location.href='board.html'" class="sum-cards-div-2">
+                    <div class="sum-card-sec-row" id="urgentTaskContainer">
+                        <div class="sum-card-sec-row-col1">
+                            <img src="../assets/img/summary/urgentMarkRedBack.svg" alt="two arrows upwoards">
+                            <div class="sum-card-sec-lay">
+                                <div class="board-h3" id="sumCardUrgentInt">0</div>
+                                <p>Urgent</p>
+                            </div>
+                        </div>
+                        <img src="./assets/img/summary/seperatorDark.svg" alt="dark seperator line">
+                        <div class="sum-card-sec-row-col2">
+                            <div class="board-h4" id="deadlineDatum">No Urgent Tasks</div>
+                            <p id="deadlineText">No Deadline</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="sum-cards-div-3">
+                    <!-- Tasks in Board -->
+                    <div onclick="window.location.href='board.html'" class="sum-card-third-row">
+                        <div class="sum-card-sec-lay">
+                            <div class="board-h3" id="sumCardAmountInt">0</div>
+                            <p>Tasks in</p>
+                            <p class="boardText">Board</p>
+                        </div>
+                    </div>
+                    <!-- Tasks in Progress -->
+                    <div onclick="window.location.href='/templates/board.html'" class="sum-card-third-row">
+                        <div class="sum-card-sec-lay">
+                            <div class="board-h3" id="sumCardInProgressInt">0</div>
+                            <p>Tasks in Progress</p>
+                        </div>
+                    </div>
+                    <!-- Awaiting feedback -->
+                    <div onclick="window.location.href='board.html'" class="sum-card-third-row">
+                        <div class="sum-card-sec-lay">
+                            <div class="board-h3" id="sumCardAwaitInt">0</div>
+                            <p>Awaiting Feedback</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="greetUserDesktopContainer" class="greetUserDesktopContainer">
+            </div>
+        </div>
+    </div>
+
+    <div id="createMyContactContainer" class="popUpContainer"></div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+        import { getFirestore } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyBrslTwOvrS4_tnF6uODjT1KQuWR4ttzFY",
+            authDomain: "join193-5ae20.firebaseapp.com",
+            databaseURL: "https://join193-5ae20-default-rtdb.europe-west1.firebasedatabase.app",
+            projectId: "join193-5ae20",
+            storageBucket: "join193-5ae20.appspot.com",
+            messagingSenderId: "330884835484",
+            appId: "1:330884835484:web:20d71dc457ab9659d0a559"
+        };
+
+        const app = initializeApp(firebaseConfig);
+
+        import { doc, setDoc, getDoc, getDocs, deleteDoc, updateDoc, collection } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+        const db = getFirestore(app);
+
+        let createMyContactNameInput = document.getElementById('createMyContactNameInput');
+
+        async function loadTasks() {
+            try {
+                const contactRef = collection(db, 'UserAuthList', userCreds.uid, 'addTasks');
+                const querySnapshot = await getDocs(contactRef);
+
+                let dataArr = [];
+
+                if (!querySnapshot.empty) {
+                    querySnapshot.forEach((doc) => {
+                        const data = doc.data();
+                        dataArr.push(data);
+                    });
+                    return dataArr;
+                } else {
+                    console.log("No Tasks found!");
+                }
+            } catch (error) {
+                console.log("Error getting documents:", error);
+            }
+        }
+
+        let createMyContactContainer = document.getElementById('createMyContactContainer');
+
+        async function checkFirstLogIn() {
+            try {
+                const ref = doc(db, "UserAuthList", userCreds.uid);
+                const docSnap = await getDoc(ref);
+                createMyContactContainer.innerHTML = '';
+
+                if (docSnap.exists() && docSnap.data().firstLogIn === true) {
+                    createMyContactContainer.innerHTML = createMyContactsPopUp();
+                    renderCreateMyContactBtn();
+                    showDesktopGreeting();
+                    checkAnimation();
+                    createMyContactInitials();
+                } else {
+                    createMyContactContainer.style.display = 'none';
+                    showDesktopGreeting();
+                    checkAnimation();
+                    createUserInitials();
+                }
+            } catch (error) {
+                console.log("Error checking firstLogIn:", error);
+            }
+        }
+
+        async function addMyContact() {
+            try {
+                const contactRef = collection(db, 'UserAuthList', userCreds.uid, 'myContact');
+                const newDocRef = doc(contactRef);
+                const docID = newDocRef.id;
+                const myContactData = {
+                    name: getNameFromInput(),
+                    email: getEmailFromInput(),
+                    phone: getPhoneFromInput(),
+                    initials: createMyContactInitials(),
+                    color: 'rgb(41, 171, 226)',
+                    id: docID,
+                    type: 'myContact'
+                };
+                await setDoc(newDocRef, myContactData);
+            } catch (error) {
+                console.log(error);
+            }
+        }
+
+        async function updateFirstLogIn() {
+            try {
+                const userRef = doc(db, 'UserAuthList', userCreds.uid);
+                await updateDoc(userRef, {
+                    firstLogIn: false
+                });
+            } catch (error) {
+                console.log(error);
+            }
+        }
+
+        async function updateAccountData() {
+            try {
+                const docRef = doc(db, 'UserAuthList', userCreds.uid);
+                await updateDoc(docRef, {
+                    name: getNameFromInput()
+                });
+                sessionStorage.setItem("user-info", JSON.stringify({ name: getNameFromInput() }))
+            } catch (error) {
+                console.log("Error updating document:", error);
+            }
+        }
+
+        async function checkGuestLogIn() {
+            try {
+                const ref = doc(db, "UserAuthList", userCreds.uid);
+                const docSnap = await getDoc(ref);
+                if (docSnap.exists() && docSnap.data().guestFirstLogIn === true) {
+                        loadDummyJsons();
+                        updateGuestFirstLogIn();
+                }
+            } catch (error) {
+                console.log("Error checking firstLogIn:", error);
+            }
+        }
+
+        async function updateGuestFirstLogIn() {
+            try {
+                const userRef = doc(db, 'UserAuthList', userCreds.uid);
+                await updateDoc(userRef, {
+                    guestFirstLogIn: false
+                });
+            } catch (error) {
+                console.log(error);
+            }
+        }
+
+        window.updateGuestFirstLogIn = updateGuestFirstLogIn;
+        window.checkGuestLogIn = checkGuestLogIn;
+        window.updateAccountData = updateAccountData;
+        window.updateFirstLogIn = updateFirstLogIn;
+        window.addMyContact = addMyContact;
+        window.checkFirstLogIn = checkFirstLogIn;
+        window.loadTasks = loadTasks;
+    </script>
+
+    <script src="./js/htmltemplates/svgHtml.js"></script>
+    <script src="./js/script.js"></script>
+    <script src="./js/summaryUser.js"></script>
+    <script src="./js/addDummyDate.js"></script>
+    <script type="module" src="./js/guest.js"></script>
+</body>
+
+</html>

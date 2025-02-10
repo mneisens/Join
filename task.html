@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+    <link rel="stylesheet" href="../style/task.css">
+    <link rel="stylesheet" href="../style/style.css">
+    <link rel="stylesheet" href="../style/fonts.css">
+
+</head>
+<body>
+    <div id="taskBgDiv" onclick="if(event.target === this) hideTaskView()" class="task-bg-main">
+        <div id="taskMainDiv" onclick="event.stopPropagation()" class="task-main-div">
+            <div class="task-main-header">
+                <div class="task-label-div">Technical Task</div>
+                <img onclick="hideTaskView()" id="task-x-btn" src="/assets/img/task/x.svg" alt="x">
+            </div>
+            <span class="task-headline">CSS Architecture Planning</span>
+            <span class="task-description">Define CSS naming conventions and structure.</span>
+            <div class="task-due-prio-line">
+                <p>Due date:</p>
+                <p>02/09/2023</p>
+            </div>
+            <div class="task-due-prio-line">
+                <p>Priority:</p>
+                <div class="task-priority">
+                    Urgent
+                    <img src="/assets/img/board/prioritySymbolHigh.svg" alt="priority high">
+                </div>
+            </div>
+    
+            <div class="task-assigned-to-main">
+                <span>Assigned To:</span>
+                <!-- example for a assigned user line -->
+                <div class="task-assigned-users-div">
+                    <div class="task-assigned-user-main">
+                        <div class="task-assigned-user-inner">
+                            <div class="board-profile-badge bg-lightBlue">SM</div>
+                            <span>Sofia Müller (You)</span>
+                        </div>
+                    </div>
+                </div>
+                <!-- example for a assigned user line -->
+                <div class="task-assigned-users-div">
+                    <div class="task-assigned-user-main">
+                        <div class="task-assigned-user-inner">
+                            <div class="board-profile-badge bg-pinkBlue">BZ</div>
+                            <span>Benedikt Ziegler</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+    
+            <div class="task-subtasks-main">
+                <span>Subtasks</span>
+                <div class="task-subtasks-container">
+                    <!-- example for subtask -->
+                    <div class="task-subtask">
+                        <img id="taskSubtask1" src="/assets/img/task/checkButtonMobileChecked.svg" alt="checkbutton checked">
+                        <p>Establish CSS Methodology</p>
+                    </div>
+                    <!-- example for subtask -->
+                    <div class="task-subtask">
+                        <img src="/assets/img/task/checkButtonMobile.svg" alt="checkbutton checked">
+                        <p>Setup Base Styles</p>
+                    </div>
+                </div>
+            </div>
+    
+            <div class="task-main-footer">
+                <div class="task-footer">
+                    <div id="taskFooterDel" class="task-footer-del-edit">
+                        <!-- filled with js -->
+                    </div>
+                    <img class="task-grey-line" src="/assets/img/task/Vector 3.svg" alt="grey line">
+                    <div id="taskFooterEdit" class="task-footer-del-edit">
+                        <!-- filled with js -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="./js/task.js"></script>
+    <script src="./js/addDummyDate.js"></script>
+    <script type="module" src="./js/guest.js"></script>
+</body>
+</html>

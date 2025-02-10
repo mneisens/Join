@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JOIN | Sign up</title>
+
+    <link rel="stylesheet" href="./style/style.css">
+    <link rel="stylesheet" href="./style/sign_up.css">
+    <link rel="stylesheet" href="./style/fonts.css">
+    <link rel="icon" href="./assets/img/join_logo.png">
+</head>
+
+<body onload="loadSignUp()">
+    <img class="signUpLogo" id="signUpLogo" src="/assets/img/join_logo.png" alt="Join Mobil Logo">
+
+    <div id="signUpContainer">
+        <div class="signUpContent">
+            <div class="headlineContainer">
+                <a href="log_in.html">
+                <img src="./assets/icon/back.png" class="signUpBackIcon"
+                    alt="back"></a>
+                <div class="headline">Sign up</div>
+            </div>
+            <div class="headlineBorder"></div>
+            <div class="formContainer">
+                <form id="signUpForm" onkeyup="renderSignUpBtn(); passwordIsCorrected()" onchange="renderSignUpBtn()">
+                    <div class="formInputContainer">
+                        <input required autocomplete="off" type="text" placeholder="Name" id="signUpNameInput" class="formInput">
+                        <img src="./assets/icon/person.png" alt="person" class="personIcon">
+                    </div>
+                    <div class="formInputContainer">
+                        <input required autocomplete="off" type="email" placeholder="Email" id="signUpMailInput" class="formInput">
+                        <img src="./assets/icon/mail.png" alt="mail" class="mailIcon">
+                    </div>
+                    <div class="formInputContainer">
+                        <input required autocomplete="off" onkeyup="changePasswordIcon()" type="password" placeholder="Password"
+                            id="signUpPasswordInput" class="formInput" pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}"
+                            title="Must contain at least one number and one uppercase and lowercase letter, and at least 8 or more characters">
+                        <img src="" onclick="showPassword()" id="passwordIcon" class="lockIcon">
+                    </div>
+                    <div class="formInputContainer">
+                        <input required autocomplete="off" onkeyup="changeConfirmPasswordIcon()" type="password"
+                            placeholder="Confirm Password" id="signUpConfirmPasswordInput" class="formInput">
+                        <img src="" onclick="showConfirmPassword()" id="confirmPasswordIcon" class="lockIcon">
+                    </div>
+                    <div class="formMessageContainer">
+                        <div class="formMessage" id="signUpMessageBox"></div>
+                    </div>
+                    <div class="formCheckboxContainer">
+                        <input required type="checkbox" name="Remember me" id="signUpCheckBox" class="formCheckbox">
+                        <label class="signUpCheckBoxLabel">I accept the <a href="privacy_policy.html"
+                                target="_blank">Privacy Policy</a></label>
+                    </div>
+                    <button type="submit" class="signUpBtn" id="signUpBtn" disabled>Sign up</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div id="signedUpContainer" class="signedUpContainer">
+        <button class="signedUpBtn" id="signedUpBtn">You Signed Up successfully</button>
+    </div>
+
+    <footer>
+        <a href="privacy_policy.html" target="_blank">Privacy Policy</a>
+        <a href="legal_notice.html" target="_blank">Legal Notice</a>
+    </footer>
+
+    <script src="./js/script.js"></script>
+    <script src="./js/signUp.js"></script>
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-app.js";
+        import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-firestore.js";
+        import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-auth.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyBrslTwOvrS4_tnF6uODjT1KQuWR4ttzFY",
+            authDomain: "join193-5ae20.firebaseapp.com",
+            databaseURL: "https://join193-5ae20-default-rtdb.europe-west1.firebasedatabase.app/",
+            projectId: "join193-5ae20",
+            storageBucket: "join193-5ae20.appspot.com",
+            messagingSenderId: "330884835484",
+            appId: "1:330884835484:web:20d71dc457ab9659d0a559"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore();
+        const auth = getAuth(app);
+
+        let signUpNameInput = document.getElementById('signUpNameInput');
+        let signUpMailInput = document.getElementById('signUpMailInput');
+        let signUpPasswordInput = document.getElementById('signUpPasswordInput');
+        let signUpConfirmPasswordInput = document.getElementById('signUpConfirmPasswordInput');
+        let signUpForm = document.getElementById('signUpForm');
+
+        let RegisterUser = evt => {
+            evt.preventDefault();
+
+            if (!emailValidation()) {
+                wrongPassword();
+                return;
+            }
+
+            signedUpSuccessfully();
+
+            createUserWithEmailAndPassword(auth, signUpMailInput.value, signUpPasswordInput.value)
+                .then(async (credentials) => {
+                    var ref = doc(db, "UserAuthList", credentials.user.uid);
+                    await setDoc(ref, {
+                        name: signUpNameInput.value,
+                        firstLogIn: true
+                    })
+                })
+                .catch((error) => {
+                    console.log(error.code);
+                    console.log(error.message);
+                })
+        }
+
+        function emailValidation() {
+            if (signUpPasswordInput.value !== signUpConfirmPasswordInput.value) {
+                return false;
+            } else {
+                return true;
+            }
+        }
+
+        signUpForm.addEventListener('submit', RegisterUser);
+    </script>
+</body>
+
+</html>

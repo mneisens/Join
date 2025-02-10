@@ -1,0 +1,241 @@
+/* Add Task Mobile */
+@media (max-width: 1400px) {
+    main {
+        flex-grow: 1;
+        overflow-y: auto;
+        margin-left: 232px;
+    }
+
+    .addedTasks{
+        max-height: 154px;
+    }
+
+    .form-btns{
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+    }
+
+    #optionsContainer{
+        box-sizing: border-box;
+        width: 100%;
+    }
+
+    .showContact{
+        margin-left: 0;
+    }
+
+    .main-addTask {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 100%;
+        max-height: 100%;
+    }
+
+    .head-addTask {
+        margin-top: 0;
+        margin-left: 0;
+        padding-top: 20px;
+        padding-left: 0!important;
+        font-size: 58px;
+        font-weight: 700;
+        position: sticky;
+        top: 0;
+        z-index: 1000;
+        padding-left: 0;
+        text-align: center;
+        width: 100%; 
+    }
+
+    .form-addTask {
+        box-sizing: border-box;
+        max-width: 600px;
+        width: 100%;
+        flex-direction: column;
+        padding: 0 16px;
+        margin-left: 0;
+        margin-right: 0;
+        margin-bottom: 120px;
+    }
+
+    .devider-addTask {
+        display: none;
+    }
+
+    .nav-desktop {
+        display: none;
+    }
+
+    .create-new-task{
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .mobile-nav {
+        background-color: rgba(42, 54, 71, 1);
+        height: 80px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        position: fixed;
+        bottom: 0;
+        width: 100%;
+    }
+
+    .mobile-nav a {
+        box-sizing: border-box;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        height: 76px;
+        width: 80px;
+        border-radius: 16px;
+        padding: 15px 0;
+        gap: 4px;
+        text-align: center;
+        text-decoration: none;
+        color: rgba(205, 205, 205, 1);
+    }
+
+    .mobile-nav a img {
+        height: 24px;
+        width: 24px;
+    }
+
+    .header {
+        height: 80px;
+    }
+
+    .nav-Login {
+        width: 40px;
+        height: 40px;
+    }
+
+    .font-label-form-addTask {
+        font-size: 16px;
+    }
+
+    .input-title-addTask {
+        height: 40px;
+        margin-bottom: 16px;
+    }
+
+    .input-title-addTask,
+    .textarea-addTask,
+    .assigned-addTask,
+    .date-addTask {
+        width: 100%;
+    }
+
+    .prio-addTask button {
+        width: 121px;
+        height: 41px;
+    }
+
+    .create-new-task {
+        flex-direction: column;
+        width: 100%;
+        gap: 10px;
+    }
+
+    .btn-clear-create {
+        margin-left: 0;
+    }
+
+    .btn-handle-bottom {
+        justify-content: center;
+        width: 100%;
+        position: static;
+
+    }
+
+    .btn-clear {
+        display: none;
+    }
+
+    .assigned-addTask {
+        width: 100%;
+    }
+
+    .left-side-addTask,
+    .right-side-addTask {
+        width: 100%;
+    }
+
+    .right-side-addTask {
+        margin-left: 0;
+    }
+
+    .left-side-addTask{
+        margin-right: 0;
+    }
+
+    .option {
+        width: 100%!important;
+    }
+}
+
+@media (max-width: 1200px) {
+    main {
+        margin-left: 0;
+        margin-bottom: 160px;
+    }
+
+    .head-addTask{
+        margin-left: 0;
+    }
+
+    .form-addTask{
+    margin-bottom: 0;
+    }
+}
+
+@media (max-width: 500px) {
+    .create-new-task {
+        gap: 10px;
+        flex-direction: column;
+    }
+
+    .header-title {
+        display: none;
+    }
+
+    .head-addTask {
+        font-size: 47px;
+    }
+}
+
+@media (max-width: 420px) {    
+    .prio-addTask button {
+        width: 110px;
+        height: 41px;
+        font-size: 18px;
+    }
+}
+
+@media (max-width: 380px) {    
+    .prio-addTask button {
+        width: 100px;
+        height: 41px;
+        font-size: 16px;
+    }
+    
+    .AddTaskBtnIcons {
+        width: 19px;
+    }
+
+    .head-addTask {
+        font-size: 36px;
+    }
+}
+
+@media (max-width: 350px) {    
+    .prio-addTask button {
+        width: 90px;
+        height: 41px;
+        font-size: 14px;
+    }
+}

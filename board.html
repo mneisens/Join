@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JOIN | Board</title>
+
+    <link rel="stylesheet" href="./style/fonts.css">
+    <link rel="stylesheet" href="./style/style.css">
+    <link rel="stylesheet" href="./style/board.css">
+    <link rel="stylesheet" href="./style/boardMediaQry.css">
+    <link rel="stylesheet" href="./style/summary.css">
+    <link rel="stylesheet" href="./style/summaryMobile.css">
+    <link rel="stylesheet" href="./style/taskSingleView.css">
+    <link rel="stylesheet" href="./style/board_addTask_main.css">
+    <link rel="stylesheet" href="./style/board_addTask.css">
+    <link rel="icon" href="./assets/img/join_logo.png">
+</head>
+
+<body onload="loadBoard()">
+    <div html-template="./templates/nav_template.html"></div>
+
+    <div id="taskBgDiv" onclick="if(event.target === this) hideTaskView()" class="task-bg-main"></div>
+
+    <div class="board-main-bg">
+
+        <div id="boardMobileDragNav" class="board-mobile-drag-nav">
+            <div id="touchDropTodo" class="board-m-d-n-drop-area"></div>
+            <div id="touchDropProgress" class="board-m-d-n-drop-area"></div>
+            <div id="touchDropFeedback" class="board-m-d-n-drop-area"></div>
+            <div id="touchDropDone" class="board-m-d-n-drop-area"></div>
+            <div class="dot"></div>
+        </div>
+        <div id="board-mobile-nav-txt" class="board-mobile-nav-txt">
+            <p>Todo</p>
+            <p>In Progress</p>
+            <p>Await Feedback</p>
+            <p>Done</p>
+        </div>
+
+
+        <div class="board-main-div">
+            <div class="board-header-main">
+                <div class="board-header-row1">
+                    <div class="board-h2">Board</div>
+                    <div class="board-mobile-btn-addTask" onclick="openAddTask('Todo')">
+                        <img src="./assets/symbols/add.svg" alt="plus symbol">
+                    </div>
+                </div>
+                <div class="board-header-row2">
+                    <div class="board-input-box-main">
+                        <div id="boardInputBoxMain" class="board-input-box">
+                            <input id="boardInputBox" type="text" placeholder="Find Task"
+                                onkeydown="boardSearchTasks()">
+                            <div class="boardSearchbarRight">
+                                <img src="./assets/symbols/search.svg" alt="magnifying glass">
+                            </div>
+
+                        </div>
+                        <div id="boardSearchNoTasksFound" class="board-input-box-not-found d-none">No tasks found.</div>
+                    </div>
+                    <div class="btn-board-add-task" onclick="openAddTask('Todo')">
+                        <p>Add task</p>
+                        <img src="./assets/symbols/add.svg" alt="plus symbol">
+                    </div>
+                </div>
+            </div>
+            <div class="board-content-main-header-background"></div>
+            <div class="board-content-main-div">
+                <!-- TODO CARDS -->
+                <div class="board-kanban-card-main" ondragover="allowDrop(event)" ondrop="boardDropElementTo('Todo')">
+                    <div class="board-kanban-header">
+                        <p>To do</p>
+                        <img onclick="openAddTask('Todo')" class="board-kanban-add-btn"
+                            src="./assets/symbols/plus button mobile.svg" alt="plus symbol">
+                    </div>
+                    <div id="boardCardsContainerTodo" class="board-cards-container">
+                    </div>
+                </div>
+                <!-- IN PROGRESS CARDS -->
+                <div on class="board-kanban-card-main" ondragover="allowDrop(event)"
+                    ondrop="boardDropElementTo('InProgress')">
+                    <div class="board-kanban-header">
+                        <p>In progress</p>
+                        <img onclick="openAddTask('InProgress')" class="board-kanban-add-btn"
+                            src="./assets/symbols/plus button mobile.svg" alt="plus symbol">
+                    </div>
+                    <div id="boardCardsContainerInProgress" class="board-cards-container">
+                    </div>
+                </div>
+                <!-- AWAIT FEEDBACK CARDS -->
+                <div class="board-kanban-card-main" ondragover="allowDrop(event, ['AwaitFeedback'])"
+                    ondrop="boardDropElementTo('AwaitFeedback')">
+                    <div class="board-kanban-header">
+                        <p>Await feedback</p>
+                        <img onclick="openAddTask('AwaitFeedback')" class="board-kanban-add-btn"
+                            src="./assets/symbols/plus button mobile.svg" alt="plus symbol">
+                    </div>
+                    <div id="boardCardsContainerAwaitFeedback" class="board-cards-container">
+                    </div>
+                </div>
+                <!-- DONE CARDS -->
+                <div class="board-kanban-card-main" ondragover="allowDrop(event)" ondrop="boardDropElementTo('Done')">
+                    <div class="board-kanban-header">
+                        <p>Done</p>
+                    </div>
+                    <div id="boardCardsContainerDone" class="board-cards-container">
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <!-- Add Addtask -->
+    <div id="boardAddTaskMainBg" class="board-addTask-main-bg d-none">
+        <div class="add-task-board" id="add-task-board">
+            <div id="addTaskBoardBorder" class="add-task-bord-border">
+                <main>
+                    <div class="form-btns">
+                        <div class="close-addTask" onclick="closeAddTask()"><img
+                                src="./assets/img/contacts/close_grey.png" alt=""></div>
+
+                        <div id="boardHeadAddTask" class="head-addTask">Add task</div>
+
+                        <form id="myForm" class="form-addTask">
+                            <div class="main-content">
+                                <div class="main-addTask">
+                                    <div class="left-side-addTask">
+                                        <label class="font-label-form-addTask">Title<span class="star">*</span></label>
+                                        <input type="text" id="input-title-addTask" class="input-title-addTask"
+                                            placeholder="Enter a title" required /><label
+                                            class="input-description-addtask font-label-form-addTask">Description</label>
+                                        <textarea id="textarea-addTask" class="textarea-addTask" cols="30" rows="10"
+                                            placeholder="Enter a Description"></textarea>
+                                        <label class="font-label-form-addTask">Assigned to</label>
+                                        <div id="assigned-addTask">
+                                            <div id="selectedCategory" class="assigned-addTask">Select Category <img
+                                                    id="selectedCategoryIcon"
+                                                    src="./assets/symbols/arrow_drop_downaa.svg" alt="arrow down"></div>
+                                            <div id="optionsContainer">
+                                                <div id="selectedAbbreviations" class="selectedAbbreviations"></div>
+                                                <!-- Options will be added here dynamically -->
+                                            </div>
+                                        </div>
+                                        <div id="showName" class="showName"></div>
+
+                                    </div>
+                                    <div class="devider-addTask"></div>
+                                    <div class="right-side-addTask">
+                                        <label class="font-label-form-addTask">Due date <span
+                                                class="star">*</span></label>
+                                        <input id="date-addTask" class="date-addTask" type="date" required />
+                                        <label class="font-label-form-addTask">Prio</label>
+                                        <div class="prio-addTask">
+                                            <button type="button" id="urgent">
+                                                Urgent
+                                                <img id="prio-up-orange"
+                                                    src="./assets/img/addTask/Priority_symbols_up.png" alt="" />
+                                                <img id="prio-up-white" class="d-none"
+                                                    src="./assets/img/addTask/Priority_symbols_up_white.png" alt="">
+                                            </button>
+                                            <button type="button" id="medium">
+                                                Medium
+                                                <img id="prio-medium-ye" src="./assets/img/addTask/Medium_yellow.png"
+                                                    alt="" />
+                                                <img id="prio-medium-white" class="d-none"
+                                                    src="./assets/img/addTask/Medium_white.png" alt="">
+                                            </button>
+                                            <button type="button" id="low">
+                                                Low
+                                                <img id="prio-down-green"
+                                                    src="./assets/img/addTask/Priority_symbols_down.png" alt="" />
+                                                <img id="prio-down-white" class="d-none"
+                                                    src="./assets/img/addTask/Priority_symbols_down_white.png" alt="">
+                                            </button>
+                                        </div>
+                                        <label class="font-label-form-addTask">Category<span
+                                                class="star">*</span></label>
+                                        <div class="board-addTask-selectWrapper">
+                                            <select id="category" class="assigned-addTask" required>
+                                                <option value="">Bitte wählen ...</option>
+                                                <option>Technical Task</option>
+                                                <option>User Story</option>
+                                            </select>
+                                        </div>
+
+                                        <label class="font-label-form-addTask">Subtasks</label>
+                                        <div class="input-subtask-img">
+                                            <div class="input-container">
+                                                <input type="text" id="input-title-addTasks"
+                                                    placeholder="Add a subtask">
+                                                <img onclick="addSubtask()" src="./assets/img/addTask/plus.png" alt="Add"
+                                                    class="add-subtask-icon">
+                                            </div>
+
+                                        </div>
+                                        <ul id="addedTasks" class="addedTasks">
+                                        </ul>
+                                    </div>
+                                </div>
+
+                                <div class="btn-handle-bottom">
+                                    <div class="create-new-task">
+                                        <span><span class="star">*</span>This field is required</span>
+                                        <div class="btn-clear-create">
+                                            <button type="button" id="clearButton" class="btn-clear"
+                                                onclick="clearInput()">Clear X</button>
+                                            <button type="submit" id="saveTasks" class="btn-create-task-desktop">Create
+                                                Task
+                                                <img src="./assets/img/addTask/check.png" alt="" /></button>
+                                            <button onclick="pushEditTaskToDatabase()" type="button" id="submitEditTask"
+                                                class="btn-create-task-desktop" style="display: none;">Ok
+                                                <img src="./assets/img/addTask/check.png" alt="" /></button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div id="added-to-board" class="added-to-board d-none">
+                                    <span>Task added to board</span><img src="./assets/img/addTask/added_to_board.png"
+                                        alt="" />
+                                </div>
+
+                            </div>
+                        </form>
+                </main>
+                <div id="contact-succesfully-created" class="contact-succesfully-created" style="display: none">
+                    Contact successfully created
+                </div>
+            </div>
+        </div>
+    </div>
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+        import { getFirestore } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyBrslTwOvrS4_tnF6uODjT1KQuWR4ttzFY",
+            authDomain: "join193-5ae20.firebaseapp.com",
+            databaseURL: "https://join193-5ae20-default-rtdb.europe-west1.firebasedatabase.app",
+            projectId: "join193-5ae20",
+            storageBucket: "join193-5ae20.appspot.com",
+            messagingSenderId: "330884835484",
+            appId: "1:330884835484:web:20d71dc457ab9659d0a559"
+        };
+
+        const app = initializeApp(firebaseConfig);
+
+        import { doc, setDoc, getDocs, deleteDoc, updateDoc, collection } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+        const db = getFirestore(app);
+
+        async function addTask() {
+            try {
+                const taskRef = collection(db, 'UserAuthList', userCreds.uid, 'addTasks');
+                const newDocRef = doc(taskRef);
+                const docID = newDocRef.id;
+                await setDoc(newDocRef,
+                    {
+                        taskId: docID,
+                        category: "User Story",
+                        header: "Kochwelt Page & Recipe Recommender",
+                        description: "Build start page with recipe recommendation.",
+                        dueDate: "10/05/2023",
+                        priority: "medium",
+                        assignedTo: [
+                            { bg: "#FFBB2B", name: "Emmanuel Mauer" },
+                            { bg: "#FF4646", name: "Marcel Bauer" },
+                            { bg: "#FFE62B", name: "Anton Mayer" },
+                        ],
+                        subtasks: [],
+                        kanbanCategory: "InProgress",
+                    }
+                );
+            } catch (error) {
+                console.log(error);
+            }
+        }
+
+        async function loadTasks() {
+            let dataArr = [];
+            try {
+                const contactRef = collection(db, 'UserAuthList', userCreds.uid, 'addTasks');
+                const querySnapshot = await getDocs(contactRef);
+
+                if (!querySnapshot.empty) {
+                    querySnapshot.forEach((doc) => {
+                        const data = doc.data();
+                        dataArr.push(data);
+                    });
+                    return dataArr;
+                } else {
+                    console.log("No Tasks found!");
+                    return dataArr;
+                }
+            } catch (error) {
+                console.log("Error getting documents:", error);
+                return dataArr;
+            }
+        }
+
+        async function updateTask(taskId, updatedData) {
+            try {
+                const docRef = doc(db, 'UserAuthList', userCreds.uid, 'addTasks', taskId);
+                await updateDoc(docRef, updatedData);
+
+            } catch (error) {
+                console.log("Error updating document:", error);
+            }
+        }
+
+        async function deleteTask(taskId) {
+            try {
+                const docRef = doc(db, 'UserAuthList', userCreds.uid, 'addTasks', taskId);
+                await deleteDoc(docRef);
+                hideTaskView();
+                await boardLoadTasksFromFirestore();
+            } catch (error) {
+                console.log("Error deleting document:", error);
+            }
+        }
+
+        window.addTask = addTask;
+        window.loadTasks = loadTasks;
+        window.updateTask = updateTask;
+        window.deleteTask = deleteTask;
+    </script>
+    <script src="https://www.gstatic.com/firebasejs/8.0.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.0.0/firebase-firestore.js"></script>
+    <script src="./js/htmltemplates/svgHtml.js"></script>
+    <script src="./js/htmltemplates/boardHtml.js"></script>
+    <script src="./js/script.js"></script>
+    <script src="./js/addTask_board.js"></script>
+    <script src="./js/addTask_board_main.js"></script>
+    <script src="./js/editTask_board.js"></script>
+    <script src="./js/board.js"></script>
+    <script src="./js/boardDragDrop.js"></script>
+    <script src="./js/boardTaskSingleView.js"></script>
+    <script src="./js/htmltemplates/addTask_board.js"></script>
+    <script src="./js/addDummyDate.js"></script>
+    <script type="module" src="./js/guest.js"></script>
+</body>
+
+</html>

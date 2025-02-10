@@ -1,0 +1,303 @@
+/*Responsive*/
+
+@media (max-width: 1340px) {
+  .showContactContent {
+    padding-left: 32px;
+  }
+}
+
+@media (max-width: 1300px) {
+  .showContactContent {
+    padding-left: 16pxpx;
+  }
+}
+
+@media (max-width: 1200px) {
+  #contactSuccesfullyBox {
+    left: 420px;
+    bottom: 100px;
+  }
+
+  .mainContact {
+    margin-left: 0;
+    height: calc(100vh - 160px);
+  }
+
+  .contactListContainer {
+    width: 400px;
+    margin-bottom: 80px;
+  }
+
+  .showContactContent {
+    padding-left: 61px;
+  }
+}
+
+@media (max-width: 1040px) {
+  #contactSuccesfullyBox {
+    left: 370px;
+    bottom: 100px;
+  }
+
+  .contactListContainer {
+    width: 350px;
+    overflow-x: hidden;
+  }
+
+  .newContactDesktopBtn {
+    width: 300px;
+  }
+
+  .myContactContainer {
+    width: 300px;
+  }
+
+  .letterSection {
+    width: 300px;
+  }
+
+  .showContactHeadline {
+    font-size: 51px;
+  }
+
+  .showContactHeadlineText {
+    font-size: 24px;
+  }
+
+  .showContactInfoName {
+    font-size: 42px;
+  }
+}
+
+@media (max-width: 930px) {
+  .showContactContent {
+    margin-top: 55px;
+    padding-left: 55px;
+  }
+
+  .showContactInfoHeaderLogoContainer {
+    margin-right: 20px;
+  }
+
+  .showContactHeadLineContainer {
+    flex-direction: column;
+    align-items: start;
+    justify-content: start;
+  }
+
+  .showContactHeadlineDistancerHorizontal {
+    display: none;
+  }
+
+  .showContactHeadlineText {
+    margin-top: 8px;
+    padding-right: 0;
+  }
+
+  .showContactHeadlineDistancerVertical {
+    display: flex;
+  }
+}
+
+@media (max-width: 830px) {
+  .showContactContent {
+    margin-top: 20px;
+    padding-left: 20px;
+  }
+
+  .showContactInfoName {
+    font-size: 32px;
+  }
+
+  .showContactHeadlineDistancerVertical {
+    margin-bottom: 24px;
+  }
+
+  .showContactInfoKontakt {
+    margin-top: 15px;
+  }
+
+  .showContactBackContainer {
+    top: 117.46px;
+  }
+}
+
+@media (max-width: 800px) {
+  .showContactHeadline {
+    font-size: 47px;
+    padding-right: 16px;
+  }
+
+  .showContactHeadlineText {
+    font-size: 20px;
+  }
+
+  .showContactInfoLogo {
+    width: 100px;
+    height: 100px;
+  }
+
+  .showContactInfoName {
+    margin-top: 0;
+  }
+}
+
+@media (max-width: 750px) {
+  #contactSuccesfullyBox {
+    left: 20px;
+    bottom: 100px;
+  }
+
+  .mainContact {
+    background-color: transparent;
+  }
+
+  .myContactContainer {
+    margin-top: 12px;
+    width: 100%;
+  }
+
+  .showContactContent {
+    display: none;
+    animation: slide-in-right 0.75s cubic-bezier(0.250, 0.460, 0.450, 0.940) both;
+  }
+
+  .showContactInfoContainer {
+    animation: none;
+  }
+
+  .showContactContainer {
+    display: none;
+  }
+
+  .contactListContainer {
+    width: 100%;
+    margin-left: 8px;
+    padding-right: 8px;
+    background-color: transparent;
+    animation: slide-in-left 0.75s cubic-bezier(0.250, 0.460, 0.450, 0.940) both;
+  }
+
+  .contactsListContainer {
+    width: 100%;
+  }
+
+  .letterSection {
+    width: 100%;
+  }
+
+  .newContactMobilBtn {
+    display: flex;
+    bottom: 112px;
+    right: 24px;
+  }
+
+  .newContactDesktopBtn {
+    display: none;
+    width: 100%;
+  }
+
+  .showContactInfoHeadline {
+    display: flex;
+    align-items: center;
+  }
+
+  .btnContainer {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: start;
+    border-radius: 20px 20px 0 20px;
+    padding: 10px;
+    width: 116px;
+    height: fit-content;
+    background-color: var(--bg-color-white);
+    border: none;
+    box-shadow: var(--btn-box-shadow);
+    z-index: 2;
+    margin-right: 12px;
+  }
+
+  .btnContainer button {
+    padding: 10px;
+    margin: 2px;
+  }
+
+  .showContactInfoBtnContainer {
+    display: none;
+    justify-content: end;
+    align-items: end;
+    position: absolute;
+    left: 0;
+    height: 100vh;
+    margin-top: 90px;
+    padding-bottom: 12px;
+    width: 100%;
+    z-index: 5;
+  }
+
+  .editBtn {
+    height: none;
+  }
+
+  .editIcon {
+    height: none;
+  }
+}
+
+@media (max-width: 380px) {
+  .newContactDesktopBtn {
+    width: 280px;
+  }
+
+  .myContactContainer {
+    width: 300px;
+  }
+
+  .letterSection {
+    width: 300px;
+  }
+
+  .showContactHeadline {
+    font-size: 36px;
+  }
+
+  .showContactHeadlineText {
+    font-size: 18px;
+  }
+
+  .showContactHeadlineDistancerVertical {
+    margin-bottom: 8px;
+}
+
+  .showContactInfoContainer {
+    margin-top: 8px;
+  }
+
+  .showContactInfoLogo {
+    width: 80px;
+    height: 80px;
+  }
+
+  .showContactInfoInitials {
+    font-size: 36px;
+  }
+
+  .showContactInfoName {
+    font-size: 32px;
+    width: 240px;
+  }
+
+  .showContactInformation {
+    height: 44px;
+    font-size: 18px;
+}
+
+  .showContactInfoBtnContainer {
+    margin-top: 104px;
+  }
+
+.btnContainer {
+  margin-right: 8px;
+}
+}

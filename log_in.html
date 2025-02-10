@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JOIN | Log in</title>
+
+    <link rel="stylesheet" href="./style/log_in.css">
+    <link rel="stylesheet" href="./style/style.css">
+    <link rel="stylesheet" href="./style/fonts.css">
+    <link rel="icon" href="./assets/img/join_logo.png" type="image/x-icon">
+</head>
+
+<body onload="loadStartScreen()">
+    <div class="startScreenContainer" id="startScreenContainer"></div>
+    <img id="startScreenLogo" class="startScreenLogo d-none" src="./assets/img/join_mobil_logo.png" alt="Join Mobil Logo">
+    <img id="startScreenLogoFixed" class="startScreenLogoFixed" src="./assets/img/join_logo.png" alt="Join Mobil Logo">
+
+    <div id="signUpContainer" class="signUpContainer">
+        <div class="signUpContent">
+            <p>Not a Join user?</p>
+            <button class="signUpBtn" onclick="location.href='./sign_up.html'">Sign up</button>
+        </div>
+    </div>
+
+    <div id="logInContainer">
+        <div id="logInContent" class="logInContent">
+            <div class="headline">Log in</div>
+            <div class="headlineBorder"></div>
+            <div class="formContainer">
+                <form id="logInForm" onkeyup="renderLogInBtn(); logInIsCorrected()">
+                    <div class="formInputContainer">
+                        <input required autocapitalize="off" type="email" placeholder="Email" id="logInMailInput" class="formInput">
+                        <img src="./assets/icon/mail.png" alt="mail" class="mailIcon">
+                    </div>
+                    <div class="formInputContainer">
+                        <input required autocomplete="off" onkeyup="changePasswordIcon()" type="password" placeholder="Password"
+                            id="logInPasswordInput" class="formInput">
+                        <img src="" onclick="showPassword()" id="passwordIcon" class="lockIcon">
+                    </div>
+                    <div class="formMessageContainer">
+                        <div class="formMessage" id="logInMessageBox"></div>
+                    </div>
+                    <div class="formCheckboxContainer">
+                        <input type="checkbox" name="Remember me" id="logInCheckBox" class="formCheckbox">
+                        <label class="logInCheckBoxLabel">Remember me</label>
+                    </div>
+                    <div class="logInBtnContainer">
+                        <button type="submit" class="logInBtn" id="logInBtn">Log in</button>
+                        <button class="logInGuestBtn" id="logInGuest">Guest Log in</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <a href="privacy_policy.html" target="_blank">Privacy Policy</a>
+        <a href="legal_notice.html" target="_blank">Legal Notice</a>
+    </footer>
+
+    <script src="./js/logIn.js"></script>
+    <script src="./js/script.js"></script>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-app.js";
+        import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-firestore.js";
+        import { getAuth, signInWithEmailAndPassword, signInAnonymously } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-auth.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyBrslTwOvrS4_tnF6uODjT1KQuWR4ttzFY",
+            authDomain: "join193-5ae20.firebaseapp.com",
+            databaseURL: "https://join193-5ae20-default-rtdb.europe-west1.firebasedatabase.app/",
+            projectId: "join193-5ae20",
+            storageBucket: "join193-5ae20.appspot.com",
+            messagingSenderId: "330884835484",
+            appId: "1:330884835484:web:20d71dc457ab9659d0a559"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore();
+        const auth = getAuth(app);
+
+        let logInMailInput = document.getElementById('logInMailInput');
+        let logInPasswordInput = document.getElementById('logInPasswordInput');
+        let logInForm = document.getElementById('logInForm');
+        let logInGuest = document.getElementById('logInGuest');
+
+        let SignInUser = evt => {
+            evt.preventDefault();
+
+            setLoginCookie(logInMailInput.value, logInPasswordInput.value);
+
+            signInWithEmailAndPassword(auth, logInMailInput.value, logInPasswordInput.value)
+                .then(async (credentials) => {
+                    var ref = doc(db, "UserAuthList", credentials.user.uid);
+                    const docSnap = await getDoc(ref);
+
+                    if (docSnap.exists()) {
+                        sessionStorage.setItem("user-info", JSON.stringify({
+                            name: docSnap.data().name,
+                            email: logInMailInput.value    
+                        }))
+                        sessionStorage.setItem("user-creds", JSON.stringify(credentials.user))
+                        sessionStorage.setItem("greet-Animation", JSON.stringify('animation'))
+                        window.location.href = "summary_user.html";
+                    }
+                })
+                .catch((error) => {
+                    logInFailed();
+                    console.log(error.code);
+                    console.log(error.message);
+                })
+        }
+
+        let GuestSignIn = evt => {
+            evt.preventDefault();
+
+            signInAnonymously(auth)
+                .then(async (credentials) => {
+                    var ref = doc(db, "UserAuthList", credentials.user.uid);
+                    const docSnap = await getDoc(ref);
+                    if(docSnap.exists()) {
+                    sessionStorage.setItem("user-info", JSON.stringify({
+                        name: docSnap.data().name || "Guest",
+                    }))
+                    sessionStorage.setItem("user-creds", JSON.stringify(credentials.user));
+                    window.location.href = "summary_user.html";
+                } else {
+                    await setDoc(ref, {
+                        name: "Guest",
+                        guestFirstLogIn: true
+                    });
+                    sessionStorage.setItem("user-info", JSON.stringify({name: "Guest"}));
+                    sessionStorage.setItem("user-creds", JSON.stringify(credentials.user));
+                    window.location.href = "summary_user.html";
+                }
+                })
+                .catch((error) => {
+                    console.log(error.code);
+                    console.log(error.message);
+                });
+        }
+
+        logInGuest.addEventListener('click', GuestSignIn);
+        logInForm.addEventListener('submit', SignInUser);
+    </script>
+</body>
+
+</html>

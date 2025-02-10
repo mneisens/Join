@@ -1,0 +1,56 @@
+<body>
+    <div class="headerNavTemplate">
+        <a href="summary_user.html"><img src="./assets/img/join_logo.png" alt="Join Logo" class="mobilLogo"></a>
+        <p class="headerHeadline" id="headerHeadline">Kanban Project Management Tool</p>
+
+        <div class="headerMenuContainer" id="headerMenuContainer">
+            <a href="./help.html" class="headerHelp"><img src="./assets/icon/help.png" alt=""></a>
+            <div class="circleBorder" onclick="showPopUpMenu()">
+                <div class="circleContent">
+                    <div id="firstInitial" class="circleContentInitial"></div>
+                    <div id="secondInitial" class="circleContentInitial"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="popUpMenuContainer" id="popUpMenuContainer" onclick="hidePopUpMenu()">
+        <div class="popUpMenu" id="popUpMenu">
+            <a href="./help.html" class="popUpHelp">Help</a>
+            <a href="./legal_notice.html">Legal Notice</a>
+            <a href="./privacy_policy.html">Privacy Policy</a>
+            <a href="#" id="signOutBtn" onclick="handelLogOut()">Log out</a>
+        </div>
+    </div>
+
+    <div class="menuNavTemplate" id="menuNavTemplate">
+        <div class="desktopLogoContainer">
+            <a href="summary_user.html"><img src="./assets/img/join_mobil_logo.png" alt="Join Logo"
+                    class="desktopLogo"></a>
+        </div>
+        <div id="navTemplate" class="">
+            <a class="btnNavTemplate" id="btnNavTemplate1" href="./summary_user.html">
+                <img class="summaryIconNavTemplate" src="./assets/icon/summary_menu.png" alt="Summary user">
+                <p class="labelNavTemplate">Summary</p>
+            </a>
+            <a class="btnNavTemplate" id="btnNavTemplate2" href="./board.html">
+                <img class="boardIconNavTemplate" src="./assets/icon/board_menu.png" alt="Board">
+                <p class="labelNavTemplate">Board</p>
+            </a>
+            <a class="btnNavTemplate" id="btnNavTemplate3" href="./add_task.html">
+                <img class="addTasksIconNavTemplate" src="./assets/icon/add_task_menu.png" alt="Add tasks">
+                <p class="labelNavTemplate">Add Tasks</p>
+            </a>
+            <a class="btnNavTemplate" id="btnNavTemplate4" href="./contacts.html">
+                <img class="contactsIconNavTemplate" src="./assets/icon/contacts_menu.png" alt="Contacts">
+                <p class="labelNavTemplate">Contacts</p>
+            </a>
+        </div>
+        <div class="policyContainer" id="policyContainer">
+            <a href="./legal_notice.html" id="btnNavTemplate5" class="policyContainerLink">Legal Notice</a>
+            <a href="./privacy_policy.html" id="btnNavTemplate6" class="policyContainerLink">Privacy Policy</a>
+        </div>
+    </div>
+
+    <script src="./js/script.js"></script>
+</body>
