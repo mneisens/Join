@@ -159,14 +159,60 @@ function returnHtmlBoardTaskSingleView(task, taskConfig) {
  * @param {number} i - Index of the subtask in the list, used to uniquely identify elements.
  * @returns {string} HTML string for a subtask item.
  */
-function returnHtmlBoardSubtask(subtask, subtasksConfig, i) {
+// function returnHtmlBoardSubtask(subtask, subtasksConfig, i) {
+//   return `
+//     <div class="task-subtask">
+//       <img id="taskSubtask${i}" onclick="boardClickSubtask(${i}, '${subtasksConfig.parentTaskId}')" src="${subtasksConfig.svgSrc}" alt="checkbutton">
+//       <p>${subtask.subtask}</p>
+//     </div>
+//     `;
+// }
+
+
+// function returnHtmlBoardSubtask(subtask, subtasksConfig, i) {
+//   const isChecked = subtask.done ? "checked" : "";
+//   const taskId = subtasksConfig.parentTaskId;
+//   return `
+//     <div class="task-subtask">
+//       <img id="taskSubtask${i}" onclick="boardClickSubtask(${i}, '${subtasksConfig.parentTaskId}')" src="${subtasksConfig.svgSrc}" alt="checkbutton">
+//       <p>${subtask.subtask}</p>
+//     </div>
+//     `;
+// }
+
+
+// function returnHtmlBoardSubtask(subtask, config, index) {
+//   const isChecked = subtask.done ? "checked" : "";
+//   const taskId = config.parentTaskId;
+  
+//   return `
+//     <div class="board-task-single-subtask-row ${isChecked ? 'done' : ''}" data-task-id="${taskId}" data-subtask-index="${index}">
+//       <div class="board-task-single-subtask-checkbox" >
+//         <input type="checkbox" ${isChecked} class="subtask-checkbox" 
+//                onclick="boardClickSubtask('${taskId}', ${index})">
+//       </div>
+//       <div class="board-task-single-subtask-text">${subtask.subtask}</div>
+//     </div>
+//   `;
+// }
+
+function returnHtmlBoardSubtask(subtask, config, index) {
+  // Wähle das richtige Bild abhängig vom Status
+  const checkboxImg = subtask.done ? 
+    "/assets/symbols/Property 1=checked.svg" : 
+    "/assets/symbols/Property 1=Default.svg";
+  
   return `
-    <div class="task-subtask">
-      <img id="taskSubtask${i}" onclick="boardClickSubtask(${i}, '${subtasksConfig.parentTaskId}')" src="${subtasksConfig.svgSrc}" alt="checkbutton">
-      <p>${subtask.subtask}</p>
+    <div class="board-task-single-subtask-row" style="display:flex; flex-direction:row; gap:10px" data-subtask-index="${index}" data-task-id="${config.parentTaskId}">
+      <div class="board-task-single-subtask-checkbox" onclick="boardClickSubtask('${config.parentTaskId}', ${index})">
+        <img src="${checkboxImg}" alt="checkbox">
+      </div>
+      <div class="board-task-single-subtask-text">${subtask.subtask}</div>
     </div>
-    `;
+  `;
 }
+
+
 
 /**
  * Generates HTML content for displaying assigned users' details in a task view.
@@ -188,3 +234,5 @@ function returnHtmlBoardAssignedLine(assignedTo, initials) {
     </div>
     `;
 }
+
+

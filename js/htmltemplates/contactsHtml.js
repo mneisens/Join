@@ -131,3 +131,34 @@ function createEditContactPopUp() {
     </div>
 </form>`;
 }
+
+
+/**
+ * Wird aufgerufen, wenn der Edit-Button geklickt wird
+ */
+window.editContactClicked = function(id, name, email, phone, color) {
+    console.log("editContactClicked aufgerufen mit:", id, name, email, phone, color);
+    
+    // Rufe die vorhandene editContact-Funktion auf
+    if (typeof editContact === 'function') {
+        editContact(id, name, email, phone, color);
+    } else {
+        console.error("Funktion editContact ist nicht definiert!");
+        alert("Die Bearbeitungsfunktion ist derzeit nicht verfügbar.");
+    }
+};
+
+/**
+ * Wird aufgerufen, wenn der Delete-Button geklickt wird
+ */
+window.deleteContactClicked = function(id, name, initials, color) {
+    console.log("deleteContactClicked aufgerufen mit:", id, name, initials, color);
+    
+    // Rufe die vorhandene showDeleteContactPopUp-Funktion auf
+    if (typeof showDeleteContactPopUp === 'function') {
+        showDeleteContactPopUp(id, name, initials, color);
+    } else {
+        console.error("Funktion showDeleteContactPopUp ist nicht definiert!");
+        alert("Die Löschfunktion ist derzeit nicht verfügbar.");
+    }
+};

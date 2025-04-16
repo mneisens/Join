@@ -14,18 +14,36 @@ async function loadAddTasks() {
   /**
    * Firebase configuration object.
    */
-  const firebaseConfig = {
-    apiKey: "AIzaSyBrslTwOvrS4_tnF6uODjT1KQuWR4ttzFY",
-    authDomain: "join193-5ae20.firebaseapp.com",
-    databaseURL:
-      "https://join193-5ae20-default-rtdb.europe-west1.firebasedatabase.app",
-    projectId: "join193-5ae20",
-    storageBucket: "join193-5ae20.appspot.com",
-    messagingSenderId: "330884835484",
-    appId: "1:330884835484:web:20d71dc457ab9659d0a559",
-  };
-  
-  firebase.initializeApp(firebaseConfig);
+  // const firebaseConfig = {
+  //   apiKey: "AIzaSyBrslTwOvrS4_tnF6uODjT1KQuWR4ttzFY",
+  //   authDomain: "join193-5ae20.firebaseapp.com",
+  //   databaseURL:
+  //     "https://join193-5ae20-default-rtdb.europe-west1.firebasedatabase.app",
+  //   projectId: "join193-5ae20",
+  //   storageBucket: "join193-5ae20.appspot.com",
+  //   messagingSenderId: "330884835484",
+  //   appId: "1:330884835484:web:20d71dc457ab9659d0a559",
+  // };
+
+  // const firebaseConfig = {
+  //   apiKey: "AIzaSyAeIBUm7q40H52uDOsl19A6ecvv-NH3cHs",
+  //   authDomain: "join-62bad.firebaseapp.com",
+  //   databaseURL: "https://join-62bad-default-rtdb.firebaseio.com",
+  //   projectId: "join-62bad",
+  //   storageBucket: "join-62bad.firebasestorage.app",
+  //   messagingSenderId: "349761837323",
+  //   appId: "1:349761837323:web:970c5ea99cf750318a2a0e"
+  // };
+
+  // const firebaseConfig = {
+  //   apiKey: "AIzaSyACpY02drGC1U6QjS5_u1gGVVajUYSXjbE",
+  //   authDomain: "join2-14807.firebaseapp.com",
+  //   projectId: "join2-14807",
+  //   storageBucket: "join2-14807.firebasestorage.app",
+  //   messagingSenderId: "344947370774",
+  //   appId: "1:344947370774:web:ec768c001a344583383e37"
+  // };
+  // firebase.initializeApp(firebaseConfig);
   
   /**
    * Sets up event listeners for the document once the DOM is fully loaded.
@@ -148,7 +166,58 @@ async function loadAddTasks() {
    * @returns {Object} The form data object.
    */
   function collectFormData() {
-    return assembleData();
+    const titleInput = document.getElementById('input-title-addTask');
+    const descInput = document.getElementById('textarea-addTask');
+    const dateInput = document.getElementById('date-addTask');
+    const categorySelect = document.getElementById('category');
+    
+    // Priorität bestimmen
+    let priority = 'medium'; // Standard
+    const priorityButtons = ['urgent', 'medium', 'low'];
+    priorityButtons.forEach(btn => {
+      const button = document.getElementById(btn);
+      if (button && button.classList.contains('prio-btn-active')) {
+        priority = btn;
+      }
+    });
+    
+    // Kanban-Kategorie aus Formular-Datenattribut oder aktive Kategorie verwenden
+    const kanbanCategory = document.getElementById('boardAddTaskMainBg').dataset.category || 'Todo';
+    
+    // Subtasks sammeln
+    const subtasks = [];
+    const subtaskElements = document.querySelectorAll('#addedTasks .subtask-item');
+    subtaskElements.forEach(element => {
+      const checkbox = element.querySelector('input[type="checkbox"]');
+      const text = element.querySelector('span').textContent;
+      
+      subtasks.push({
+        subtask: text,
+        done: checkbox ? checkbox.checked : false
+      });
+    });
+    
+    // Zugewiesene Personen - hier muss Ihre spezifische Implementierung angepasst werden
+    // Dies ist nur ein Beispiel
+    const assignedTo = [];
+    const selectedPersons = document.querySelectorAll('#selectedAbbreviations .selected-person');
+    selectedPersons.forEach(element => {
+      assignedTo.push({
+        name: element.textContent,
+        color: element.style.backgroundColor
+      });
+    });
+    
+    return {
+      header: titleInput ? titleInput.value : '',
+      description: descInput ? descInput.value : '',
+      dueDate: dateInput ? dateInput.value : '',
+      priority: priority,
+      category: categorySelect ? categorySelect.value : 'User Story',
+      kanbanCategory: kanbanCategory,
+      subtasks: subtasks,
+      assignedTo: assignedTo
+    };
   }
   
   /**
@@ -168,41 +237,95 @@ async function loadAddTasks() {
   /**
    * Submits the contact form data to Firestore.
    */
-  function submitContact() {
-    let db = firebase.firestore();
-    let data = collectFormData();
-    let contactsCollection = db.collection("UserAuthList").doc(userCreds.uid).collection("addTasks");
-  
-    if (currentContactId) {
-      updateContact(contactsCollection, data);
-    } else {
-      addNewContact(contactsCollection, data);
+  async function submitContact() {
+    try {
+      const data = collectFormData();
+      console.log("Gesammelte Formulardaten:", data);
+      
+      // Formatiere die Daten für das Backend
+      const taskData = {
+        header: data.header,
+        description: data.description,
+        due_date: formatDateForBackend(data.dueDate), 
+        priority: data.priority,
+        category: data.category,
+        kanban_category: data.kanbanCategory || 'Todo',
+        assigned_to: formatAssignedToForBackend(data.assignedTo),
+        subtasks: data.subtasks || []
+      };
+      
+      console.log("Formatierte Task-Daten für Backend:", taskData);
+      
+      // Verwende die createTask-Funktion aus tasks-api.js
+      const newTask = await createTask(taskData);
+      console.log("Neue Task erstellt:", newTask);
+      
+      // Erfolg anzeigen
+      showSuccessMessage();
+      
+      // Board aktualisieren (vorhandene Funktion wiederverwenden)
+      addTaskToBoardWithoutLoadNew(newTask.id, formatTaskForFrontend(newTask));
+      
+      // Formular ausblenden
+      hideAddTaskBg();
+    } catch (error) {
+      console.error("Fehler beim Erstellen des Tasks:", error);
+      alert("Fehler beim Erstellen des Tasks: " + error.message);
     }
   }
-  
-  /**
-   * Updates an existing contact in Firestore.
-   * @param {firebase.firestore.CollectionReference} contactsCollection - The Firestore collection reference.
-   * @param {Object} data - The data to update in the contact document.
-   */
-  function updateContact(contactsCollection, data) {
-    contactsCollection.doc(currentContactId).set(data, { merge: true }).then(() => {
-        showSuccessMessage();
-      })
-      .catch((error) => console.error("Fehler beim Aktualisieren des Dokuments: ", error));
+
+  function formatDateForBackend(dateStr) {
+    if (!dateStr) return "";
+    
+    // Wenn das Datum bereits im Format DD/MM/YYYY ist
+    if (dateStr.includes("/")) return dateStr;
+    
+    // Konvertierung von YYYY-MM-DD zu DD/MM/YYYY
+    const [year, month, day] = dateStr.split("-");
+    return `${year}-${month}-${day}`; // Das Backend erwartet YYYY-MM-DD
+  }
+  function formatAssignedToForBackend(assignedTo) {
+    if (!Array.isArray(assignedTo)) return [];
+    
+    // Extrahiere nur die IDs der zugewiesenen Kontakte
+    return assignedTo.map(contact => {
+      // Wenn es ein Objekt mit ID ist
+      if (contact.id) {
+        const id = parseInt(contact.id, 10);
+        return isNaN(id) ? null : id;
+      }
+      // Wenn es eine direkte ID ist
+      if (typeof contact === 'number') {
+        return contact;
+      }
+      return null;
+    }).filter(id => id !== null); // Entferne ungültige IDs
   }
   
-  /**
-   * Adds a new contact to Firestore.
-   * @param {firebase.firestore.CollectionReference} contactsCollection - The Firestore collection reference.
-   * @param {Object} data - The data to add to the new contact document.
-   */
-  function addNewContact(contactsCollection, data) {
-    contactsCollection.add(data).then((docRef) => {
-        setTaskIdInDocument(contactsCollection, docRef.id, data);
-      })
-      .catch((error) => console.error("Fehler beim Hinzufügen des Dokuments: ", error));
-  }
+  
+  // /**
+  //  * Updates an existing contact in Firestore.
+  //  * @param {firebase.firestore.CollectionReference} contactsCollection - The Firestore collection reference.
+  //  * @param {Object} data - The data to update in the contact document.
+  //  */
+  // function updateContact(contactsCollection, data) {
+  //   contactsCollection.doc(currentContactId).set(data, { merge: true }).then(() => {
+  //       showSuccessMessage();
+  //     })
+  //     .catch((error) => console.error("Fehler beim Aktualisieren des Dokuments: ", error));
+  // }
+  
+  // /**
+  //  * Adds a new contact to Firestore.
+  //  * @param {firebase.firestore.CollectionReference} contactsCollection - The Firestore collection reference.
+  //  * @param {Object} data - The data to add to the new contact document.
+  //  */
+  // function addNewContact(contactsCollection, data) {
+  //   contactsCollection.add(data).then((docRef) => {
+  //       setTaskIdInDocument(contactsCollection, docRef.id, data);
+  //     })
+  //     .catch((error) => console.error("Fehler beim Hinzufügen des Dokuments: ", error));
+  // }
   
   /**
    * Sets the task ID in the newly added contact document.
@@ -210,20 +333,31 @@ async function loadAddTasks() {
    * @param {string} taskId - The ID of the newly added contact document.
    * @param {Object} data - The data to add to the new contact document.
    */
-  function setTaskIdInDocument(contactsCollection, taskId, data) {
-    contactsCollection.doc(taskId).set({ taskId: taskId }, { merge: true }).then(() => {
-        showSuccessMessage();
-        addTaskToBoardWithoutLoadNew(taskId, data);
-        hideAddTaskBg();
-      })
-      .catch((error) => console.error("Fehler beim Aktualisieren der ID des Dokuments: ", error));
-  }
+  // function setTaskIdInDocument(contactsCollection, taskId, data) {
+  //   contactsCollection.doc(taskId).set({ taskId: taskId }, { merge: true }).then(() => {
+  //       showSuccessMessage();
+  //       addTaskToBoardWithoutLoadNew(taskId, data);
+  //       hideAddTaskBg();
+  //     })
+  //     .catch((error) => console.error("Fehler beim Aktualisieren der ID des Dokuments: ", error));
+  // }
   
   
-  function showSuccessMessage() {
-    let successContainer = document.getElementById("contact-succesfully-created");
+/**
+ * Zeigt eine Erfolgsmeldung an
+ */
+function showSuccessMessage(message) {
+  const successContainer = document.getElementById("contact-succesfully-created");
+  if (successContainer) {
+    successContainer.textContent = message || "Task erfolgreich aktualisiert";
     successContainer.style.display = "flex";
+    
+    // Nach 2 Sekunden ausblenden
+    setTimeout(() => {
+      successContainer.style.display = "none";
+    }, 2000);
   }
+}
   
   /**
    * This function used to refresh the boardTask Array needed for later use, cause the board.html will not
@@ -232,21 +366,41 @@ async function loadAddTasks() {
    * @param {string} id - the id of document in firebase wich was created before
    * @param {JSON} task - the current added task as a json
    */
-  function addTaskToBoardWithoutLoadNew(id, task) {
-    Object.assign(task, { taskId: `${id}` });
-    const taskConfig = returnConfigBoardCardHtml(task);
-    let category = task.kanbanCategory;
-  
-    let sortetTasks = boardTasks.filter((b) => b["kanbanCategory"] == category);
-    if (sortetTasks.length === 0) {
-      hideNoTasksToDoBox(category);
-    }
-  
-    let htmlAssignedTo = renderHtmlBoardPreviewCardProfileBadge(task);
-    document.getElementById(`boardCardsContainer${category}`).innerHTML +=
-      returnHtmlBoardTaskPreviewCard(task, taskConfig, htmlAssignedTo);
-    boardTasks.push(task);
+/**
+ * Fügt einen neuen Task zum Board hinzu, ohne die Seite neu zu laden
+ * @param {string} id - die ID des erstellten Tasks
+ * @param {Object} task - der erstellte Task
+ */
+function addTaskToBoardWithoutLoadNew(id, task) {
+  // Stelle sicher, dass die taskId gesetzt ist
+  if (!task.taskId) {
+    task.taskId = id;
   }
+  
+  const taskConfig = returnConfigBoardCardHtml(task);
+  const category = task.kanbanCategory;
+  
+  // Prüfe, ob eine "Keine Tasks"-Box existiert und verstecke sie ggf.
+  try {
+    const container = document.getElementById(`boardCardsContainer${category}`);
+    const noTasksBox = container.querySelector('.board-no-tasks-toDo-box');
+    if (noTasksBox) {
+      noTasksBox.classList.add('d-none');
+    }
+  } catch (error) {
+    console.warn("Konnte Keine-Tasks-Box nicht finden:", error);
+  }
+  
+  // Generiere HTML für zugewiesene Kontakte
+  let htmlAssignedTo = renderHtmlBoardPreviewCardProfileBadge(task);
+  
+  // Füge Task zum entsprechenden Container hinzu
+  document.getElementById(`boardCardsContainer${category}`).innerHTML +=
+    returnHtmlBoardTaskPreviewCard(task, taskConfig, htmlAssignedTo);
+  
+  // Füge Task zum boardTasks-Array hinzu für spätere Verwendung
+  boardTasks.push(task);
+}
   
   /**
    * This function used to hide the addTask window.
@@ -381,15 +535,73 @@ async function loadAddTasks() {
   /**
    * Loads categories from Firestore and creates options in the container.
    */
-  function loadCategories() {
-    let db = firebase.firestore();
-    let optionsContainer = document.getElementById("optionsContainer");
-    optionsContainer.innerHTML = "";
-    db.collection("UserAuthList") .doc(userCreds.uid).collection("contacts").orderBy("name").get().then((querySnapshot) => {
-        querySnapshot.forEach((doc) => createCategoryOption(doc.data(), optionsContainer));
-      }).catch((error) => console.error("Error getting documents: ", error));
+  async function loadCategories() {
+    try {
+      console.log("Lade Kontakte vom Backend...");
+      let optionsContainer = document.getElementById("optionsContainer");
+      
+      if (!optionsContainer) {
+        console.error("Optionscontainer nicht gefunden!");
+        return;
+      }
+      
+      optionsContainer.innerHTML = ""; // Container leeren
+      
+      // Verwende die getContacts-Funktion aus api-service.js
+      const contacts = await getContacts();
+      console.log("Geladene Kontakte:", contacts);
+      
+      if (!contacts || contacts.length === 0) {
+        optionsContainer.innerHTML = '<div class="option">Keine Kontakte verfügbar</div>';
+        return;
+      }
+      
+      // Für jeden Kontakt eine Option erstellen
+      contacts.forEach(contact => {
+        // Bereite Kontaktdaten vor
+        const contactData = {
+          id: contact.id,
+          name: contact.name || "Unbekannt",
+          email: contact.email || "",
+          color: contact.color || getRandomColor(),
+          initials: contact.initials || getInitialsFromName(contact.name || "Unbekannt")
+        };
+        
+        createCategoryOption(contactData, optionsContainer);
+      });
+    } catch (error) {
+      console.error("Fehler beim Laden der Kontakte:", error);
+      let optionsContainer = document.getElementById("optionsContainer");
+      if (optionsContainer) {
+        optionsContainer.innerHTML = '<div class="option">Fehler beim Laden der Kontakte</div>';
+      }
+    }
   }
   
+  function getInitialsFromName(fullName) {
+    if (!fullName) return "??";
+    
+    const names = fullName.split(' ');
+    let firstInitial = names[0] ? names[0].charAt(0).toUpperCase() : '';
+    let secondInitial = '';
+    
+    if (names.length > 1) {
+      secondInitial = names[names.length - 1].charAt(0).toUpperCase();
+    }
+    
+    return firstInitial + secondInitial;
+  }
+  /**
+   * Erzeugt eine zufällige Farbe für Kontaktinitialen
+   * @returns {string} Eine zufällige Farbe als HEX-Code
+   */
+  function getRandomColor() {
+    const colors = [
+      "#FF7A00", "#FF5EB3", "#9327FF", "#00BEE8", "#1FD7C1", 
+      "#FF745E", "#FFA35E", "#FC71FF", "#FFC701", "#0038FF"
+    ];
+    return colors[Math.floor(Math.random() * colors.length)];
+  }
   /**
    * Creates a category option element and appends it to the container.
    * @param {Object} category - The category data.

@@ -10,26 +10,144 @@ let touchDropCategory;
 let touchAllowDropEnoughtWaiting = false;
 let touchAllowDrop = false;
 
-let checkCred = () => {
-  if (!sessionStorage.getItem("user-creds")) {
-    window.location.href = "log_in.html";
-  }
-};
+// let checkCred = () => {
+//   if (!sessionStorage.getItem("user-creds")) {
+//     window.location.href = "log_in.html";
+//   }
+// };
 
-window.addEventListener("load", checkCred);
+// window.addEventListener("load", checkCred);
+
+// ===== HILFSFUNKTIONEN FÜR DATENFORMAT-KONVERTIERUNG =====
+
+/**
+ * Konvertiert das Backend-Format in das Frontend-Format
+ * @param {Object} task - Task aus dem Backend
+ * @returns {Object} - Task im Frontend-Format
+ */
+function formatTaskForFrontend(task) {
+  return {
+    taskId: task.id,
+    header: task.header || "",
+    description: task.description || "",
+    dueDate: formatDateFromBackend(task.due_date),
+    priority: task.priority || "low",
+    category: task.category || "User Story",
+    kanbanCategory: task.kanban_category || "Todo",
+    assignedTo: formatAssignedToForFrontend(task.assigned_to || []),
+    subtasks: task.subtasks || []
+  };
+}
+
+
+function formatSubtasksForFrontend(subtasks) {
+  if (!Array.isArray(subtasks)) return [];
+  
+  return subtasks.map(subtask => {
+    // Wenn subtask ein Objekt ist
+    if (typeof subtask === 'object' && subtask !== null) {
+      return {
+        subtask: subtask.subtask || subtask.title || "Unbenannte Aufgabe",
+        done: Boolean(subtask.done)
+      };
+    }
+    // Wenn subtask ein String ist
+    return {
+      subtask: String(subtask),
+      done: false
+    };
+  });
+}
+
+/**
+ * Formatiert das assigned_to-Feld für das Frontend
+ */
+function formatAssignedToForFrontend(assignedTo) {
+  if (!Array.isArray(assignedTo)) return [];
+  
+  return assignedTo.map(contact => {
+    if (typeof contact === 'object' && contact !== null) {
+      return {
+        name: contact.name || "Unbekannt",
+        color: contact.color || getRandomColor(),
+        initials: contact.initials || getInitialsFromName(contact.name || "Unbekannt")
+      };
+    } 
+    return {
+      name: "Kontakt " + contact,
+      color: getRandomColor(),
+      initials: "?"
+    };
+  });
+}
+/**
+ * Konvertiert ein Datum vom Backend-Format (YYYY-MM-DD) ins Frontend-Format (DD/MM/YYYY)
+ */
+function formatDateFromBackend(dateStr) {
+  if (!dateStr) return "";
+  
+  const [year, month, day] = dateStr.split("-");
+  return `${day}/${month}/${year}`;
+}
+
+async function boardLoadTasksFromBackend() {
+  try {
+    console.log("Lade Tasks vom Backend...");
+    // Erste Option: Verwende den speziellen Board-Tasks Endpunkt
+    const response = await getBoardTasks();
+    console.log("Erhaltene Tasks:", response);
+    
+    // Konvertiere alle Tasks in das Frontend-Format
+    boardTasks = [];
+    
+    // Füge alle Tasks aus jeder Kategorie in das boardTasks-Array ein
+    if (response.Todo) {
+      boardTasks = boardTasks.concat(response.Todo.map(task => formatTaskForFrontend(task)));
+    }
+    if (response.InProgress) {
+      boardTasks = boardTasks.concat(response.InProgress.map(task => formatTaskForFrontend(task)));
+    }
+    if (response.AwaitFeedback) {
+      boardTasks = boardTasks.concat(response.AwaitFeedback.map(task => formatTaskForFrontend(task)));
+    }
+    if (response.Done) {
+      boardTasks = boardTasks.concat(response.Done.map(task => formatTaskForFrontend(task)));
+    }
+    
+    console.log("Formatierte Tasks für Frontend:", boardTasks);
+    loadBoardKanbanContainer(boardTasks);
+  } catch (error) {
+    console.error("Fehler beim Laden der Tasks:", error);
+    // Fallback: Versuche alle Tasks zu laden, wenn der spezielle Endpunkt nicht funktioniert
+    try {
+      const tasks = await getTasks();
+      boardTasks = tasks.map(task => formatTaskForFrontend(task));
+      loadBoardKanbanContainer(boardTasks);
+    } catch (fallbackError) {
+      console.error("Auch der Fallback für das Laden der Tasks ist fehlgeschlagen:", fallbackError);
+    }
+  }
+}
 
 /**
  * This function iniciate the board and all neede settings.
  */
 async function loadBoard() {
-  await includeHTML();
-  createUserInitials();
-  activeLink(2, window.location.href);
-  await loadTasks();
-  await boardLoadTasksFromFirestore();
-  boardKanbanAddEventListener();
+  try {
+    console.log("Board wird geladen...");
+    await includeHTML();
+    createUserInitials();
+    activeLink(2, window.location.href);
+    
+    // Hier statt Firebase die Backend-API verwenden
+    await boardLoadTasksFromBackend();
+    
+    boardKanbanAddEventListener();
+    console.log("Board erfolgreich geladen");
+  } catch (error) {
+    console.error("Fehler beim Laden des Boards:", error);
+  }
 }
-
 /**
  * This function will render all kanban categories.
  *
@@ -267,18 +385,55 @@ function handleError(error) {
   console.error("Error: ", error);
 }
 
-/**
- * It will return the task your looking for right by the firebase task id.
- *
- * @param {string} id - The id of the document in firebase database.
- * @returns - json containig the task
- */
 function boardGetTaskById(id) {
-  for (z = 0; z < boardTasks.length; z++) {
-    if (boardTasks[z].taskId == id) {
-      return boardTasks[z];
+  console.log("Suche Task mit ID:", id, "Typ:", typeof id);
+  console.log("Verfügbare Tasks:", boardTasks);
+  
+  // Fallback für alte Implementierung (numerische IDs)
+  if (!id && id !== 0) {
+    console.error("Ungültige Task-ID:", id);
+    return null;
+  }
+  
+  // ID in String umwandeln für sicheren Vergleich
+  const searchId = String(id);
+  
+  // Suche in boardTasks
+  for (let i = 0; i < boardTasks.length; i++) {
+    const task = boardTasks[i];
+    // Vergleiche die ID als String
+    if (String(task.taskId) === searchId || String(task.id) === searchId) {
+      console.log("Task gefunden:", task);
+      return task;
     }
   }
+  
+  console.error(`Task mit ID ${id} konnte nicht gefunden werden!`);
+  console.log("Verfügbare Task-IDs:", boardTasks.map(t => `${t.taskId || t.id} (${typeof (t.taskId || t.id)})`));
+  return null;
+}
+
+function debugTaskStructure() {
+  console.log("=== Task-Struktur Debugging ===");
+  console.log(`Anzahl Tasks: ${boardTasks.length}`);
+  
+  if (boardTasks.length > 0) {
+    const sampleTask = boardTasks[0];
+    console.log("Beispiel-Task Struktur:", JSON.stringify(sampleTask, null, 2));
+    console.log("ID-Typ:", typeof sampleTask.taskId || typeof sampleTask.id);
+    console.log("ID-Wert:", sampleTask.taskId || sampleTask.id);
+  }
+  
+  // Liste aller verfügbaren Task-IDs
+  const taskIds = boardTasks.map(task => {
+    return {
+      id: task.taskId || task.id,
+      type: typeof (task.taskId || task.id)
+    };
+  });
+  
+  console.log("Alle Task-IDs:", taskIds);
+  console.log("=== Ende Task-Struktur Debugging ===");
 }
 
 /**
@@ -309,4 +464,13 @@ function getBoardKanCategoryBeforeAfter(kanbanCategory) {
       break;
   }
   return returnCategories;
+}
+
+
+function getRandomColor() {
+  const colors = [
+    "#FF7A00", "#FF5EB3", "#9327FF", "#00BEE8", "#1FD7C1", 
+    "#FF745E", "#FFA35E", "#FC71FF", "#FFC701", "#0038FF"
+  ];
+  return colors[Math.floor(Math.random() * colors.length)];
 }

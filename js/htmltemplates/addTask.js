@@ -122,22 +122,70 @@ function hideOptionsContainer(event, optionsContainer, assignedAddTaskButton) {
  * Sets up the assigned task button to toggle the options container.
  */
 function setupAssignedTaskButton() {
-    let assignedAddTaskButton = document.getElementById('assigned-addTask');
-    let optionsContainer = document.getElementById('optionsContainer');
-    assignedAddTaskButton.addEventListener('click', event => toggleOptionsContainer(event, optionsContainer));
-    document.addEventListener('click', event => hideOptionsContainer(event, optionsContainer, assignedAddTaskButton));
-    optionsContainer.addEventListener('click', event => event.stopPropagation());
+    const selectedCategory = document.getElementById('selectedCategory');
+    const optionsContainer = document.getElementById('optionsContainer');
+    
+    if (!selectedCategory || !optionsContainer) {
+        console.error("Erforderliche Elemente nicht gefunden!");
+        return;
+    }
+    
+    console.log("Event-Listener für selectedCategory hinzufügen");
+    selectedCategory.addEventListener('click', function(event) {
+        event.stopPropagation();
+        const isDisplayed = optionsContainer.style.display === 'block';
+        optionsContainer.style.display = isDisplayed ? 'none' : 'block';
+        console.log("Options-Container umgeschaltet:", !isDisplayed);
+        
+        if (!isDisplayed) {
+            // Falls keine Kontakte angezeigt werden, lade sie neu
+            if (optionsContainer.children.length < 2) {
+                loadCategories();
+            }
+        }
+    });
+    
+    // Schließe den Container, wenn außerhalb geklickt wird
+    document.addEventListener('click', function(event) {
+        if (event.target !== selectedCategory && !optionsContainer.contains(event.target)) {
+            optionsContainer.style.display = 'none';
+        }
+    });
 }
 
 /**
  * Sets up the assigned task button to toggle the options container.
  */
 function setupAssignedTaskButton() {
-    let assignedAddTaskButton = document.getElementById('assigned-addTask');
-    let optionsContainer = document.getElementById('optionsContainer');
-    assignedAddTaskButton.addEventListener('click', event => toggleOptionsContainer(event, optionsContainer));
-    document.addEventListener('click', event => hideOptionsContainer(event, optionsContainer, assignedAddTaskButton));
-    optionsContainer.addEventListener('click', event => event.stopPropagation());
+    const selectedCategory = document.getElementById('selectedCategory');
+    const optionsContainer = document.getElementById('optionsContainer');
+    
+    if (!selectedCategory || !optionsContainer) {
+        console.error("Erforderliche Elemente nicht gefunden!");
+        return;
+    }
+    
+    console.log("Event-Listener für selectedCategory hinzufügen");
+    selectedCategory.addEventListener('click', function(event) {
+        event.stopPropagation();
+        const isDisplayed = optionsContainer.style.display === 'block';
+        optionsContainer.style.display = isDisplayed ? 'none' : 'block';
+        console.log("Options-Container umgeschaltet:", !isDisplayed);
+        
+        if (!isDisplayed) {
+            // Falls keine Kontakte angezeigt werden, lade sie neu
+            if (optionsContainer.children.length < 2) {
+                loadCategories();
+            }
+        }
+    });
+    
+    // Schließe den Container, wenn außerhalb geklickt wird
+    document.addEventListener('click', function(event) {
+        if (event.target !== selectedCategory && !optionsContainer.contains(event.target)) {
+            optionsContainer.style.display = 'none';
+        }
+    });
 }
 
 

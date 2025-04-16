@@ -190,16 +190,16 @@
             }
         }
 
-        async function updateFirstLogIn() {
-            try {
-                const userRef = doc(db, 'UserAuthList', userCreds.uid);
-                await updateDoc(userRef, {
-                    firstLogIn: false
-                });
-            } catch (error) {
-                console.log(error);
-            }
-        }
+        // async function updateFirstLogIn() {
+        //     try {
+        //         const userRef = doc(db, 'UserAuthList', userCreds.uid);
+        //         await updateDoc(userRef, {
+        //             firstLogIn: false
+        //         });
+        //     } catch (error) {
+        //         console.log(error);
+        //     }
+        // }
 
         async function updateAccountData() {
             try {
@@ -213,44 +213,51 @@
             }
         }
 
-        async function checkGuestLogIn() {
-            try {
-                const ref = doc(db, "UserAuthList", userCreds.uid);
-                const docSnap = await getDoc(ref);
-                if (docSnap.exists() && docSnap.data().guestFirstLogIn === true) {
-                        loadDummyJsons();
-                        updateGuestFirstLogIn();
-                }
-            } catch (error) {
-                console.log("Error checking firstLogIn:", error);
-            }
-        }
+        // async function checkGuestLogIn() {
+        //     try {
+        //         const ref = doc(db, "UserAuthList", userCreds.uid);
+        //         const docSnap = await getDoc(ref);
+        //         if (docSnap.exists() && docSnap.data().guestFirstLogIn === true) {
+        //                 loadDummyJsons();
+        //                 updateGuestFirstLogIn();
+        //         }
+        //     } catch (error) {
+        //         console.log("Error checking firstLogIn:", error);
+        //     }
+        // }
 
-        async function updateGuestFirstLogIn() {
-            try {
-                const userRef = doc(db, 'UserAuthList', userCreds.uid);
-                await updateDoc(userRef, {
-                    guestFirstLogIn: false
-                });
-            } catch (error) {
-                console.log(error);
-            }
-        }
+        // async function updateGuestFirstLogIn() {
+        //     try {
+        //         const userRef = doc(db, 'UserAuthList', userCreds.uid);
+        //         await updateDoc(userRef, {
+        //             guestFirstLogIn: false
+        //         });
+        //     } catch (error) {
+        //         console.log(error);
+        //     }
+        // }
 
-        window.updateGuestFirstLogIn = updateGuestFirstLogIn;
-        window.checkGuestLogIn = checkGuestLogIn;
+        // window.updateGuestFirstLogIn = updateGuestFirstLogIn;
+        // window.checkGuestLogIn = checkGuestLogIn;
         window.updateAccountData = updateAccountData;
-        window.updateFirstLogIn = updateFirstLogIn;
+        // window.updateFirstLogIn = updateFirstLogIn;
         window.addMyContact = addMyContact;
-        window.checkFirstLogIn = checkFirstLogIn;
+        // window.checkFirstLogIn = checkFirstLogIn;
         window.loadTasks = loadTasks;
     </script>
 
-    <script src="./js/htmltemplates/svgHtml.js"></script>
+
+<script src="./js/api-service.js"></script>
+<script src="./js/tasks-api.js"></script>
+<script src="./js/board-api.js"></script>
+<script src="./js/htmltemplates/svgHtml.js"></script>
+<script src="./js/script.js"></script>
+<script src="./js/summaryUser.js"></script>
+    <!-- <script src="./js/htmltemplates/svgHtml.js"></script>
     <script src="./js/script.js"></script>
     <script src="./js/summaryUser.js"></script>
-    <script src="./js/addDummyDate.js"></script>
-    <script type="module" src="./js/guest.js"></script>
+    <script src="./js/addDummyDate.js"></script>-->
+    <script type="module" src="./js/guest.js"></script> 
 </body>
 
 </html>

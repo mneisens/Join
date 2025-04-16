@@ -186,10 +186,27 @@ function allowDrop(ev) {
  * @param {string} category - The category, wich will be the new of the dragged task.
  */
 async function boardDropElementTo(category) {
-  let draggedTask = boardGetTaskById(boardDraggedElementId);
-  draggedTask.kanbanCategory = category;
-  await updateTask(boardDraggedElementId, draggedTask);
-  await loadTasks();
+  try {
+    if (!boardDraggedElementId) {
+      console.warn("Keine Task-ID zum Verschieben vorhanden");
+      return;
+    }
+    
+    console.log(`Task ${boardDraggedElementId} wird nach ${category} verschoben...`);
+    
+    // API-Aufruf zum Aktualisieren der Kategorie
+    await updateTaskCategory(boardDraggedElementId, category);
+    
+    // Board neu laden
+    await boardLoadTasksFromBackend();
+    
+    // Drag & Drop-Status zurücksetzen
+    boardSetMaxHeight();
+    boardDragIsStarted = false;
+    boardDraggedElementId = null;
+  } catch (error) {
+    console.error("Fehler beim Aktualisieren der Task-Kategorie:", error);
+  }
 }
 
 function boardOnDragEnd(){

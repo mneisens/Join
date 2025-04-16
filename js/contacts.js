@@ -8,6 +8,9 @@ async function loadContact() {
     handelContactScreenResult();
 }
 
+
+
+
 let checkCred = () => {
     if (!sessionStorage.getItem("user-creds")) {
         window.location.href = 'log_in.html';
@@ -246,9 +249,13 @@ function renderCalendarContacts(contacts) {
         title.className = "letterTitle";
         title.textContent = letter;
         section.appendChild(title);
+        
         groupedContacts[letter].forEach(contact => {
-            section.appendChild(renderContacts(contact));
+            // Wichtig: Das zurückgegebene Element muss zum DOM hinzugefügt werden
+            const contactElement = renderContacts(contact);
+            section.appendChild(contactElement);
         });
+        
         contactsListContainer.appendChild(section);
     });
 }
@@ -278,11 +285,23 @@ let showContactPhone = document.getElementById('showContactPhone');
 /**
  * Handle the Info Contact side if the window is smaller then 750px
  */
-function handelShowContactInfo(array) {
+function handelShowContactInfo(contact) {
+    console.log("Zeige Kontaktdetails an:", contact);
+    
+    // Debugging-Meldungen hinzufügen
+    if (!contact) {
+        console.error("Kein Kontakt zum Anzeigen übergeben!");
+        return;
+    }
+    
+    if (!contact.id) {
+        console.error("Kontakt hat keine ID:", contact);
+    }
+    
     if (window.innerWidth <= 750) {
-        showContactInfoMobil(array);
+        showContactInfoMobil(contact);
     } else {
-        showContactInfos(array);
+        showContactInfos(contact);
     }
 }
 
@@ -335,25 +354,53 @@ let showContactContent = document.getElementById('showContactContent');
 /**
  * Show the Contact Informations in mobile view
  */
-function showContactInfoMobil(array) {
+function showContactInfoMobil(contact) {
+    console.log("showContactInfoMobil aufgerufen mit:", contact);
+    
+    let contactListContainer = document.getElementById('contactListContainer');
+    let newContactMobilBtn = document.getElementById('newContactMobilBtn');
+    let newContactInfoMobilBtn = document.getElementById('newContactInfoMobilBtn');
+    let showContactContainer = document.getElementById('showContactContainer');
+    let showContactContent = document.getElementById('showContactContent');
+    let showContactBackContainer = document.getElementById('showContactBackContainer');
+    let showContactInfoContentContainer = document.getElementById('showContactInfoContentContainer');
+    
+    if (!contactListContainer || !newContactMobilBtn || !newContactInfoMobilBtn || 
+        !showContactContainer || !showContactContent || !showContactBackContainer || 
+        !showContactInfoContentContainer) {
+        console.error("Ein oder mehrere UI-Elemente für showContactInfoMobil nicht gefunden");
+        return;
+    }
+    
     contactListContainer.classList.add('d-none');
     newContactMobilBtn.classList.add('d-none');
     newContactInfoMobilBtn.classList.remove('d-none');
     showContactContainer.style.display = 'flex';
     showContactContent.style.display = 'flex';
+    
     setTimeout(function () {
         showContactBackContainer.style.display = 'flex';
-    }, 750)
-    showContactInfoContentContainer.innerHTML = createContactsInfo(array);
-    checkContactId(array);
+    }, 750);
+    
+    showContactInfoContentContainer.innerHTML = createContactsInfo(contact);
+    checkContactId(contact);
 }
 
 /**
  * show the Contact Informations, of the one contact that is clicked
  */
-function showContactInfos(array) {
-    showContactInfoContentContainer.innerHTML = createContactsInfo(array);
-    checkContactId(array);
+function showContactInfos(contact) {
+    console.log("showContactInfos aufgerufen mit:", contact);
+    
+    let showContactInfoContentContainer = document.getElementById('showContactInfoContentContainer');
+    
+    if (!showContactInfoContentContainer) {
+        console.error("Container für Kontaktinformationen nicht gefunden");
+        return;
+    }
+    
+    showContactInfoContentContainer.innerHTML = createContactsInfo(contact);
+    checkContactId(contact);
 }
 
 /**
@@ -401,3 +448,205 @@ function closeEditOrDeletePopUp() {
 
 
 
+// Die Hauptfunktionen, die die Firebase-Funktionen ersetzen
+// Diese Funktionen müssen in deine contacts.js-Datei integriert werden
+
+/**
+ * Lädt initial die Seite und Kontakte
+ */
+// async function loadContact() {
+//     await includeHTML();
+//     await showContacts();
+//     renderBtns(); // Angepasst ohne myContact
+//     activeLink(4, window.location.href);
+//     handelContactScreenResult();
+// }
+
+/**
+ * Erstellt einen neuen Kontakt mit dem Django-Backend
+ */
+async function addContact() {
+    try {
+        // Hole die Werte aus den Formularfeldern
+        const name = getNameFromInput(); // Den vollständigen Namen verwenden, nicht aufteilen!
+        const email = getEmailFromInput();
+        const phone = getPhoneFromInput();
+        
+        // Prüfe, ob die E-Mail ein gültiges Format hat
+        if (!validateEmail(email)) {
+            alert("Bitte gib eine gültige E-Mail-Adresse ein.");
+            return;
+        }
+        
+        // Formatiere die Daten für das Django-Backend
+        const contactData = {
+            name: name,                // Vollständiger Name, nicht aufgeteilt
+            email: email,
+            phone: phone
+        };
+
+        console.log("Sende Daten an Backend:", contactData);
+        
+        // Sende Daten an das Backend
+        const newContact = await createContact(contactData);
+        
+        // Konvertiere das Backend-Format in dein Frontend-Format
+        const formattedContact = {
+            id: newContact.id,
+            name: newContact.name,
+            email: newContact.email,
+            phone: newContact.phone,
+            color: getColorFromInput(),
+            initials: renderContactInitials()
+        };
+
+        // UI aktualisieren
+        resetForm();
+        hideAddContact();
+        slideInContactSuccesfullyBox();
+        await showContacts();
+        scrollToNewContact(newContact.id);
+        showContactInfos(formattedContact);
+    } catch (error) {
+        console.error("Fehler beim Erstellen des Kontakts:", error);
+        alert("Fehler beim Erstellen des Kontakts: " + error.message);
+    }
+}
+
+// E-Mail-Validator hinzufügen
+function validateEmail(email) {
+    const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    return re.test(String(email).toLowerCase());
+}
+
+/**
+ * Zeigt alle Kontakte an
+ */
+async function showContacts() {
+    try {
+        const contactsListContainer = document.getElementById('contactsListContainer');
+        if (!contactsListContainer) {
+            console.error("Container für Kontakte nicht gefunden");
+            return;
+        }
+
+        // Kontakte vom Backend abrufen
+        const contacts = await getContacts();
+        console.log("Kontakte vom Backend:", contacts);
+        
+        contactsListContainer.innerHTML = '';
+        
+        if (contacts && contacts.length > 0) {
+            // Formatiere die Kontakte für dein Frontend
+            const formattedContacts = contacts.map(contact => {
+                // Log jedes Kontakts, um Struktur zu sehen
+                console.log("Einzelner Kontakt vom Backend:", contact);
+                
+                // Stellen wir sicher, dass der Name definiert ist
+                const name = contact.name || "Unbenannt";
+                
+                return {
+                    id: contact.id,
+                    name: name,
+                    email: contact.email || "",
+                    phone: contact.phone || "",
+                    color: getRandomColor(),
+                    initials: getInitialsFromName(name)
+                };
+            });
+            
+            console.log("Formatierte Kontakte für Frontend:", formattedContacts);
+            renderCalendarContacts(formattedContacts);
+        }
+    } catch (error) {
+        console.error("Fehler beim Laden der Kontakte:", error);
+    }
+}
+
+/**
+ * Aktualisiert einen Kontakt
+ */
+async function updateContacts(contactId, updatedData) {
+    try {
+      console.log("updateContacts wird aufgerufen mit:", contactId, updatedData);
+      
+      // Kontakt-Daten für das Backend formatieren
+      // Anpassung für das Django-Backend - verwende nur 'name' statt first_name/last_name
+      const contactData = {
+        name: updatedData.name,
+        email: updatedData.email,
+        phone: updatedData.phone
+      };
+      
+      console.log("Formatierte Daten für Backend:", contactData);
+      
+      // Kontakt im Backend aktualisieren
+      const updatedContact = await updateContact(contactId, contactData);
+      console.log("Antwort vom Backend:", updatedContact);
+      
+      return updatedContact;
+    } catch (error) {
+      console.error("Fehler beim Aktualisieren des Kontakts:", error);
+      alert("Fehler beim Aktualisieren: " + error.message);
+      throw error;
+    }
+  }
+
+/**
+ * Löscht einen Kontakt
+ */
+async function deleteContacts(contactId) {
+    try {
+        // Kontakt im Backend löschen
+        await deleteContact(contactId);
+    } catch (error) {
+        console.error("Fehler beim Löschen des Kontakts:", error);
+        alert("Fehler beim Löschen: " + error.message);
+    }
+}
+
+/**
+ * Hilfsfunktion: Extrahiert den Vornamen aus einem vollständigen Namen
+ */
+function getFirstNameFromFullName(fullName) {
+    return fullName.split(' ')[0] || '';
+}
+
+/**
+ * Hilfsfunktion: Extrahiert den Nachnamen aus einem vollständigen Namen
+ */
+function getLastNameFromFullName(fullName) {
+    const nameParts = fullName.split(' ');
+    return nameParts.length > 1 ? nameParts.slice(1).join(' ') : '';
+}
+
+/**
+ * Hilfsfunktion: Extrahiert den Vornamen aus dem Eingabefeld
+ */
+function getFirstName() {
+    const fullName = getNameFromInput();
+    return getFirstNameFromFullName(fullName);
+}
+
+/**
+ * Hilfsfunktion: Extrahiert den Nachnamen aus dem Eingabefeld
+ */
+function getLastName() {
+    const fullName = getNameFromInput();
+    return getLastNameFromFullName(fullName);
+}
+
+/**
+ * Hilfsfunktion: Generiert Initialen aus einem Namen
+ */
+function getInitialsFromName(fullName) {
+    const names = fullName.split(' ');
+    let firstInitial = names[0] ? names[0].substring(0, 1).toUpperCase() : '';
+    let secondInitial = '';
+    
+    if (names.length > 1) {
+        secondInitial = names[names.length - 1].substring(0, 1).toUpperCase();
+    }
+    
+    return firstInitial + secondInitial;
+}

@@ -1,0 +1,327 @@
+/* Standardgrößen (für große Bildschirme) */
+.board-h2 {
+  margin: 0;
+  font-weight: 700;
+  font-size: 61px;
+  line-height: 73.2px;
+  color: #000000;
+}
+
+.board-h3 {
+  margin: 0;
+  font-weight: 600;
+  font-size: 64px;
+  line-height: 76.8px;
+  text-align: center;
+  color: #000000;
+}
+
+.board-h4 {
+  margin: 0;
+  color: #2a3647;
+  font-size: 21px;
+  font-weight: 700;
+  line-height: 25.2px;
+}
+
+.sum-header-main-div p {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 400;
+  line-height: 24px;
+  color: #2a3647;
+}
+
+/* Header und Separator */
+.sum-bg-main {
+  z-index: -1;
+  background-color: var(--colorBgSecondary);
+  width: 100vw;
+  height: 100vh;
+  position: absolute;
+  padding-left: 276px;
+  padding-top: 50px;
+  top: 80px;
+  left: 0;
+}
+
+.sum-header-main-div {
+  padding: 0px 16px;
+  margin-bottom: 40px;
+}
+
+.summary-header {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 30px;
+}
+
+.sum-header-seperator-blueY {
+  display: block;
+}
+
+.sum-header-seperator-blueX {
+  display: none;
+}
+
+.summary-header p {
+  font-size: 27px;
+  line-height: 32.4px;
+}
+
+/* Summary Main Div */
+.sum-cards-main-div {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+  padding: 0px 16px;
+}
+
+.sum-cards-div-1 {
+  display: flex;
+  gap: 24px;
+  width: 560px;
+  height: 168px;
+}
+
+.sum-cards-div-3 {
+  display: flex;
+  gap: 24px;
+  width: 560px;
+  height: 168px;
+}
+
+.sum-content-div {
+  display: flex;
+  width: 100%;
+}
+
+.greetUserDesktopContainer {
+  display: flex;
+  justify-content: start;
+  align-items: center;
+  margin-left: 80px;
+}
+
+.sum-content-greeting-div {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: calc(100vh - 160px);
+  background-color: var(--colorBgSecondary);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.greetAnimation {
+  animation: fadeOut 1s ease 2s forwards;
+}
+
+.greetText {
+  font-weight: 500;
+  font-size: 47px;
+  line-height: 56.4px;
+  color: #2a3647;
+}
+
+.greetUser {
+  font-weight: 700;
+  font-size: 54px;
+  line-height: 76.8px;
+  color: #29abe2;
+  width: 390px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: start;
+}
+
+/* Summary Cards */
+.sum-card-first-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+  background-color: #ffffff;
+  width: 264px;
+  height: 168px;
+  border-radius: var(--borderRadius);
+  box-shadow: 0px 0px 4px 0px #0000001a;
+  transition: 120ms;
+}
+
+.sum-card-first-row img,
+.sum-card-first-row svg {
+  width: 69px;
+  height: 69px;
+}
+
+.sum-card-first-row:hover {
+  cursor: pointer;
+  background-color: var(--colorBgPrimary);
+  width: 282.5px;
+  height: 184px;
+}
+
+.sum-card-first-row:hover .board-h3,
+.sum-card-first-row:hover p {
+  color: #ffffff;
+}
+
+.sum-card-sec-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 61px;
+  background-color: #ffffff;
+  width: 560px;
+  height: 168px;
+  border-radius: var(--borderRadius);
+  box-shadow: 0px 0px 4px 0px #0000001a;
+  transition: 120ms;
+}
+
+.sum-card-sec-row img {
+  width: 60px;
+  height: 60px;
+}
+
+.sum-card-sec-row p {
+  font-size: 16px;
+  line-height: 19.2px;
+}
+
+.sum-card-sec-row:hover {
+  cursor: pointer;
+  background-color: var(--colorBgPrimary);
+  width: 576px;
+  height: 184px;
+}
+
+.sum-card-sec-row:hover .board-h3,
+.sum-card-sec-row:hover .board-h4,
+.sum-card-sec-row:hover p {
+  color: #ffffff;
+}
+
+.sum-card-sec-row-col1 {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+
+.sum-card-sec-row-col2 {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.sum-card-third-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 13px;
+  background-color: #ffffff;
+  width: 168px;
+  height: 168px;
+  padding: 0 25px;
+  border-radius: var(--borderRadius);
+  box-shadow: 0px 0px 4px 0px #0000001a;
+  transition: 120ms;
+}
+
+.sum-card-third-row p {
+  text-align: center;
+}
+
+.sum-card-third-row:hover {
+  cursor: pointer;
+  background-color: var(--colorBgPrimary);
+  width: 184px;
+  height: 184px;
+}
+
+.sum-card-third-row:hover .board-h3,
+.sum-card-third-row:hover p {
+  color: #ffffff;
+}
+
+.sum-card-sec-lay1 {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.sum-card-sec-lay {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.boardText {
+  width: 66.88px;
+}
+
+.blink {
+  animation: blink-1 0.6s both;
+}
+
+.btn_disabled {
+  background-color: var(--icon-color) !important;
+  cursor: default !important;
+  box-shadow: none !important;
+}
+
+.sum-card-first-row:hover svg circle {
+  fill: white;
+}
+
+.sum-card-first-row:hover svg path {
+  stroke: #2A3647;
+}
+
+.sum-card-first-row:hover svg g path {
+  fill: #2A3647;
+}
+
+@keyframes blink-1 {
+
+  0%,
+  50%,
+  100% {
+    opacity: 1;
+  }
+
+  25%,
+  75% {
+    background: red;
+    color: white;
+    opacity: 0;
+  }
+
+  100% {
+    opacity: 1;
+  }
+}
+
+
+/* Animations */
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+  }
+
+  to {
+    opacity: 0;
+    display: none;
+  }
+}
+
