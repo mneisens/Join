@@ -581,16 +581,20 @@ function addTaskToBoardWithoutLoadNew(id, task) {
   function getInitialsFromName(fullName) {
     if (!fullName) return "??";
     
-    const names = fullName.split(' ');
-    let firstInitial = names[0] ? names[0].charAt(0).toUpperCase() : '';
-    let secondInitial = '';
-    
-    if (names.length > 1) {
-      secondInitial = names[names.length - 1].charAt(0).toUpperCase();
+    const names = fullName.trim().split(/\s+/);
+    if (names.length === 0) {
+      return "??";
     }
     
-    return firstInitial + secondInitial;
+    const firstNameInitial = names[0].charAt(0).toUpperCase();
+    if (names.length === 1) {
+      return firstNameInitial;
+    }
+    
+    const lastNameInitial = names[names.length - 1].charAt(0).toUpperCase();
+    return firstNameInitial + lastNameInitial;
   }
+  
   /**
    * Erzeugt eine zufällige Farbe für Kontaktinitialen
    * @returns {string} Eine zufällige Farbe als HEX-Code

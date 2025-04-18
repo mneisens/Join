@@ -232,7 +232,7 @@ function returnHtmlBoardAssignedLine(assignedTo, initials) {
           </div>
       </div>
     </div>
-    `;
+  `;
 }
 
 

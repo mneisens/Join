@@ -1,20 +1,82 @@
 /**
- * This function fill the singel view task html with the data of the current task.
- *
- * @param {string} id - the firebase document id of the needed task
+ * Zeigt die Detailansicht einer Task an
+ * @param {string} id - ID der Task
  */
-function showTaskView(id) {
-  let currentTask = boardGetTaskById(id);
+async function showTaskView(id) {
+  try {
+    // Task-Daten abrufen
+    let currentTask = boardGetTaskById(id);
+    
+    if (!currentTask) {
+      console.error(`Keine Task mit ID ${id} gefunden`);
+      return;
+    }
 
-  boardFillTaskWithCurrent(currentTask);
-
-  document.getElementById("taskBgDiv").style.display = "flex";
-  setTimeout(() => {
-    document.getElementById("taskMainDiv").classList.add("visible");
-  }, 120);
+    // Prüfen, ob die zugewiesenen Kontakte vervollständigt werden müssen
+    if (Array.isArray(currentTask.assignedTo) && currentTask.assignedTo.length > 0) {
+      // Prüfen, ob es sich um IDs oder unvollständige Objekte handelt
+      const needsFullContacts = currentTask.assignedTo.some(contact => 
+        typeof contact === 'number' || 
+        typeof contact === 'string' || 
+        (typeof contact === 'object' && !contact.name)
+      );
+      
+      if (needsFullContacts) {
+        // Alle Kontakte vom Server laden
+        const allContacts = await getContacts();
+        
+        // Die assignedTo-Werte mit vollständigen Kontaktobjekten ersetzen
+        currentTask.assignedTo = currentTask.assignedTo.map(contactRef => {
+          // ID extrahieren
+          const contactId = typeof contactRef === 'object' ? contactRef.id : contactRef;
+          
+          // Passenden Kontakt finden
+          const fullContact = allContacts.find(c => c.id == contactId);
+          
+          if (fullContact) {
+            console.log(
+              `Kontakt gefunden: ${fullContact.name} (${fullContact.id})`,
+              `E-Mail: ${fullContact.email}, Telefon: ${fullContact.phone}`,
+              `Farbe: ${fullContact.color}, Initialen: ${fullContact.initials}`,
+            );
+            
+            return {
+              id: fullContact.id,
+              name: fullContact.name,
+              email: fullContact.email,
+              phone: fullContact.phone,
+              color: fullContact.color || getRandomColor(),
+              initials: fullContact.initials || getInitialsFromName(fullContact.name)
+            };
+          } else {
+            // Fallback, wenn kein passender Kontakt gefunden wurde
+            return {
+              id: contactId,
+              name: `Kontakt ${contactId}`,
+              color: getRandomColor(),
+              initials: "??"
+            };
+          }
+        });
+      }
+    }
+    
+    // Task-Ansicht mit vollständigen Daten anzeigen
+    boardFillTaskWithCurrent(currentTask);
+    
+    // UI-Elemente anzeigen
+    document.getElementById("taskBgDiv").style.display = "flex";
+    setTimeout(() => {
+      document.getElementById("taskMainDiv").classList.add("visible");
+    }, 120);
+  } catch (error) {
+    console.error("Fehler beim Anzeigen der Task:", error);
+  }
 }
 
-  
+/**
+ * Schließt die Task-Detailansicht
+ */
 function hideTaskView() {
   document.getElementById("taskMainDiv").classList.remove("visible");
   setTimeout(() => {
@@ -22,119 +84,77 @@ function hideTaskView() {
   }, 120);
 }
 
-  
-  /**
-   * This function fill the singel view task html with the data of the current task.
-   *
-   * @param {JSON} task - current task
-   */
-  function boardFillTaskWithCurrent(task) {
-    const taskConfig = returnConfigBoardCardHtml(task);
-    document.getElementById("taskBgDiv").innerHTML =
-      returnHtmlBoardTaskSingleView(task, taskConfig);
-  
-    boardRenderAssignedLine(task);
-    renderBoardSingleViewSubtasks(task);
-    boardTaskAddEventListener();
-  }
-  /**
-   * It will render the subtasks to the single view html.
-   *
-   * @param {JSON} task - current task
-   */
-  function renderBoardSingleViewSubtasks(task) {
-    document.getElementById("boardTaskSingleSubtasks").innerHTML = "";
-  
-    if (task.subtasks.length > 0) {
-      let subtasksConfig = returnBoardSubtaskConfig(task);
-  
-      for (i = 0; i < task.subtasks.length; i++) {
-        const subtask = task.subtasks[i];
-        if (!subtask.done) {
-          subtasksConfig.svgSrc = "/assets/symbols/Property 1=Default.svg";
-        }
-        document.getElementById("boardTaskSingleSubtasks").innerHTML +=
-          returnHtmlBoardSubtask(subtask, subtasksConfig, i);
-      }
-    } else {
-      document.getElementById("boardTaskSingleSubtasks").innerHTML =
-        "No Subtasks";
-    }
-  }
-  
-  /**
-   * Returns the configuration of the current subtask.
-   *
-   * @param {JSON} task - current subtask
-   * @returns - json
-   */
-  function returnBoardSubtaskConfig(task) {
-    let subtasksConfig = {
-      amount: task.subtasks.length - 1,
-      svgSrc: "/assets/symbols/Property 1=checked.svg",
-      parentTaskId: task.taskId,
-    };
-    return subtasksConfig;
-  }
+/**
+ * Generiert die Detailansicht für eine Task
+ * @param {Object} task - Die anzuzeigende Task
+ */
+function boardFillTaskWithCurrent(task) {
+  const taskConfig = returnConfigBoardCardHtml(task);
+  document.getElementById("taskBgDiv").innerHTML =
+    returnHtmlBoardTaskSingleView(task, taskConfig);
 
+  boardRenderAssignedLine(task);
+  renderBoardSingleViewSubtasks(task);
+  boardTaskAddEventListener();
+}
 
 /**
- * Ruft einen einzelnen Task anhand seiner ID ab
- * @param {number} id - Die ID des Tasks
- * @returns {Promise} - Der abgerufene Task
+ * Rendert die Subtasks in der Detailansicht
+ * @param {Object} task - Die anzuzeigende Task
  */
-async function getTask(id) {
-  try {
-    const response = await fetch(`${API_URL}/tasks/${id}/`);
-    
-    if (!response.ok) {
-      throw new Error(`Fehler beim Abrufen des Tasks mit ID ${id}`);
+function renderBoardSingleViewSubtasks(task) {
+  const container = document.getElementById("boardTaskSingleSubtasks");
+  container.innerHTML = "";
+
+  if (task.subtasks && task.subtasks.length > 0) {
+    let subtasksConfig = returnBoardSubtaskConfig(task);
+
+    for (let i = 0; i < task.subtasks.length; i++) {
+      const subtask = task.subtasks[i];
+      if (!subtask.done) {
+        subtasksConfig.svgSrc = "/assets/symbols/Property 1=Default.svg";
+      } else {
+        subtasksConfig.svgSrc = "/assets/symbols/Property 1=checked.svg";
+      }
+      container.innerHTML += returnHtmlBoardSubtask(subtask, subtasksConfig, i);
     }
-    
-    return await response.json();
-  } catch (error) {
-    console.error('API-Fehler:', error);
-    throw error;
+  } else {
+    container.innerHTML = "No Subtasks";
   }
 }
-  
+
 /**
- * Subtask abhaken oder aktivieren
- * @param {string} taskId - ID des Tasks
- * @param {number} subtaskIndex - Index des Subtasks im Array
- * @param {boolean|null} newState - Optional: Neuer Status (true = erledigt, false = nicht erledigt, null = umschalten)
+ * Erstellt die Konfiguration für Subtasks
+ * @param {Object} task - Die aktuelle Task
+ * @returns {Object} Konfigurationsobjekt für Subtasks
+ */
+function returnBoardSubtaskConfig(task) {
+  return {
+    amount: task.subtasks.length - 1,
+    svgSrc: "/assets/symbols/Property 1=checked.svg",
+    parentTaskId: task.taskId,
+  };
+}
+
+/**
+ * Aktualisiert den Status eines Subtasks
+ * @param {string} taskId - ID der Task
+ * @param {number} subtaskIndex - Index des Subtasks
+ * @param {boolean|null} newState - Neuer Status oder null für Umschaltung
  */
 async function boardClickSubtask(taskId, subtaskIndex, newState = null) {
   try {
-    console.log(`boardClickSubtask: Task ${taskId}, Subtask Index ${subtaskIndex}, Neuer Status: ${newState}`);
-    
-    // Task mit der richtigen ID finden
+    // Task finden
     let task = boardGetTaskById(taskId);
     
-    if (!task) {
-      console.error(`Task mit ID ${taskId} nicht gefunden`);
+    if (!task || !Array.isArray(task.subtasks) || subtaskIndex < 0 || subtaskIndex >= task.subtasks.length) {
+      console.error(`Ungültiger Task oder Subtask-Index: ${taskId}, ${subtaskIndex}`);
       return;
     }
     
-    // Sicherstellen, dass subtasks ein Array ist
-    if (!Array.isArray(task.subtasks)) {
-      console.error("Task hat keine Subtasks oder subtasks ist kein Array");
-      task.subtasks = [];
-      return;
-    }
-    
-    // Sicherstellen, dass subtaskIndex gültig ist
-    if (subtaskIndex < 0 || subtaskIndex >= task.subtasks.length) {
-      console.error(`Ungültiger Subtask-Index: ${subtaskIndex}`);
-      return;
-    }
-    
-    // Aktuellen Status ermitteln
+    // Status ändern
     const currentState = task.subtasks[subtaskIndex].done || false;
-    
-    // Neuen Status bestimmen
     const targetState = (newState !== null) ? newState : !currentState;
-    console.log(`Ändere Subtask-Status von ${currentState} zu ${targetState}`);
     
     // Status aktualisieren
     task.subtasks[subtaskIndex].done = targetState;
@@ -150,19 +170,14 @@ async function boardClickSubtask(taskId, subtaskIndex, newState = null) {
       priority: task.priority,
       category: task.category,
       kanban_category: task.kanbanCategory,
-      subtasks: task.subtasks.map(subtask => {
-        return {
-          subtask: subtask.subtask || subtask.text || "",
-          done: !!subtask.done
-        };
-      })
+      subtasks: task.subtasks.map(subtask => ({
+        subtask: subtask.subtask || subtask.text || "",
+        done: !!subtask.done
+      }))
     };
-    
-    console.log("Sende Daten zum Aktualisieren des Subtasks:", updateData);
     
     // API-Aufruf
     const result = await updateTask(taskId, updateData);
-    console.log("API-Ergebnis:", result);
     
     // Fortschrittsanzeige aktualisieren
     updateSubtaskProgress(taskId);
@@ -174,14 +189,17 @@ async function boardClickSubtask(taskId, subtaskIndex, newState = null) {
   }
 }
 
-
+/**
+ * Aktualisiert die Checkbox-Darstellung eines Subtasks
+ * @param {string} taskId - ID der Task
+ * @param {number} subtaskIndex - Index des Subtasks
+ * @param {boolean} checked - Ist der Subtask erledigt?
+ */
 function updateSubtaskCheckbox(taskId, subtaskIndex, checked) {
   try {
-    // Finde die Checkbox-Elemente basierend auf den Datenattributen
     const subtaskRow = document.querySelector(`[data-task-id="${taskId}"][data-subtask-index="${subtaskIndex}"]`);
     
     if (subtaskRow) {
-      // Aktualisiere das Bild
       const checkboxImg = subtaskRow.querySelector('.board-task-single-subtask-checkbox img');
       if (checkboxImg) {
         checkboxImg.src = checked ? 
@@ -189,7 +207,6 @@ function updateSubtaskCheckbox(taskId, subtaskIndex, checked) {
           "/assets/symbols/Property 1=Default.svg";
       }
       
-      // Optional: Füge CSS-Klasse hinzu/entferne sie für zusätzliches Styling
       if (checked) {
         subtaskRow.classList.add('done');
       } else {
@@ -201,119 +218,93 @@ function updateSubtaskCheckbox(taskId, subtaskIndex, checked) {
   }
 }
 
+/**
+ * Aktualisiert die Fortschrittsanzeige einer Task
+ * @param {string} taskId - ID der Task
+ */
+function updateSubtaskProgress(taskId) {
+  const task = boardGetTaskById(taskId);
+  if (!task || !Array.isArray(task.subtasks) || task.subtasks.length === 0) return;
   
+  // Fortschritt berechnen
+  const total = task.subtasks.length;
+  const completed = task.subtasks.filter(subtask => subtask.done).length;
+  const percent = Math.round((completed / total) * 100);
+  
+  // Fortschrittsanzeige aktualisieren
+  const progressBarInner = document.querySelector(`#subtask-progress-bar-${taskId} .progress-bar-inner`);
+  const progressText = document.querySelector(`#subtask-progress-bar-${taskId} .progress-text`);
+  
+  if (progressBarInner) {
+    progressBarInner.style.width = `${percent}%`;
+  }
+  
+  if (progressText) {
+    progressText.textContent = `${completed}/${total} Subtasks`;
+  }
+}
 
-  function updateSubtaskProgress(taskId) {
-    const task = boardGetTaskById(taskId);
-    if (!task || !Array.isArray(task.subtasks) || task.subtasks.length === 0) return;
-    
-    // Fortschritt berechnen
-    const total = task.subtasks.length;
-    const completed = task.subtasks.filter(subtask => subtask.done).length;
-    const percent = Math.round((completed / total) * 100);
-    
-    // Fortschrittsanzeige in der Task-Detailansicht aktualisieren
-    const progressBarInner = document.querySelector(`#subtask-progress-bar-${taskId} .progress-bar-inner`);
-    const progressText = document.querySelector(`#subtask-progress-bar-${taskId} .progress-text`);
-    
-    if (progressBarInner) {
-      progressBarInner.style.width = `${percent}%`;
-    }
-    
-    if (progressText) {
-      progressText.textContent = `${completed}/${total} Subtasks`;
-    }
+/**
+ * Rendert die zugewiesenen Kontakte in der Task-Detailansicht
+ * @param {Object} task - Die anzuzeigende Task
+ */
+function boardRenderAssignedLine(task) {
+  // Container für zugewiesene Kontakte finden
+  const container = document.getElementById("boardTaskSingleViewAssigned");
+  if (!container) {
+    console.error("Container für zugewiesene Kontakte nicht gefunden");
+    return;
   }
+  
+  // Container leeren
+  container.innerHTML = '';
+  
+  // Prüfen, ob Kontakte vorhanden sind
+  if (Array.isArray(task.assignedTo) && task.assignedTo.length > 0) {
+    // Debug-Ausgabe
+    console.log("Zugewiesene Kontakte:", task.assignedTo);
+    
+    // Für jeden Kontakt ein Element erstellen
+    task.assignedTo.forEach(contact => {
+      // Name und Initialen extrahieren oder Fallback verwenden
+      const name = contact.name || `Kontakt ${contact.id}`;
+      let initials = contact.initials || '';
+      
+      // Wenn keine Initialen vorhanden, aus dem Namen erzeugen
+      if (!initials && name) {
+        initials = getInitialsFromName(name);
+      }
+      
+      // Farbe extrahieren oder Fallback verwenden
+      const color = contact.color || getRandomColor();
+      
+      // HTML für den Kontakt hinzufügen
+      container.innerHTML += `
+        <div class="task-assigned-users-div">
+          <div class="task-assigned-user-main">
+            <div class="task-assigned-user-inner">
+              <div class="board-profile-badge" style="background-color: ${color};">${initials}</div>
+              <span>${name}</span>
+            </div>
+          </div>
+        </div>
+      `;
+    });
+  } else {
+    // Nachricht anzeigen, wenn keine Kontakte zugewiesen sind
+    container.innerHTML = '<div class="task-assigned-users-div"><p>Keine Kontakte zugewiesen</p></div>';
+  }
+}
+/**
+ * Fügt Event-Listener zu den Task-Elementen hinzu
+ */
+function boardTaskAddEventListener() {
+  const deleteDiv = document.getElementById("taskFooterDel");
+  const deleteIcon = document.getElementById("deleteIcon");
+  const editDiv = document.getElementById("taskFooterEdit");
+  const editIcon = document.getElementById("editIcon");
 
-  async function boardLoadTasksFromBackend() {
-    try {
-      console.log("Lade Tasks vom Backend...");
-      // Erste Option: Verwende den speziellen Board-Tasks Endpunkt
-      const response = await getBoardTasks();
-      console.log("Erhaltene Tasks:", response);
-      
-      // Konvertiere alle Tasks in das Frontend-Format
-      boardTasks = [];
-      
-      // Füge alle Tasks aus jeder Kategorie in das boardTasks-Array ein
-      if (response.Todo) {
-        boardTasks = boardTasks.concat(response.Todo.map(task => formatTaskForFrontend(task)));
-      }
-      if (response.InProgress) {
-        boardTasks = boardTasks.concat(response.InProgress.map(task => formatTaskForFrontend(task)));
-      }
-      if (response.AwaitFeedback) {
-        boardTasks = boardTasks.concat(response.AwaitFeedback.map(task => formatTaskForFrontend(task)));
-      }
-      if (response.Done) {
-        boardTasks = boardTasks.concat(response.Done.map(task => formatTaskForFrontend(task)));
-      }
-      
-      console.log("Formatierte Tasks für Frontend:", boardTasks);
-      loadBoardKanbanContainer(boardTasks);
-    } catch (error) {
-      console.error("Fehler beim Laden der Tasks:", error);
-      // Fallback: Versuche alle Tasks zu laden, wenn der spezielle Endpunkt nicht funktioniert
-      try {
-        const tasks = await getTasks();
-        boardTasks = tasks.map(task => formatTaskForFrontend(task));
-        loadBoardKanbanContainer(boardTasks);
-      } catch (fallbackError) {
-        console.error("Auch der Fallback für das Laden der Tasks ist fehlgeschlagen:", fallbackError);
-      }
-    }
-  }
-  
-  /**
-   * This function used to interfere throw the 'assigned to' of the task, and render the
-   * profilebadges as well as the names to the single view task html.
-   *
-   * @param {JSON} task - current task
-   */
-  function boardRenderAssignedLine(task) {
-    for (i = 0; i < task.assignedTo.length; i++) {
-      let initials = boardGetInitials(task.assignedTo[i].name);
-      document.getElementById("boardTaskSingleViewAssigned").innerHTML +=
-        returnHtmlBoardAssignedLine(task.assignedTo[i], initials);
-      
-    }
-  }
-
-  
-  
-  function setupSubtaskCheckboxListeners() {
-    // Bestehende Event-Listener entfernen (falls vorhanden)
-    document.removeEventListener('change', handleSubtaskCheckboxChange);
-    
-    // Neuen Event-Listener hinzufügen
-    document.addEventListener('change', handleSubtaskCheckboxChange);
-  }
-  function handleSubtaskCheckboxChange(event) {
-    const checkbox = event.target;
-    
-    // Prüfen, ob es sich um eine Subtask-Checkbox handelt
-    if (checkbox.classList.contains('subtask-checkbox')) {
-      const subtaskItem = checkbox.closest('[data-subtask-id]');
-      const taskItem = checkbox.closest('[data-task-id]');
-      
-      if (subtaskItem && taskItem) {
-        const subtaskId = parseInt(subtaskItem.dataset.subtaskId);
-        const taskId = taskItem.dataset.taskId;
-        
-        // Subtask-Status aktualisieren
-        boardClickSubtask(taskId, subtaskId, checkbox);
-      }
-    }
-  }
-
-  /**
-   * The function used to add the Eventlistener. So the Eventlistener cound be loaded
-   * with this function, afterall the html page is complete with loading.
-   */
-  function boardTaskAddEventListener() {
-    const deleteDiv = document.getElementById("taskFooterDel");
-    const deleteIcon = document.getElementById("deleteIcon");
-  
+  if (deleteDiv && deleteIcon) {
     deleteDiv.addEventListener("mouseenter", () => {
       deleteIcon.src = "/assets/symbols/deleteHover.svg";
     });
@@ -321,10 +312,9 @@ function updateSubtaskCheckbox(taskId, subtaskIndex, checked) {
     deleteDiv.addEventListener("mouseleave", () => {
       deleteIcon.src = "/assets/symbols/delete.svg";
     });
-  
-    const editDiv = document.getElementById("taskFooterEdit");
-    const editIcon = document.getElementById("editIcon");
-  
+  }
+
+  if (editDiv && editIcon) {
     editDiv.addEventListener("mouseenter", () => {
       editIcon.src = "/assets/symbols/editHover.svg";
     });
@@ -333,33 +323,15 @@ function updateSubtaskCheckbox(taskId, subtaskIndex, checked) {
       editIcon.src = "/assets/symbols/edit.svg";
     });
   }
-  
-  /**
-   * The function used to add the Eventlistener. So the Eventlistener cound be loaded
-   * with this function, afterall the html page is complete with loading.
-   */
-  function boardKanbanAddEventListener() {
-    const buttons = document.querySelectorAll(".board-kanban-add-btn");
-  
-    buttons.forEach((button) => {
-      button.addEventListener("mouseenter", () => {
-        button.src = "/assets/symbols/plus button mobile hover.svg";
-      });
-      button.addEventListener("mouseleave", () => {
-        button.src = "/assets/symbols/plus button mobile.svg";
-      });
-    });
-  }
+}
 
-  /**
- * Löscht einen Task aus dem Backend und aktualisiert die Ansicht
- * @param {string} taskId - Die ID des zu löschenden Tasks
+/**
+ * Löscht eine Task
+ * @param {string} taskId - ID der zu löschenden Task
  */
 async function deleteTask(taskId) {
   try {
-    console.log(`Task mit ID ${taskId} wird gelöscht...`);
-    
-    // API-Aufruf an das Backend
+    // API-Aufruf
     const response = await fetch(`${API_URL}/tasks/${taskId}/`, {
       method: 'DELETE',
       headers: {
@@ -369,11 +341,8 @@ async function deleteTask(taskId) {
     
     if (!response.ok) {
       const errorText = await response.text();
-      console.error("Fehler beim Löschen:", response.status, errorText);
       throw new Error(`Fehler beim Löschen des Tasks: ${response.status} ${errorText}`);
     }
-    
-    console.log(`Task ${taskId} erfolgreich gelöscht`);
     
     // UI aktualisieren
     hideTaskView();
@@ -381,25 +350,24 @@ async function deleteTask(taskId) {
     // Task aus lokalem Array entfernen
     boardTasks = boardTasks.filter(task => task.taskId != taskId);
     
-    // Board neu rendern ohne API-Aufruf
+    // Board neu rendern
     loadBoardKanbanContainer(boardTasks);
-    
-    // Optional: Erfolgsmeldung anzeigen
-    // showSuccessMessage("Task wurde gelöscht");
-    
   } catch (error) {
     console.error("Fehler beim Löschen des Tasks:", error);
     alert("Beim Löschen des Tasks ist ein Fehler aufgetreten.");
   }
 }
 
+/**
+ * Formatiert ein Datum für das Backend
+ * @param {string} dateStr - Datum im Format DD/MM/YYYY
+ * @returns {string} Datum im Format YYYY-MM-DD
+ */
 function formatDateForBackend(dateStr) {
   if (!dateStr) return "";
-  
-  // Wenn das Datum bereits im Format YYYY-MM-DD ist
   if (dateStr.includes("-")) return dateStr;
   
-  // Konvertierung von DD/MM/YYYY zu YYYY-MM-DD
   const [day, month, year] = dateStr.split("/");
   return `${year}-${month}-${day}`;
 }
+

@@ -12,6 +12,7 @@ if (typeof API_URL === 'undefined') {
     const API_URL = 'http://localhost:8000/api';
   }
 
+
 /**
  * Lädt Tasks gruppiert nach Kanban-Kategorien
  * @returns {Promise} - Objekt mit Tasks nach Kategorien
@@ -147,3 +148,19 @@ async function inspectTaskFormatting() {
   // Globale Verfügbarkeit
   window.getBoardTasks = getBoardTasks;
   window.updateTaskCategory = updateTaskCategory;
+
+////////////////
+
+
+
+
+  function formatAssignedToForFrontend(assignedTo) {
+    if (!Array.isArray(assignedTo)) return [];
+    return assignedTo.map(contact => {
+      // Nur eine ID ⇒ kein name/color/initials
+      const id = typeof contact === 'number'
+                 ? contact
+                 : parseInt(contact, 10);
+      return { id, name: contact.name, color: contact.color, initials: contact.initials };
+    });
+  }

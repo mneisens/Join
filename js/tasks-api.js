@@ -6,27 +6,27 @@
 // //  * @param {Object} taskData - Die Task-Daten
 // //  * @returns {Promise} - Der erstellte Task mit ID
 // //  */
-// // async function createTask(taskData) {
-// //   try {
-// //     const response = await fetch(`${API_URL}/tasks/`, {
-// //       method: 'POST',
-// //       headers: {
-// //         'Content-Type': 'application/json',
-// //       },
-// //       body: JSON.stringify(taskData),
-// //     });
+async function createTask(taskData) {
+  try {
+    const response = await fetch(`${API_URL}/tasks/`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(taskData),
+    });
     
-// //     if (!response.ok) {
-// //       const errorData = await response.json();
-// //       throw new Error(`Fehler beim Erstellen des Tasks: ${JSON.stringify(errorData)}`);
-// //     }
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(`Fehler beim Erstellen des Tasks: ${JSON.stringify(errorData)}`);
+    }
     
-// //     return await response.json();
-// //   } catch (error) {
-// //     console.error('API-Fehler:', error);
-// //     throw error;
-// //   }
-// // }
+    return await response.json();
+  } catch (error) {
+    console.error('API-Fehler:', error);
+    throw error;
+  }
+}
 
 // // /**
 // //  * Ruft alle Tasks vom Backend ab

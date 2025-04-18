@@ -321,11 +321,11 @@ function createCategoryOption(contact, optionsContainer) {
             </div>
             <div>${contact.name}</div>
         </div>
-        <input type="checkbox" class="category-checkbox" 
-               data-id="${contact.id}" 
-               data-name="${contact.name}" 
-               data-color="${contact.color}" 
-               data-initials="${contact.initials}">
+      <input type="checkbox" class="category-checkbox"
+       data-id="{{ contact.id }}"
+       data-name="{{ contact.name }}"
+       data-color="{{ contact.color }}"
+       data-initials="{{ contact.initials }}" />
     `;
 
     optionDiv.addEventListener('click', (event) => {
@@ -343,23 +343,89 @@ function createCategoryOption(contact, optionsContainer) {
  * Updates the selected abbreviations based on checked checkboxes.
  */
 function updateSelectedAbbreviations() {
-    let checkboxes = document.querySelectorAll('.category-checkbox');
-    let abbreviationsContainer = document.getElementById('showName');
-    abbreviationsContainer.innerHTML = '';
-    checkboxes.forEach(checkbox => {
-        let optionDiv = checkbox.closest('.option');
-        if (checkbox.checked) {
-            optionDiv.classList.add('active');
-            let initialsDiv = document.createElement('div');
-            initialsDiv.className = 'abbreviation-badge';
-            initialsDiv.textContent = checkbox.dataset.initials;
-            initialsDiv.style.cssText = `background-color: ${checkbox.dataset.color}; color: white; padding: 5px 10px; border-radius: 50%;`;
-            abbreviationsContainer.appendChild(initialsDiv);
-        } else {
-            optionDiv.classList.remove('active');
-        }
+    let checkboxes = document.querySelectorAll(".category-checkbox");
+    let abbreviationsContainer = document.getElementById("showName");
+    abbreviationsContainer.innerHTML = "";
+  
+    // Speichern der ausgewählten Kontakte für spätere Verwendung
+    window.currentAssignedContacts = [];
+  
+    checkboxes.forEach((checkbox) => {
+      let optionDiv = checkbox.closest(".option");
+      if (checkbox.checked) {
+        optionDiv.classList.add("active");
+        
+        // Badge erstellen
+        let initialsDiv = document.createElement("div");
+        initialsDiv.className = "abbreviation-badge";
+        initialsDiv.textContent = checkbox.dataset.initials;
+        initialsDiv.style.cssText = `
+          background-color: ${checkbox.dataset.color}; 
+          color: white; 
+          padding: 5px 10px; 
+          border-radius: 50%;
+          margin-right: 5px;
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+        `;
+        abbreviationsContainer.appendChild(initialsDiv);
+        
+        // Kontakt für spätere Verwendung speichern
+        window.currentAssignedContacts.push({
+          id: checkbox.dataset.id,
+          name: checkbox.dataset.name,
+          color: checkbox.dataset.color,
+          initials: checkbox.dataset.initials
+        });
+      } else {
+        optionDiv.classList.remove("active");
+      }
     });
-}
+  }
+
+  function updateSelectedAbbreviations() {
+    let checkboxes = document.querySelectorAll(".category-checkbox");
+    let abbreviationsContainer = document.getElementById("showName");
+    abbreviationsContainer.innerHTML = "";
+  
+    // Speichern der ausgewählten Kontakte für spätere Verwendung
+    window.currentAssignedContacts = [];
+  
+    checkboxes.forEach((checkbox) => {
+      let optionDiv = checkbox.closest(".option");
+      if (checkbox.checked) {
+        optionDiv.classList.add("active");
+        
+        // Badge erstellen
+        let initialsDiv = document.createElement("div");
+        initialsDiv.className = "abbreviation-badge";
+        initialsDiv.textContent = checkbox.dataset.initials;
+        initialsDiv.style.cssText = `
+          background-color: ${checkbox.dataset.color}; 
+          color: white; 
+          padding: 5px 10px; 
+          border-radius: 50%;
+          margin-right: 5px;
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+        `;
+        abbreviationsContainer.appendChild(initialsDiv);
+        
+        // Kontakt für spätere Verwendung speichern
+        window.currentAssignedContacts.push({
+          id: checkbox.dataset.id,
+          name: checkbox.dataset.name,
+          color: checkbox.dataset.color,
+          initials: checkbox.dataset.initials
+        });
+      } else {
+        optionDiv.classList.remove("active");
+      }
+    });
+  }
+  
 
 function encodeHTML(str) {
     return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#039;');
