@@ -275,8 +275,11 @@ function updateSubtaskCheckbox(taskId, subtaskIndex, checked) {
       let initials = boardGetInitials(task.assignedTo[i].name);
       document.getElementById("boardTaskSingleViewAssigned").innerHTML +=
         returnHtmlBoardAssignedLine(task.assignedTo[i], initials);
+      
     }
   }
+
+  
   
   function setupSubtaskCheckboxListeners() {
     // Bestehende Event-Listener entfernen (falls vorhanden)

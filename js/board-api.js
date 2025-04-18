@@ -1,7 +1,7 @@
 // board-api.js
 // Nutzt die bestehende API_URL aus api-service.js
 
-console.log("js geladen");
+// console.log("js geladen");
 
 /**
  * Lädt Tasks gruppiert nach Kanban-Kategorien
@@ -71,7 +71,7 @@ async function getBoardTasks() {
  */
 async function updateTaskCategory(taskId, newCategory) {
     try {
-      console.log(`Versuche Task ${taskId} nach ${newCategory} zu verschieben...`);
+      // console.log(`Versuche Task ${taskId} nach ${newCategory} zu verschieben...`);
       
       // Mapping von Frontend-Kategorien zu Backend-Kategorien
       // Versuchen wir verschiedene Formatierungen, da wir nicht wissen, was das Backend erwartet
@@ -85,13 +85,13 @@ async function updateTaskCategory(taskId, newCategory) {
       // Verwende das Mapping oder behalte die originale Kategorie
       const formattedCategory = categoryMapping[newCategory] || newCategory;
       
-      console.log("Formatierte Kategorie:", formattedCategory);
+      // console.log("Formatierte Kategorie:", formattedCategory);
       
       const requestData = {
         kanban_category: formattedCategory
       };
       
-      console.log("Gesendete Daten:", requestData);
+      // console.log("Gesendete Daten:", requestData);
       
       const response = await fetch(`${API_URL}/tasks/${taskId}/`, {
         method: 'PATCH',

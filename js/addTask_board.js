@@ -1,25 +1,34 @@
 /**
  * Updates the selected abbreviations based on checked checkboxes.
  */
-function updateSelectedAbbreviations() {
-  let checkboxes = document.querySelectorAll(".category-checkbox");
-  let abbreviationsContainer = document.getElementById("showName");
-  abbreviationsContainer.innerHTML = "";
-  checkboxes.forEach((checkbox) => {
-    let optionDiv = checkbox.closest(".option");
-    if (checkbox.checked) {
-      optionDiv.classList.add("active");
-      let initialsDiv = document.createElement("div");
-      initialsDiv.className = "abbreviation-badge";
-      initialsDiv.textContent = checkbox.dataset.initials;
-      initialsDiv.style.cssText = `background-color: ${checkbox.dataset.color}; color: white; padding: 5px 10px; border-radius: 50%;`;
-      abbreviationsContainer.appendChild(initialsDiv);
-    } else {
-      optionDiv.classList.remove("active");
-    }
-  });
-}
+// function updateSelectedAbbreviations() {
+//   let checkboxes = document.querySelectorAll(".category-checkbox");
+//   let abbreviationsContainer = document.getElementById("showName");
+//   abbreviationsContainer.innerHTML = "";
 
+//   const contactsToSave = [];
+
+//   checkboxes.forEach((checkbox) => {
+//     let optionDiv = checkbox.closest(".option");
+//     if (checkbox.checked) {
+//       optionDiv.classList.add("active");
+//       let initialsDiv = document.createElement("div");
+//       // initialsDiv.className = "abbreviation-badge";
+//       initialsDiv.textContent = checkbox.dataset.initials;
+//       // initialsDiv.style.cssText = `background-color: ${checkbox.dataset.color}; color: white; padding: 5px 10px; border-radius: 50%;`;
+//       abbreviationsContainer.appendChild(initialsDiv);
+//             contactsToSave.push({
+//                id:        checkbox.dataset.id,
+//               name:      checkbox.dataset.name,
+//                color:     checkbox.dataset.color,
+//                initials:  checkbox.dataset.initials
+//              });
+//     } else {
+//       optionDiv.classList.remove("active");
+//     }
+//   });
+// }
+// window.currentAssignedContacts = contactsToSave;
 /**
  * Adds a subtask to the list.
  */
@@ -36,7 +45,7 @@ function addSubtask() {
   
   // Prüfen, ob wir im Edit-Modus sind
   if (window.addTaskInEditMode || window.editTaskId) {
-    console.log("Edit-Modus erkannt, verwende addSubtaskInEditMode");
+    // console.log("Edit-Modus erkannt, verwende addSubtaskInEditMode");
     addSubtaskInEditMode();
   } else {
     // Im normalen Modus: Subtask zum UI hinzufügen
@@ -82,7 +91,7 @@ document.getElementById("addedTasks").addEventListener("click", (event) => handl
 function handleSubtaskActions(event) {
   // Task-ID vorher speichern
   const currentTaskId = editTaskId || window.editTaskId;
-  console.log("Aktuelle Task-ID vor Subtask-Aktion:", currentTaskId);
+  // console.log("Aktuelle Task-ID vor Subtask-Aktion:", currentTaskId);
   
   let li = event.target.closest("li");
   if (
@@ -91,7 +100,7 @@ function handleSubtaskActions(event) {
   ) {
     // Subtask-ID extrahieren, falls vorhanden
     const subtaskId = li.id || '';
-    console.log(`Lösche Subtask ${subtaskId}`);
+    // console.log(`Lösche Subtask ${subtaskId}`);
     
     // Wenn wir im Edit-Modus sind, rufen wir die spezielle Funktion auf
     if (addTaskInEditMode && typeof editTaskChangeSubtask === 'function') {
@@ -106,7 +115,7 @@ function handleSubtaskActions(event) {
     li.remove();
     
     // Task-ID nach der Löschung überprüfen - sie sollte gleich geblieben sein
-    console.log("Task-ID nach Subtask-Löschung:", editTaskId || window.editTaskId);
+    // console.log("Task-ID nach Subtask-Löschung:", editTaskId || window.editTaskId);
     
   } else if (event.target.classList.contains("edit-icon")) {
     editSubtask(li);
@@ -114,7 +123,7 @@ function handleSubtaskActions(event) {
   
   // Sicherstellen, dass die Task-ID erhalten bleibt
   if (!editTaskId && currentTaskId) {
-    console.log("Task-ID wurde zurückgesetzt, stelle wieder her:", currentTaskId);
+    // console.log("Task-ID wurde zurückgesetzt, stelle wieder her:", currentTaskId);
     editTaskId = currentTaskId;
     window.editTaskId = currentTaskId;
   }
@@ -291,63 +300,67 @@ function setMinDateForCalendar() {
   document.getElementById("date-addTask").setAttribute("min", today);
 }
 
-function filterOptions(searchText) {
-  let optionsContainer = document.getElementById("optionsContainer");
-  searchText = searchText.trim();
+// function filterOptions(searchText) {
+//   let optionsContainer = document.getElementById("optionsContainer");
+//   searchText = searchText.trim();
 
-  if (searchText.length < 2) {
-    loadAllOptions();
-  } else {
-    optionsContainer.style.display = "flex";
-    updateOptionDisplay(searchText.toLowerCase());
-  }
-}
+//   if (searchText.length < 2) {
+//     loadAllOptions();
+//   } else {
+//     optionsContainer.style.display = "flex";
+//     updateOptionDisplay(searchText.toLowerCase());
+//   }
+// }
 
-function updateOptionDisplay(searchText) {
-  let db = firebase.firestore();
-  let optionsContainer = document.getElementById("optionsContainer");
-  optionsContainer.innerHTML = "";
+// function updateOptionDisplay(searchText) {
+//   let db = firebase.firestore();
+//   let optionsContainer = document.getElementById("optionsContainer");
+//   optionsContainer.innerHTML = "";
 
-  db.collection("UserAuthList").doc(userCreds.uid).collection("contacts").orderBy("name").get().then((querySnapshot) => {
-      querySnapshot.forEach((doc) => {
-        if (doc.data().name.toLowerCase().includes(searchText)) {
-          createCategoryOption(doc.data(), optionsContainer);
-        }
-      });
-      if (optionsContainer.innerHTML === "") {
-        optionsContainer.innerHTML =
-          '<div class="option">No results found</div>';
-      }
-    })
-    .catch((error) => {
-      console.error("Error getting documents: ", error);
-      optionsContainer.innerHTML =
-        '<div class="option">Error loading options</div>';
-    });
-}
+//   db.collection("UserAuthList").doc(userCreds.uid).collection("contacts").orderBy("name").get().then((querySnapshot) => {
+//       querySnapshot.forEach((doc) => {
+//         if (doc.data().name.toLowerCase().includes(searchText)) {
+//           createCategoryOption(doc.data(), optionsContainer);
+//         }
+//       });
+//       if (optionsContainer.innerHTML === "") {
+//         optionsContainer.innerHTML =
+//           '<div class="option">No results found</div>';
+//       }
+//     })
+//     .catch((error) => {
+//       console.error("Error getting documents: ", error);
+//       optionsContainer.innerHTML =
+//         '<div class="option">Error loading options</div>';
+//     });
+// }
 
 /**
  * Loads all options from Firestore and populates the options container.
  */
-function loadAllOptions() {
-  let db = firebase.firestore();
-  let optionsContainer = document.getElementById("optionsContainer");
-  optionsContainer.innerHTML = "";
+// function loadAllOptions() {
+//   const optionsContainer = document.getElementById("optionsContainer");
+//   optionsContainer.innerHTML = "";  // Reset
 
-  db.collection("UserAuthList").doc(userCreds.uid).collection("contacts").orderBy("name").get().then((querySnapshot) => {
-      querySnapshot.forEach((doc) => {
-        createCategoryOption(doc.data(), optionsContainer);
-      });
-      if (optionsContainer.innerHTML === "") {
-        optionsContainer.innerHTML ='<div class="option">No results found</div>';
-      }
-    })
-    .catch((error) => {
-      console.error("Error getting documents: ", error);
-      optionsContainer.innerHTML =
-        '<div class="option">Error loading options</div>';
-    });
-}
+//   return fetch("/api/contacts/")              // Endpunkt anpassen!
+//     .then(res => {
+//       if (!res.ok) throw new Error("Fehler beim Laden der Kontakte");
+//       return res.json();
+//     })
+//     .then(contacts => {
+//       contacts.forEach(contact => {
+//         // Reuse deine Funktion zum Erstellen einer Option
+//         // contact muss { id, name, initials, color } enthalten
+//         createCategoryOption(contact, optionsContainer);
+//       });
+//     })
+//     .catch(err => {
+//       console.error(err);
+//       optionsContainer.innerHTML =
+//         '<div class="option">Fehler beim Laden der Kontakte</div>';
+//     });
+// }
+
 
 /**
  * Opens the "Add Task" modal or page and initializes the task form.

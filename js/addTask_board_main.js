@@ -136,11 +136,11 @@ async function loadAddTasks() {
    * Retrieves category abbreviations from the UI.
    * @returns {Array<string>} An array of category abbreviation strings.
    */
-  function getCategoryAbbreviations() {
-    const abbreviationsContainer = document.getElementById("showName");
-    const badges = abbreviationsContainer.querySelectorAll(".abbreviation-badge");
-    return Array.from(badges).map(badge => badge.textContent);
-  }
+  // function getCategoryAbbreviations() {
+  //   const abbreviationsContainer = document.getElementById("showName");
+  //   const badges = abbreviationsContainer.querySelectorAll(".abbreviation-badge");
+  //   return Array.from(badges).map(badge => badge.textContent);
+  // }
   
   /**
    * Assembles all parts of the form data into a single object.
@@ -240,7 +240,7 @@ async function loadAddTasks() {
   async function submitContact() {
     try {
       const data = collectFormData();
-      console.log("Gesammelte Formulardaten:", data);
+      // console.log("Gesammelte Formulardaten:", data);
       
       // Formatiere die Daten für das Backend
       const taskData = {
@@ -254,11 +254,11 @@ async function loadAddTasks() {
         subtasks: data.subtasks || []
       };
       
-      console.log("Formatierte Task-Daten für Backend:", taskData);
+      // console.log("Formatierte Task-Daten für Backend:", taskData);
       
       // Verwende die createTask-Funktion aus tasks-api.js
       const newTask = await createTask(taskData);
-      console.log("Neue Task erstellt:", newTask);
+      // console.log("Neue Task erstellt:", newTask);
       
       // Erfolg anzeigen
       showSuccessMessage();
@@ -269,7 +269,7 @@ async function loadAddTasks() {
       // Formular ausblenden
       hideAddTaskBg();
     } catch (error) {
-      console.error("Fehler beim Erstellen des Tasks:", error);
+      // console.error("Fehler beim Erstellen des Tasks:", error);
       alert("Fehler beim Erstellen des Tasks: " + error.message);
     }
   }
@@ -537,7 +537,7 @@ function addTaskToBoardWithoutLoadNew(id, task) {
    */
   async function loadCategories() {
     try {
-      console.log("Lade Kontakte vom Backend...");
+      // console.log("Lade Kontakte vom Backend...");
       let optionsContainer = document.getElementById("optionsContainer");
       
       if (!optionsContainer) {
@@ -549,7 +549,7 @@ function addTaskToBoardWithoutLoadNew(id, task) {
       
       // Verwende die getContacts-Funktion aus api-service.js
       const contacts = await getContacts();
-      console.log("Geladene Kontakte:", contacts);
+      // console.log("Geladene Kontakte:", contacts);
       
       if (!contacts || contacts.length === 0) {
         optionsContainer.innerHTML = '<div class="option">Keine Kontakte verfügbar</div>';

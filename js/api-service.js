@@ -36,7 +36,7 @@ async function createContact(contactData) {
  */
 async function getContacts() {
   try {
-      console.log("API-Aufruf: Kontakte abrufen");
+      // console.log("API-Aufruf: Kontakte abrufen");
       const response = await fetch('http://localhost:8000/api/contacts/');
       
       if (!response.ok) {
@@ -46,7 +46,7 @@ async function getContacts() {
       }
       
       const data = await response.json();
-      console.log("API-Antwort Kontakte:", data);
+      // console.log("API-Antwort Kontakte:", data);
       return data;
   } catch (error) {
       console.error('API-Fehler bei getContacts:', error);
@@ -62,7 +62,7 @@ async function getContacts() {
  */
 async function updateContact(id, contactData) {
   try {
-    console.log(`Aktualisiere Kontakt mit ID ${id}:`, contactData);
+    // console.log(`Aktualisiere Kontakt mit ID ${id}:`, contactData);
     
     const response = await fetch(`${API_URL}/contacts/${id}/`, {
       method: 'PUT',

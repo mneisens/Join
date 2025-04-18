@@ -1,7 +1,7 @@
 async function loadContact() {
     await includeHTML();
     showContacts();
-    getMyContacts();
+    // getMyContacts();
     createUserInitials();
     renderbtnCreate();
     activeLink(4, window.location.href);
@@ -471,7 +471,9 @@ async function addContact() {
         const name = getNameFromInput(); // Den vollständigen Namen verwenden, nicht aufteilen!
         const email = getEmailFromInput();
         const phone = getPhoneFromInput();
-        
+        const color = getColorFromInput();
+        const initials = renderContactInitials(); 
+
         // Prüfe, ob die E-Mail ein gültiges Format hat
         if (!validateEmail(email)) {
             alert("Bitte gib eine gültige E-Mail-Adresse ein.");
@@ -482,7 +484,9 @@ async function addContact() {
         const contactData = {
             name: name,                // Vollständiger Name, nicht aufgeteilt
             email: email,
-            phone: phone
+            phone: phone,
+            color: color,
+            initials: initials
         };
 
         console.log("Sende Daten an Backend:", contactData);
@@ -496,8 +500,8 @@ async function addContact() {
             name: newContact.name,
             email: newContact.email,
             phone: newContact.phone,
-            color: getColorFromInput(),
-            initials: renderContactInitials()
+            color: newContact.color,
+            initials: newContact.initials
         };
 
         // UI aktualisieren
@@ -550,8 +554,8 @@ async function showContacts() {
                     name: name,
                     email: contact.email || "",
                     phone: contact.phone || "",
-                    color: getRandomColor(),
-                    initials: getInitialsFromName(name)
+                    color: contact.color || getRandomColor(),
+                    initials: contact.initials || getInitialsFromName(name)
                 };
             });
             
@@ -575,7 +579,9 @@ async function updateContacts(contactId, updatedData) {
       const contactData = {
         name: updatedData.name,
         email: updatedData.email,
-        phone: updatedData.phone
+        phone: updatedData.phone,
+        color: updatedData.color ,
+        initials: updatedData.initials 
       };
       
       console.log("Formatierte Daten für Backend:", contactData);

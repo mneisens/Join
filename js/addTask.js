@@ -2,7 +2,7 @@
 
 async function getContacts() {
     try {
-        console.log("API-Aufruf: Kontakte abrufen");
+        // console.log("API-Aufruf: Kontakte abrufen");
         const response = await fetch('http://localhost:8000/api/contacts/');
         
         if (!response.ok) {
@@ -12,10 +12,10 @@ async function getContacts() {
         }
         
         const data = await response.json();
-        console.log("API-Antwort Kontakte:", data);
+        // console.log("API-Antwort Kontakte:", data);
         return data;
     } catch (error) {
-        console.error('API-Fehler bei getContacts:', error);
+        // console.error('API-Fehler bei getContacts:', error);
         throw error;
     }
 }
@@ -122,12 +122,12 @@ function collectFormData() {
     let contactNamesAndColors = [];
     let checkboxes = document.querySelectorAll('.category-checkbox:checked');
     
-    console.log("Gesammelte Checkboxen:", checkboxes);
+    // console.log("Gesammelte Checkboxen:", checkboxes);
     
     checkboxes.forEach(checkbox => {
         if (checkbox.checked) {
             const contactId = checkbox.dataset.id;
-            console.log("Checkbox-Daten:", checkbox.dataset);
+            // console.log("Checkbox-Daten:", checkbox.dataset);
             
             // Stelle sicher, dass eine gültige ID vorhanden ist
             if (contactId && contactId !== "undefined" && contactId !== "null") {
@@ -143,7 +143,7 @@ function collectFormData() {
         }
     });
     
-    console.log("Gesammelte Kontakte:", contactNamesAndColors);
+    // console.log("Gesammelte Kontakte:", contactNamesAndColors);
 
     let data = {
         header: encodeHTML(document.getElementById("input-title-addTask").value),
@@ -169,7 +169,7 @@ function collectFormData() {
 async function submitContact() {
     try {
       const data = collectFormData();
-      console.log("Gesammelte Formulardaten:", data);
+    //   console.log("Gesammelte Formulardaten:", data);
       
       // Filtere ungültige IDs heraus
       const validAssignedTo = data.assignedTo
@@ -185,7 +185,7 @@ async function submitContact() {
         })
         .filter(id => id !== null); // Entferne alle null-Werte
       
-      console.log("Gültige Contact-IDs:", validAssignedTo);
+    //   console.log("Gültige Contact-IDs:", validAssignedTo);
       
       // Format für das Django-Backend anpassen
       const taskData = {
@@ -199,11 +199,11 @@ async function submitContact() {
         subtasks: data.subtasks
       };
       
-      console.log("Formatierte Task-Daten für Backend:", taskData);
+    //   console.log("Formatierte Task-Daten für Backend:", taskData);
       
       // Prüfe, ob assigned_to Werte enthält
       if (taskData.assigned_to.length === 0) {
-        console.log("Keine gültigen Kontakte zugewiesen");
+        // console.log("Keine gültigen Kontakte zugewiesen");
         
         // Optional: Leere assigned_to ist OK - entferne das Feld
         // delete taskData.assigned_to;
@@ -245,9 +245,9 @@ function toggleOptionsContainer(event, optionsContainer) {
  */
 async function loadCategories() {
     try {
-        console.log("Versuche Kontakte zu laden...");
+        // console.log("Versuche Kontakte zu laden...");
         const contacts = await getContacts();
-        console.log("Geladene Kontakte:", contacts);
+        // console.log("Geladene Kontakte:", contacts);
         
         let optionsContainer = document.getElementById('optionsContainer');
         if (!optionsContainer) {
@@ -258,13 +258,13 @@ async function loadCategories() {
         optionsContainer.innerHTML = '';
         
         if (!contacts || contacts.length === 0) {
-            console.log("Keine Kontakte gefunden.");
+            // console.log("Keine Kontakte gefunden.");
             optionsContainer.innerHTML = '<div class="option">Keine Kontakte verfügbar</div>';
             return;
         }
         
         contacts.forEach(contact => {
-            console.log("Verarbeite Kontakt:", contact);
+            // console.log("Verarbeite Kontakt:", contact);
             const formattedContact = {
                 id: contact.id,
                 name: contact.name,

@@ -270,33 +270,33 @@
     //         }
     //     }
 
-    //     async function getMyContacts() {
-    //         try {
-    //             const contactRef = collection(db, 'UserAuthList', userCreds.uid, 'myContact');
-    //             const querySnapshot = await getDocs(contactRef);
-    //             myContactContainer.innerHTML = '';
-    //             if (!querySnapshot.empty) {
-    //                 let myContacts = [];
-    //                 querySnapshot.forEach((doc) => {
-    //                     const data = doc.data();
-    //                     myContacts.push(data);
-    //                 });
-    //                 renderMyContact(myContacts);
-    //             } else {
+        // async function getMyContacts() {
+        //     try {
+        //         // const contactRef = collection(db, 'UserAuthList', userCreds.uid, 'myContact');
+        //         const querySnapshot = await getDocs(contactRef);
+        //         myContactContainer.innerHTML = '';
+        //         if (!querySnapshot.empty) {
+        //             let myContacts = [];
+        //             querySnapshot.forEach((doc) => {
+        //                 const data = doc.data();
+        //                 myContacts.push(data);
+        //             });
+        //             renderMyContact(myContacts);
+        //         } else {
 
-    //             }
-    //         } catch (error) {
-    //         }
-    //     }
+        //         }
+        //     } catch (error) {
+        //     }
+        // }
 
-    //     async function updateMyContact(contactID, updatedMyData) {
-    //         try {
-    //             const docRef = doc(db, 'UserAuthList', userCreds.uid, 'myContact', contactID);
-    //             await updateDoc(docRef, updatedMyData);
-    //             getMyContacts();
-    //         } catch (error) {
-    //         }
-    //     }
+        // async function updateMyContact(contactID, updatedMyData) {
+        //     try {
+        //         const docRef = doc(db, 'UserAuthList', userCreds.uid, 'myContact', contactID);
+        //         await updateDoc(docRef, updatedMyData);
+        //         getMyContacts();
+        //     } catch (error) {
+        //     }
+        // }
 
     //     async function updateMyAccount() {
     //         try {
@@ -316,7 +316,7 @@
     //     window.updateContacts = updateContacts;
     //     window.showContacts = showContacts;
     //     window.addContact = addContact;
-    //     window.getMyContacts = getMyContacts;
+        // window.getMyContacts = getMyContacts;
     // </script>
 
 
@@ -325,23 +325,23 @@
         // Da wir Firebase entfernen, müssen wir eine einfache Session-Handhabung implementieren
         // Dies ist nur eine Übergangslösung - später solltest du ein richtiges Authentifizierungssystem einrichten
         
-        function checkCred() {
-            // Wenn kein Benutzer in der Session, erstelle einen Demo-Benutzer
-            if (!sessionStorage.getItem("user-creds")) {
-                sessionStorage.setItem("user-creds", JSON.stringify({
-                    uid: "demo-user-id"
-                }));
-                sessionStorage.setItem("user-info", JSON.stringify({
-                    name: "Demo User"
-                }));
-            }
-        }
+        // function checkCred() {
+        //     // Wenn kein Benutzer in der Session, erstelle einen Demo-Benutzer
+        //     if (!sessionStorage.getItem("user-creds")) {
+        //         sessionStorage.setItem("user-creds", JSON.stringify({
+        //             uid: "demo-user-id"
+        //         }));
+        //         sessionStorage.setItem("user-info", JSON.stringify({
+        //             name: "Demo User"
+        //         }));
+        //     }
+        // }
         
-        window.addEventListener("load", checkCred);
+        // window.addEventListener("load", checkCred);
         
         // Diese Variablen stellen wir global zur Verfügung, um den Code kompatibel zu halten
-        const userCreds = JSON.parse(sessionStorage.getItem("user-creds") || '{"uid":"demo-user-id"}');
-        const userInfo = JSON.parse(sessionStorage.getItem("user-info") || '{"name":"Demo User"}');
+        // const userCreds = JSON.parse(sessionStorage.getItem("user-creds") || '{"uid":"demo-user-id"}');
+        // const userInfo = JSON.parse(sessionStorage.getItem("user-info") || '{"name":"Demo User"}');
     </script>
 </body>
 

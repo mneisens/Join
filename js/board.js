@@ -194,6 +194,7 @@ function renderHtmlBoardPreviewCards(category, taskArr) {
   }
 }
 
+
 /**
  * The render function is used to return a html snipped wich contains the
  * profile badges of the assigned to people in the given task.

@@ -1,4 +1,114 @@
 /**
+ * Weist Kontakte im Edit-Formular zu
+ * @param {Array} assignedTo - Array mit zugewiesenen Kontakten
+ */
+function assignContactsInEditForm(assignedTo) {
+    try {
+        const badgeContainer = document.getElementById("showName");
+        if (!badgeContainer) return;
+        badgeContainer.innerHTML = ""; // alte Badges entfernen
+
+        // Vollständige Kontakt-Objekte zusammenstellen
+        const fullContacts = assignedTo.map(item => {
+            const id = item.id || item;
+            const name = item.name || item;
+            const found = (window.allContacts || []).find(c =>
+                c.id === String(id) ||
+                c.name.toLowerCase() === String(name).toLowerCase()
+            );
+            return found || {
+                id,
+                name,
+                initials: getInitialsFromName(name),
+                color: contact.color || getRandomColor()
+            };
+        });
+
+        // Checkboxen aktivieren und Badges rendern
+        fullContacts.forEach(contact => {
+            const checkbox = document.querySelector(`.category-checkbox[data-id="${contact.id}"]`);
+            if (checkbox) {
+                checkbox.checked = true; // Checkbox aktivieren
+                checkbox.classList.add("active"); // Optional: Klasse hinzufügen, falls CSS verwendet wird
+            }
+
+            // Badge erstellen
+            const badge = document.createElement("div");
+            badge.className = "abbreviation-badge";
+            badge.textContent = contact.initials;
+            badge.style.cssText = `
+                background-color: ${contact.color};
+                color: white;
+                padding: 5px 10px;
+                border-radius: 50%;
+                margin: 2px;
+                display: inline-block;
+            `;
+            badgeContainer.appendChild(badge);
+        });
+
+        // Für’s Speichern merken
+        window.currentAssignedContacts = [...fullContacts];
+    } catch (err) {
+        // console.error("Fehler in assignContactsInEditForm:", err);
+    }
+}
+
+
+/**
+ * Überschreibe die updateSelectedAbbreviations-Funktion, um bestehende Badges zu erhalten
+ */
+// behalte Dir das Original, falls Du es im "Add‑Task‑Modus" noch brauchst:
+const originalUpdateSelectedAbbreviations = window.updateSelectedAbbreviations;
+
+window.updateSelectedAbbreviations = function() {
+  if (addTaskInEditMode) {
+    const checkboxes = document.querySelectorAll(".category-checkbox");
+    const container  = document.getElementById("showName");
+    if (!container) return;
+
+    // 1) Container leeren
+    container.innerHTML = "";
+
+    // 2) Alle angehakten Checkboxen sammeln
+    const selected = Array.from(checkboxes)
+      .filter(cb => cb.checked)
+      .map(cb => ({
+        id      : cb.dataset.id,
+        name    : cb.dataset.name,
+        initials: cb.dataset.initials,
+        color   : cb.dataset.color
+      }));
+
+    // 3) Für jedes selektierte Kontakt‑Objekt einen Badge anlegen
+    selected.forEach(contact => {
+      const badge = document.createElement("div");
+      badge.className = contact.name;
+      badge.dataset.contactId   = contact.id;
+      badge.dataset.contactName = contact.name;
+      badge.textContent         = contact.initials;
+      badge.style.cssText       =
+        `background-color: ${contact.color};
+         color: white;
+         padding: 5px 10px;
+         border-radius: 50%;
+         margin: 2px;
+         display: inline-block;`;
+      container.appendChild(badge);
+    });
+
+    // 4) Für's spätere Speichern merken
+    window.currentAssignedContacts = selected;
+    return;
+  }
+
+  // im Normal‑Modus das Original nutzen
+  if (originalUpdateSelectedAbbreviations) {
+    originalUpdateSelectedAbbreviations();
+  }
+};
+
+/**
  * Flag indicating if add task form is in edit mode
  */
 let addTaskInEditMode = false;
@@ -13,7 +123,10 @@ function initEditTask(id) {
     console.log("Initialisiere Edit-Modus für Task:", id);
     editTaskId = id;
     addTaskInEditMode = true;
-    
+
+    // Globale Variable für zugewiesene Kontakte zurücksetzen
+    window.currentAssignedContacts = [];
+
     try {
         // Task aus dem Board-Array holen
         const task = boardGetTaskById(id);
@@ -21,41 +134,50 @@ function initEditTask(id) {
             console.error("Task nicht gefunden:", id);
             return;
         }
-        
+
+        console.log("Task zum Bearbeiten:", task);
+        console.log("Zugewiesene Kontakte:", task.assignedTo);
+        document.querySelectorAll(".category-checkbox").forEach(cb => {
+            console.log("Checkbox ID:", cb.dataset.id);
+        });
+
         // Add Task Formular vorbereiten
         document.getElementById("boardAddTaskMainBg").classList.remove("d-none");
         document.getElementById("boardHeadAddTask").innerText = "Edit Task";
-        
+
         // Formulardaten befüllen
         document.getElementById("input-title-addTask").value = task.header || "";
         document.getElementById("textarea-addTask").value = task.description || "";
-        
+
         // Datum formatieren und eintragen
         setDateInEditForm(task.dueDate);
-        
+
         // Priorität setzen
         setPriorityInEditForm(task.priority);
-        
+
         // Kategorie setzen
         document.getElementById("category").value = task.category || "User Story";
-        
+
         // Subtasks laden
         loadSubtasksInEditForm(task);
-        
-        // Zugewiesene Kontakte setzen
-        assignContactsInEditForm(task.assignedTo);
-        
+        // loadAllOptions();
         // Buttons für Edit-Modus anpassen
         document.getElementById("saveTasks").style.display = "none";
         document.getElementById("submitEditTask").style.display = "flex";
         document.getElementById("clearButton").style.display = "none";
-        
+
         // Kanban-Kategorie im Formular speichern
         document.getElementById("boardAddTaskMainBg").dataset.category = task.kanbanCategory;
-        
+
         // Subtasks-Array für spätere Bearbeitung speichern
         editTaskSubtasks = JSON.parse(JSON.stringify(task.subtasks || []));
-        
+
+        // Zugewiesene Kontakte setzen
+        if (Array.isArray(task.assignedTo) && task.assignedTo.length > 0) {
+            assignContactsInEditForm(task.assignedTo);
+        } else {
+            console.warn("Keine zugewiesenen Kontakte gefunden.");
+        }
     } catch (error) {
         console.error("Fehler beim Initialisieren des Edit-Modus:", error);
     }
@@ -86,21 +208,55 @@ function setDateInEditForm(dueDate) {
  */
 function setPriorityInEditForm(priority) {
     try {
+        console.log("Setze Priorität:", priority);
+        
         // Alle Prioritäts-Buttons zurücksetzen
         const buttons = document.querySelectorAll(".prio-addTask button");
         buttons.forEach(button => {
-            button.classList.remove("active");
+            button.classList.remove("active", "prio-btn-active");
             button.style.backgroundColor = "";
             button.setAttribute("value", "false");
         });
         
+        // Die Bilder zurücksetzen
+        document.getElementById("prio-up-orange").classList.remove("d-none");
+        document.getElementById("prio-medium-ye").classList.remove("d-none");
+        document.getElementById("prio-down-green").classList.remove("d-none");
+        document.getElementById("prio-up-white").classList.add("d-none");
+        document.getElementById("prio-medium-white").classList.add("d-none");
+        document.getElementById("prio-down-white").classList.add("d-none");
+        
         // Ausgewählte Priorität aktivieren
         const selectedButton = document.getElementById(priority);
         if (selectedButton) {
-            setButtonValues(selectedButton);
+            selectedButton.classList.add("active", "prio-btn-active");
+            selectedButton.setAttribute("value", "true");
+            
+            // Farbe entsprechend der Priorität setzen
+            if (priority === "urgent") {
+                selectedButton.style.backgroundColor = "rgba(255, 61, 0, 1)";
+                document.getElementById("prio-up-orange").classList.add("d-none");
+                document.getElementById("prio-up-white").classList.remove("d-none");
+            } else if (priority === "medium") {
+                selectedButton.style.backgroundColor = "rgba(255, 168, 0, 1)";
+                document.getElementById("prio-medium-ye").classList.add("d-none");
+                document.getElementById("prio-medium-white").classList.remove("d-none");
+            } else if (priority === "low") {
+                selectedButton.style.backgroundColor = "rgba(122, 226, 41, 1)";
+                document.getElementById("prio-down-green").classList.add("d-none");
+                document.getElementById("prio-down-white").classList.remove("d-none");
+            }
+            
+            selectedButton.classList.add("btn-font");
         } else {
             // Fallback: Medium als Standard setzen
-            setButtonValues(document.getElementById("medium"));
+            const mediumButton = document.getElementById("medium");
+            mediumButton.classList.add("active", "prio-btn-active");
+            mediumButton.setAttribute("value", "true");
+            mediumButton.style.backgroundColor = "rgba(255, 168, 0, 1)";
+            document.getElementById("prio-medium-ye").classList.add("d-none");
+            document.getElementById("prio-medium-white").classList.remove("d-none");
+            mediumButton.classList.add("btn-font");
         }
     } catch (error) {
         console.error("Fehler beim Setzen der Priorität:", error);
@@ -137,42 +293,95 @@ function loadSubtasksInEditForm(task) {
     }
 }
 
+// document.getElementById("optionsContainer")
+//   .addEventListener("change", e => {
+//     if (!addTaskInEditMode) return;             // nur im Edit‑Modus
+//     const boxes = Array.from(
+//       document.querySelectorAll(".category-checkbox")
+//     );
+//     // Alle angehakten in Kontakt‑Objekte umwandeln
+//     const sel = boxes
+//       .filter(cb => cb.checked)
+//       .map(cb => ({
+//         id      : cb.dataset.id,
+//         name    : cb.dataset.name,
+//         initials: cb.dataset.initials,
+//         color   : cb.dataset.color
+//       }));
+//     renderContactBadges(sel);
+//   });
+
+// document.querySelectorAll(".category-checkbox").forEach(cb => {
+//     console.log(cb.dataset.id, cb.checked);
+// });
+
 /**
- * Weist Kontakte im Edit-Formular zu
- * @param {Array} assignedTo - Array mit zugewiesenen Kontakten
+ * Erstellt Badges für Kontakte
+ * @param {Array} contacts - Array mit Kontakten
+ * @param {HTMLElement} container - Container für die Badges
  */
-function assignContactsInEditForm(assignedTo) {
-    try {
-        // Zuerst alle Checkboxen zurücksetzen
-        const checkboxes = document.querySelectorAll(".category-checkbox");
-        checkboxes.forEach(checkbox => {
-            checkbox.checked = false;
-        });
-        
-        // Wenn keine Kontakte zugewiesen sind, abbrechen
-        if (!Array.isArray(assignedTo) || assignedTo.length === 0) {
-            updateSelectedAbbreviations();
-            return;
+function createContactBadges(contacts, container) {
+    if (!container || !Array.isArray(contacts)) return;
+    
+    contacts.forEach(contact => {
+        // Initialen ermitteln (mit besserer Fehlerbehandlung)
+        let initials = "??";
+        if (contact.initials) {
+            initials = contact.initials;
+        } else if (contact.name) {
+            initials = getInitialsFromName(contact.name);
+        } else if (typeof contact === 'object' && contact !== null) {
+            // Versuchen, aus anderen Eigenschaften Initialen zu extrahieren
+            const nameSource = contact.fullName || contact.userName || contact.email || "";
+            if (nameSource) {
+                initials = getInitialsFromName(nameSource);
+            }
         }
         
-        // Für jeden zugewiesenen Kontakt die entsprechende Checkbox aktivieren
-        assignedTo.forEach(contact => {
-            // Suche nach dem Kontakt-Namen
-            const contactName = contact.name || "";
-            
-            checkboxes.forEach(checkbox => {
-                const checkboxName = checkbox.dataset.name || "";
-                if (checkboxName.toLowerCase() === contactName.toLowerCase()) {
-                    checkbox.checked = true;
-                }
-            });
-        });
+        // Farbe ermitteln
+        const color = contact.color || getRandomColor();
         
-        // UI aktualisieren
-        updateSelectedAbbreviations();
-    } catch (error) {
-        console.error("Fehler beim Zuweisen der Kontakte:", error);
+        // Badge erstellen
+        const badge = document.createElement("div");
+        badge.className = "abbreviation-badge";
+        badge.textContent = initials;
+        badge.style.backgroundColor = color;
+        badge.style.color = "white";
+        badge.style.padding = "5px 10px";
+        badge.style.borderRadius = "50%";
+        badge.style.margin = "2px";
+        badge.style.display = "inline-block";
+        
+        // Daten-Attribute für spätere Identifikation
+        if (contact.id) badge.dataset.contactId = contact.id;
+        if (contact.name) badge.dataset.contactName = contact.name;
+        
+        container.appendChild(badge);
+        console.log("Badge erstellt für:", contact.name || "Unbekannter Kontakt", "mit Initialen:", initials);
+    });
+}
+
+/**
+ * Hilfsfunktion um Initialen aus einem Namen zu extrahieren
+ */
+function getInitialsFromName(fullName) {
+    if (!fullName) return "??";
+    
+    // Spezialfall für Namen mit Titeln (Dr., Prof., etc.)
+    if (fullName.includes(".")) {
+        // Entferne Titel wie "Dr." oder "Prof."
+        fullName = fullName.replace(/^[^a-zA-Z]*[a-zA-Z]+\.\s*/g, "");
     }
+    
+    const names = fullName.trim().split(/\s+/);
+    let firstInitial = names[0] ? names[0].charAt(0).toUpperCase() : '';
+    let secondInitial = '';
+    
+    if (names.length > 1) {
+        secondInitial = names[names.length - 1].charAt(0).toUpperCase();
+    }
+    
+    return (firstInitial + secondInitial) || "??";
 }
 
 /**
@@ -232,39 +441,62 @@ function editTaskChangeSubtask(subtaskId, action, newText) {
 async function pushEditTaskToDatabase() {
     try {
         console.log("Speichere bearbeitete Task mit ID:", editTaskId);
-        
-        // Formulardaten sammeln
-        const formData = collectFormData();
-        
+
+        // Alte Kontakte aus der globalen Variable holen
+        const oldContacts = Array.isArray(window.currentAssignedContacts)
+            ? window.currentAssignedContacts
+            : [];
+
+        // Neue Kontakte aus den Checkboxen sammeln
+        const newlyChecked = Array.from(document.querySelectorAll(".category-checkbox:checked"))
+            .map(cb => ({
+                id: cb.dataset.id,
+                name: cb.dataset.name,
+                color: cb.dataset.color,
+                initials: cb.dataset.initials
+            }));
+
+        // Alte und neue Kontakte zusammenführen und Duplikate entfernen
+        const mergedContacts = [...oldContacts];
+        newlyChecked.forEach(newContact => {
+            if (!mergedContacts.some(existingContact => existingContact.id === newContact.id)) {
+                mergedContacts.push(newContact);
+            }
+        });
+
+        // Aktualisiere die globale Variable
+        window.currentAssignedContacts = mergedContacts;
+
+        console.log("Zusammengeführte Kontakte:", mergedContacts);
+
         // Aktualisierte Task-Daten erstellen
         const updatedTask = {
-            header: formData.header,
-            description: formData.description,
-            due_date: formatDateForBackend(formData.dueDate), 
-            priority: formData.priority,
-            category: formData.category,
-            kanban_category: formData.kanbanCategory,
+            header: document.getElementById("input-title-addTask").value || "",
+            description: document.getElementById("textarea-addTask").value || "",
+            due_date: formatDateForBackend(document.getElementById("date-addTask").value),
+            priority: document.querySelector(".prio-addTask button.active")?.id || "medium",
+            category: document.getElementById("category").value || "User Story",
+            kanban_category: document.getElementById("boardAddTaskMainBg").dataset.category || "Todo",
             subtasks: editTaskSubtasks,
-            assigned_to: formatAssignedToForBackend(formData.assignedTo)
+            assigned_to: mergedContacts.map(contact => contact.id) // Nur IDs für das Backend
         };
-        
+
         console.log("Aktualisierte Task-Daten:", updatedTask);
-        
+
         // Task über API aktualisieren
         await updateTask(editTaskId, updatedTask);
-        
+
         // Erfolgsmeldung anzeigen
         showSuccessMessage("Task erfolgreich aktualisiert");
-        
+
         // Board neu laden
         await boardLoadTasksFromBackend();
-        
+
         // Formular zurücksetzen und ausblenden
         resetAddTaskHtml();
         setTimeout(() => {
             document.getElementById("boardAddTaskMainBg").classList.add("d-none");
         }, 2000);
-        
     } catch (error) {
         console.error("Fehler beim Aktualisieren der Task:", error);
         alert("Fehler beim Speichern der Änderungen: " + error.message);
@@ -355,4 +587,33 @@ function addSubtaskInEditMode() {
     
     // Input-Feld leeren
     inputField.value = "";
+}
+
+
+/**
+ * Baut den Badge‑Container komplett neu auf
+ * @param {Array} contacts – Liste von {id,name,initials,color}
+ */
+function renderContactBadges(contacts) {
+  const container = document.getElementById("showName");
+  if (!container) return;
+  container.innerHTML = "";
+  contacts.forEach(c => {
+    const badge = document.createElement("div");
+    badge.className = "abbreviation-badge";
+    badge.dataset.contactId   = c.id;
+    badge.dataset.contactName = c.name;
+    badge.textContent         = c.initials;
+    badge.style.cssText       =
+      `background-color: ${c.color};
+       color: white;
+       padding: 5px 10px;
+       border-radius: 50%;
+       margin: 2px;
+       display: inline-block;`;
+    container.appendChild(badge);
+  });
+
+  // Für’s Speichern merken
+  window.currentAssignedContacts = contacts;
 }

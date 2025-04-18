@@ -138,10 +138,10 @@
                     });
                     return dataArr;
                 } else {
-                    console.log("No Tasks found!");
+                    // console.log("No Tasks found!");
                 }
             } catch (error) {
-                console.log("Error getting documents:", error);
+                // console.log("Error getting documents:", error);
             }
         }
 
@@ -166,7 +166,7 @@
                     createUserInitials();
                 }
             } catch (error) {
-                console.log("Error checking firstLogIn:", error);
+                // console.log("Error checking firstLogIn:", error);
             }
         }
 
@@ -186,7 +186,7 @@
                 };
                 await setDoc(newDocRef, myContactData);
             } catch (error) {
-                console.log(error);
+                // console.log(error);
             }
         }
 
