@@ -1,5 +1,4 @@
-// api-service.js
-// Hier definieren wir alle API-Aufrufe zum Backend
+
 
 const API_URL = 'http://localhost:8000/api';
 

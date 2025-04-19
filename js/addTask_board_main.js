@@ -11,40 +11,7 @@ async function loadAddTasks() {
   let currentContactId = null;
   let kanbanCategory = "Todo";
   
-  /**
-   * Firebase configuration object.
-   */
-  // const firebaseConfig = {
-  //   apiKey: "AIzaSyBrslTwOvrS4_tnF6uODjT1KQuWR4ttzFY",
-  //   authDomain: "join193-5ae20.firebaseapp.com",
-  //   databaseURL:
-  //     "https://join193-5ae20-default-rtdb.europe-west1.firebasedatabase.app",
-  //   projectId: "join193-5ae20",
-  //   storageBucket: "join193-5ae20.appspot.com",
-  //   messagingSenderId: "330884835484",
-  //   appId: "1:330884835484:web:20d71dc457ab9659d0a559",
-  // };
 
-  // const firebaseConfig = {
-  //   apiKey: "AIzaSyAeIBUm7q40H52uDOsl19A6ecvv-NH3cHs",
-  //   authDomain: "join-62bad.firebaseapp.com",
-  //   databaseURL: "https://join-62bad-default-rtdb.firebaseio.com",
-  //   projectId: "join-62bad",
-  //   storageBucket: "join-62bad.firebasestorage.app",
-  //   messagingSenderId: "349761837323",
-  //   appId: "1:349761837323:web:970c5ea99cf750318a2a0e"
-  // };
-
-  // const firebaseConfig = {
-  //   apiKey: "AIzaSyACpY02drGC1U6QjS5_u1gGVVajUYSXjbE",
-  //   authDomain: "join2-14807.firebaseapp.com",
-  //   projectId: "join2-14807",
-  //   storageBucket: "join2-14807.firebasestorage.app",
-  //   messagingSenderId: "344947370774",
-  //   appId: "1:344947370774:web:ec768c001a344583383e37"
-  // };
-  // firebase.initializeApp(firebaseConfig);
-  
   /**
    * Sets up event listeners for the document once the DOM is fully loaded.
    */
@@ -132,15 +99,6 @@ async function loadAddTasks() {
     };
   }
   
-  /**
-   * Retrieves category abbreviations from the UI.
-   * @returns {Array<string>} An array of category abbreviation strings.
-   */
-  // function getCategoryAbbreviations() {
-  //   const abbreviationsContainer = document.getElementById("showName");
-  //   const badges = abbreviationsContainer.querySelectorAll(".abbreviation-badge");
-  //   return Array.from(badges).map(badge => badge.textContent);
-  // }
   
   /**
    * Assembles all parts of the form data into a single object.
@@ -302,30 +260,6 @@ async function loadAddTasks() {
     }).filter(id => id !== null); // Entferne ungültige IDs
   }
   
-  
-  // /**
-  //  * Updates an existing contact in Firestore.
-  //  * @param {firebase.firestore.CollectionReference} contactsCollection - The Firestore collection reference.
-  //  * @param {Object} data - The data to update in the contact document.
-  //  */
-  // function updateContact(contactsCollection, data) {
-  //   contactsCollection.doc(currentContactId).set(data, { merge: true }).then(() => {
-  //       showSuccessMessage();
-  //     })
-  //     .catch((error) => console.error("Fehler beim Aktualisieren des Dokuments: ", error));
-  // }
-  
-  // /**
-  //  * Adds a new contact to Firestore.
-  //  * @param {firebase.firestore.CollectionReference} contactsCollection - The Firestore collection reference.
-  //  * @param {Object} data - The data to add to the new contact document.
-  //  */
-  // function addNewContact(contactsCollection, data) {
-  //   contactsCollection.add(data).then((docRef) => {
-  //       setTaskIdInDocument(contactsCollection, docRef.id, data);
-  //     })
-  //     .catch((error) => console.error("Fehler beim Hinzufügen des Dokuments: ", error));
-  // }
   
   /**
    * Sets the task ID in the newly added contact document.

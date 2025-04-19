@@ -43,50 +43,36 @@ function assignContactsInEditForm(assignedToIds) {
  * Überschreibe die updateSelectedAbbreviations-Funktion, um bestehende Badges zu erhalten
  */
 // behalte Dir das Original, falls Du es im "Add‑Task‑Modus" noch brauchst:
-const originalUpdateSelectedAbbreviations = window.updateSelectedAbbreviations;
-
+/**
+ * Zeigt für jede angehak­te Kontakt‑Checkbox ein Badge mit den Initialen an.
+ * Läuft in Add‑ und in Edit‑Modus.
+ */
 window.updateSelectedAbbreviations = function() {
-  if (addTaskInEditMode) {
-    const checkboxes = document.querySelectorAll(".category-checkbox");
-    const container  = document.getElementById("showName");
-    if (!container) return;
-
-    // 1) Container leeren
-    container.innerHTML = "";
-
-    // 2) Alle angehakten Checkboxen sammeln
-    const selected = Array.from(checkboxes)
-      .filter(cb => cb.checked)
-      .map(cb => ({
-        id      : cb.dataset.id,
-        name    : cb.dataset.name,
-        initials: cb.dataset.initials,
-        color   : cb.dataset.color
-      }));
-
-    // 3) Für jedes selektierte Kontakt‑Objekt einen Badge anlegen
-    selected.forEach(contact => {
+    const container = document.getElementById("showName");
+    container.innerHTML = "";  // alte Badges löschen
+  
+    // Alle angehak­ten Checkboxen finden und für jede ein Badge bauen
+    document.querySelectorAll(".category-checkbox:checked").forEach(cb => {
       const badge = document.createElement("div");
-      badge.className = contact.name;
-      badge.dataset.contactId   = contact.id;
-      badge.dataset.contactName = contact.name;
-      badge.textContent         = contact.initials;
-      badge.style.cssText       =
-        `background-color: ${contact.color};
-      `
+      badge.className = "abbreviation-badge";
+      badge.textContent = cb.dataset.initials;
+      badge.style.cssText = `
+        background-color: ${cb.dataset.color};
+        color: white;
+        padding: 4px 8px;
+        border-radius: 50%;
+        margin: 2px;
+        display: inline-block;
+      `;
       container.appendChild(badge);
     });
-
-    // 4) Für's spätere Speichern merken
-    window.currentAssignedContacts = selected;
-    return;
-  }
-
-  // im Normal‑Modus das Original nutzen
-  if (originalUpdateSelectedAbbreviations) {
-    originalUpdateSelectedAbbreviations();
-  }
-};
+  
+    // IDs merken, damit submitContact()/pushEditTaskToDatabase() die richtigen Werte hat
+    window.currentAssignedContacts = Array.from(
+      document.querySelectorAll(".category-checkbox:checked")
+    ).map(cb => parseInt(cb.dataset.id, 10));
+  };
+  
 
 /**
  * Flag indicating if add task form is in edit mode

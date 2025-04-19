@@ -1,35 +1,4 @@
 /**
- * Updates the selected abbreviations based on checked checkboxes.
- */
-// function updateSelectedAbbreviations() {
-//   let checkboxes = document.querySelectorAll(".category-checkbox");
-//   let abbreviationsContainer = document.getElementById("showName");
-//   abbreviationsContainer.innerHTML = "";
-
-//   const contactsToSave = [];
-
-//   checkboxes.forEach((checkbox) => {
-//     let optionDiv = checkbox.closest(".option");
-//     if (checkbox.checked) {
-//       optionDiv.classList.add("active");
-//       let initialsDiv = document.createElement("div");
-//       // initialsDiv.className = "abbreviation-badge";
-//       initialsDiv.textContent = checkbox.dataset.initials;
-//       // initialsDiv.style.cssText = `background-color: ${checkbox.dataset.color}; color: white; padding: 5px 10px; border-radius: 50%;`;
-//       abbreviationsContainer.appendChild(initialsDiv);
-//             contactsToSave.push({
-//                id:        checkbox.dataset.id,
-//               name:      checkbox.dataset.name,
-//                color:     checkbox.dataset.color,
-//                initials:  checkbox.dataset.initials
-//              });
-//     } else {
-//       optionDiv.classList.remove("active");
-//     }
-//   });
-// }
-// window.currentAssignedContacts = contactsToSave;
-/**
  * Adds a subtask to the list.
  */
 function addSubtask() {
@@ -274,15 +243,20 @@ function clearAbbreviations() {
  * This function disable all checked checkboxes at the 'Assigend To' input at addTask.html.
  */
 function clearCheckedContactsAssignedTo() {
-  let optionsContainer = document.getElementById("optionsContainer");
-  for (i = 0; i < optionsContainer.children.length; i++) {
-    let option = optionsContainer.children[i];
-    let checkbox = option.querySelector('input[type="checkbox"]');
-    if (checkbox) {
-      checkbox.checked = false;
-    }
+   
+   
+   const optionsContainer = document.getElementById("optionsContainer");
+   Array.from(optionsContainer.children).forEach(option => {
+     const checkbox = option.querySelector('input[type="checkbox"]');
+     if (checkbox) {
+       checkbox.checked = false;
+     }
+     option.classList.remove("active");
+   });
+    
+    updateSelectedAbbreviations();
   }
-}
+  
 
 /**
  * Clears the subtasks list.
@@ -299,68 +273,6 @@ function setMinDateForCalendar() {
   let today = new Date().toISOString().split("T")[0];
   document.getElementById("date-addTask").setAttribute("min", today);
 }
-
-// function filterOptions(searchText) {
-//   let optionsContainer = document.getElementById("optionsContainer");
-//   searchText = searchText.trim();
-
-//   if (searchText.length < 2) {
-//     loadAllOptions();
-//   } else {
-//     optionsContainer.style.display = "flex";
-//     updateOptionDisplay(searchText.toLowerCase());
-//   }
-// }
-
-// function updateOptionDisplay(searchText) {
-//   let db = firebase.firestore();
-//   let optionsContainer = document.getElementById("optionsContainer");
-//   optionsContainer.innerHTML = "";
-
-//   db.collection("UserAuthList").doc(userCreds.uid).collection("contacts").orderBy("name").get().then((querySnapshot) => {
-//       querySnapshot.forEach((doc) => {
-//         if (doc.data().name.toLowerCase().includes(searchText)) {
-//           createCategoryOption(doc.data(), optionsContainer);
-//         }
-//       });
-//       if (optionsContainer.innerHTML === "") {
-//         optionsContainer.innerHTML =
-//           '<div class="option">No results found</div>';
-//       }
-//     })
-//     .catch((error) => {
-//       console.error("Error getting documents: ", error);
-//       optionsContainer.innerHTML =
-//         '<div class="option">Error loading options</div>';
-//     });
-// }
-
-/**
- * Loads all options from Firestore and populates the options container.
- */
-// function loadAllOptions() {
-//   const optionsContainer = document.getElementById("optionsContainer");
-//   optionsContainer.innerHTML = "";  // Reset
-
-//   return fetch("/api/contacts/")              // Endpunkt anpassen!
-//     .then(res => {
-//       if (!res.ok) throw new Error("Fehler beim Laden der Kontakte");
-//       return res.json();
-//     })
-//     .then(contacts => {
-//       contacts.forEach(contact => {
-//         // Reuse deine Funktion zum Erstellen einer Option
-//         // contact muss { id, name, initials, color } enthalten
-//         createCategoryOption(contact, optionsContainer);
-//       });
-//     })
-//     .catch(err => {
-//       console.error(err);
-//       optionsContainer.innerHTML =
-//         '<div class="option">Fehler beim Laden der Kontakte</div>';
-//     });
-// }
-
 
 /**
  * Opens the "Add Task" modal or page and initializes the task form.

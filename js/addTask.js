@@ -43,43 +43,10 @@ let checkCred = () => {
 }
 window.addEventListener("load", checkCred);
 
-/**
- * Firebase configuration
- */
-// const firebaseConfig = {
-//     apiKey: "AIzaSyBrslTwOvrS4_tnF6uODjT1KQuWR4ttzFY",
-//     authDomain: "join193-5ae20.firebaseapp.com",
-//     databaseURL: "https://join193-5ae20-default-rtdb.europe-west1.firebasedatabase.app",
-//     projectId: "join193-5ae20",
-//     storageBucket: "join193-5ae20.appspot.com",
-//     messagingSenderId: "330884835484",
-//     appId: "1:330884835484:web:20d71dc457ab9659d0a559"
-// };
-
-const firebaseConfig = {
-    apiKey: "AIzaSyAeIBUm7q40H52uDOsl19A6ecvv-NH3cHs",
-    authDomain: "join-62bad.firebaseapp.com",
-    databaseURL: "https://join-62bad-default-rtdb.firebaseio.com",
-    projectId: "join-62bad",
-    storageBucket: "join-62bad.firebasestorage.app",
-    messagingSenderId: "349761837323",
-    appId: "1:349761837323:web:970c5ea99cf750318a2a0e"
-  };
-
-// const firebaseConfig = {
-//     apiKey: "AIzaSyACpY02drGC1U6QjS5_u1gGVVajUYSXjbE",
-//     authDomain: "join2-14807.firebaseapp.com",
-//     projectId: "join2-14807",
-//     storageBucket: "join2-14807.firebasestorage.app",
-//     messagingSenderId: "344947370774",
-//     appId: "1:344947370774:web:ec768c001a344583383e37"
-//   };
-firebase.initializeApp(firebaseConfig);
 
 document.addEventListener("DOMContentLoaded", () => {
     setupFormListener();
     setupPriorityButtons();
-    // setupAssignedTaskButton();
     setMinDateForCalendar();
     loadCategories();
     updateSelectedAbbreviations();
@@ -352,50 +319,7 @@ function createCategoryOption(contact, optionsContainer) {
     optionsContainer.appendChild(optionDiv);
   }
   
-/**
- * Updates the selected abbreviations based on checked checkboxes.
- */
-// function updateSelectedAbbreviations() {
-//     let checkboxes = document.querySelectorAll(".category-checkbox");
-//     let abbreviationsContainer = document.getElementById("showName");
-//     abbreviationsContainer.innerHTML = "";
-  
-//     // Speichern der ausgewählten Kontakte für spätere Verwendung
-//     window.currentAssignedContacts = [];
-  
-//     checkboxes.forEach((checkbox) => {
-//       let optionDiv = checkbox.closest(".option");
-//       if (checkbox.checked) {
-//         optionDiv.classList.add("active");
-        
-//         // Badge erstellen
-//         let initialsDiv = document.createElement("div");
-//         initialsDiv.className = "abbreviation-badge";
-//         initialsDiv.textContent = checkbox.dataset.initials;
-//         initialsDiv.style.cssText = `
-//           background-color: ${checkbox.dataset.color}; 
-//           color: white; 
-//           padding: 5px 10px; 
-//           border-radius: 50%;
-//           margin-right: 5px;
-//           display: inline-flex;
-//           align-items: center;
-//           justify-content: center;
-//         `;
-//         abbreviationsContainer.appendChild(initialsDiv);
-        
-//         // Kontakt für spätere Verwendung speichern
-//         window.currentAssignedContacts.push({
-//           id: checkbox.dataset.id,
-//           name: checkbox.dataset.name,
-//           color: checkbox.dataset.color,
-//           initials: checkbox.dataset.initials
-//         });
-//       } else {
-//         optionDiv.classList.remove("active");
-//       }
-//     });
-//   }
+
 
   function updateSelectedAbbreviations() {
     let checkboxes = document.querySelectorAll(".category-checkbox");

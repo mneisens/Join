@@ -150,51 +150,7 @@ function returnHtmlBoardTaskSingleView(task, taskConfig) {
     `;
 }
 
-/**
- * Returns HTML for a subtask item, used in the task details view.
- * Each subtask item includes a clickable SVG for marking the subtask status and displays the subtask description.
- *
- * @param {Object} subtask - Object containing the subtask description.
- * @param {Object} subtasksConfig - Configuration object including the SVG source path for the status button and the parent task ID.
- * @param {number} i - Index of the subtask in the list, used to uniquely identify elements.
- * @returns {string} HTML string for a subtask item.
- */
-// function returnHtmlBoardSubtask(subtask, subtasksConfig, i) {
-//   return `
-//     <div class="task-subtask">
-//       <img id="taskSubtask${i}" onclick="boardClickSubtask(${i}, '${subtasksConfig.parentTaskId}')" src="${subtasksConfig.svgSrc}" alt="checkbutton">
-//       <p>${subtask.subtask}</p>
-//     </div>
-//     `;
-// }
 
-
-// function returnHtmlBoardSubtask(subtask, subtasksConfig, i) {
-//   const isChecked = subtask.done ? "checked" : "";
-//   const taskId = subtasksConfig.parentTaskId;
-//   return `
-//     <div class="task-subtask">
-//       <img id="taskSubtask${i}" onclick="boardClickSubtask(${i}, '${subtasksConfig.parentTaskId}')" src="${subtasksConfig.svgSrc}" alt="checkbutton">
-//       <p>${subtask.subtask}</p>
-//     </div>
-//     `;
-// }
-
-
-// function returnHtmlBoardSubtask(subtask, config, index) {
-//   const isChecked = subtask.done ? "checked" : "";
-//   const taskId = config.parentTaskId;
-  
-//   return `
-//     <div class="board-task-single-subtask-row ${isChecked ? 'done' : ''}" data-task-id="${taskId}" data-subtask-index="${index}">
-//       <div class="board-task-single-subtask-checkbox" >
-//         <input type="checkbox" ${isChecked} class="subtask-checkbox" 
-//                onclick="boardClickSubtask('${taskId}', ${index})">
-//       </div>
-//       <div class="board-task-single-subtask-text">${subtask.subtask}</div>
-//     </div>
-//   `;
-// }
 
 function returnHtmlBoardSubtask(subtask, config, index) {
   // Wähle das richtige Bild abhängig vom Status

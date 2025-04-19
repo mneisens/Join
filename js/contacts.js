@@ -1,7 +1,6 @@
 async function loadContact() {
     await includeHTML();
     showContacts();
-    // getMyContacts();
     createUserInitials();
     renderbtnCreate();
     activeLink(4, window.location.href);
