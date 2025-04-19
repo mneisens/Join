@@ -400,68 +400,49 @@ function editTaskChangeSubtask(subtaskId, action, newText) {
  */
 async function pushEditTaskToDatabase() {
     try {
-        console.log("Speichere bearbeitete Task mit ID:", editTaskId);
-
-        // Alte Kontakte aus der globalen Variable holen
-        const oldContacts = Array.isArray(window.currentAssignedContacts)
-            ? window.currentAssignedContacts
-            : [];
-
-        // Neue Kontakte aus den Checkboxen sammeln
-        const newlyChecked = Array.from(document.querySelectorAll(".category-checkbox:checked"))
-            .map(cb => ({
-                id: cb.dataset.id,
-                name: cb.dataset.name,
-                color: cb.dataset.color,
-                initials: cb.dataset.initials
-            }));
-
-        // Alte und neue Kontakte zusammenführen und Duplikate entfernen
-        const mergedContacts = [...oldContacts];
-        newlyChecked.forEach(newContact => {
-            if (!mergedContacts.some(existingContact => existingContact.id === newContact.id)) {
-                mergedContacts.push(newContact);
-            }
-        });
-
-        // Aktualisiere die globale Variable
-        window.currentAssignedContacts = mergedContacts;
-
-        console.log("Zusammengeführte Kontakte:", mergedContacts);
-
-        // Aktualisierte Task-Daten erstellen
-        const updatedTask = {
-            header: document.getElementById("input-title-addTask").value || "",
-            description: document.getElementById("textarea-addTask").value || "",
-            due_date: formatDateForBackend(document.getElementById("date-addTask").value),
-            priority: document.querySelector(".prio-addTask button.active")?.id || "medium",
-            category: document.getElementById("category").value || "User Story",
-            kanban_category: document.getElementById("boardAddTaskMainBg").dataset.category || "Todo",
-            subtasks: editTaskSubtasks,
-            assigned_to: mergedContacts.map(contact => contact.id) // Nur IDs für das Backend
-        };
-
-        console.log("Aktualisierte Task-Daten:", updatedTask);
-
-        // Task über API aktualisieren
-        await updateTask(editTaskId, updatedTask);
-
-        // Erfolgsmeldung anzeigen
-        showSuccessMessage("Task erfolgreich aktualisiert");
-
-        // Board neu laden
-        await boardLoadTasksFromBackend();
-
-        // Formular zurücksetzen und ausblenden
-        resetAddTaskHtml();
-        setTimeout(() => {
-            document.getElementById("boardAddTaskMainBg").classList.add("d-none");
-        }, 2000);
+      // 1) Alte IDs aus currentAssignedContacts extrahieren
+      const oldIds = Array.isArray(window.currentAssignedContacts)
+        ? window.currentAssignedContacts.map(c => typeof c === 'object' ? c.id : c)
+        : [];
+  
+      // 2) Neue IDs von den aktuell angehakten Checkboxen
+      const newIds = Array.from(
+        document.querySelectorAll('.category-checkbox:checked')
+      ).map(cb => parseInt(cb.dataset.id, 10));
+  
+      // 3) Beides zusammenführen und Duplikate entfernen
+      const mergedIds = Array.from(new Set([...oldIds, ...newIds]));
+  
+      // 4) In window.currentAssignedContacts zurückschreiben (für weiteren Edit)
+      window.currentAssignedContacts = mergedIds;
+  
+      // 5) Task‑Daten bauen
+      const updatedTask = {
+        header        : document.getElementById("input-title-addTask").value || "",
+        description   : document.getElementById("textarea-addTask").value || "",
+        due_date      : formatDateForBackend(document.getElementById("date-addTask").value),
+        priority      : document.querySelector(".prio-addTask button.active")?.id || "medium",
+        category      : document.getElementById("category").value || "User Story",
+        kanban_category: document.getElementById("boardAddTaskMainBg").dataset.category || "Todo",
+        subtasks      : editTaskSubtasks,
+        // ← hier NUR die Zahl‑IDs, keine Objekte
+        assigned_to   : mergedIds
+      };
+  
+      console.log("Request‑Daten:", updatedTask);
+  
+      // 6) API‑Call
+      await updateTask(editTaskId, updatedTask);
+      await boardLoadTasksFromBackend();
+      closeAddTask();
+      hideTaskView();
+      // …
     } catch (error) {
-        console.error("Fehler beim Aktualisieren der Task:", error);
-        alert("Fehler beim Speichern der Änderungen: " + error.message);
+      console.error("Fehler beim Aktualisieren der Task:", error);
+      alert("Fehler beim Speichern der Änderungen: " + error.message);
     }
-}
+  }
+  
 
 /**
  * Setzt das Add Task HTML zurück zum normalen Modus

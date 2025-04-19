@@ -82,6 +82,7 @@ function hideTaskView() {
   setTimeout(() => {
     document.getElementById("taskBgDiv").style.display = "none";
   }, 120);
+  loadBoardKanbanContainer(boardTasks);
 }
 
 /**
