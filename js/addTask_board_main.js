@@ -536,46 +536,23 @@ function addTaskToBoardWithoutLoadNew(id, task) {
    * Loads categories from Firestore and creates options in the container.
    */
   async function loadCategories() {
-    try {
-      // console.log("Lade Kontakte vom Backend...");
-      let optionsContainer = document.getElementById("optionsContainer");
-      
-      if (!optionsContainer) {
-        console.error("Optionscontainer nicht gefunden!");
-        return;
-      }
-      
-      optionsContainer.innerHTML = ""; // Container leeren
-      
-      // Verwende die getContacts-Funktion aus api-service.js
-      const contacts = await getContacts();
-      // console.log("Geladene Kontakte:", contacts);
-      
-      if (!contacts || contacts.length === 0) {
-        optionsContainer.innerHTML = '<div class="option">Keine Kontakte verfügbar</div>';
-        return;
-      }
-      
-      // Für jeden Kontakt eine Option erstellen
-      contacts.forEach(contact => {
-        // Bereite Kontaktdaten vor
-        const contactData = {
-          id: contact.id,
-          name: contact.name || "Unbekannt",
-          email: contact.email || "",
-          color: contact.color || getRandomColor(),
-          initials: contact.initials || getInitialsFromName(contact.name || "Unbekannt")
-        };
-        
-        createCategoryOption(contactData, optionsContainer);
-      });
-    } catch (error) {
-      console.error("Fehler beim Laden der Kontakte:", error);
-      let optionsContainer = document.getElementById("optionsContainer");
-      if (optionsContainer) {
-        optionsContainer.innerHTML = '<div class="option">Fehler beim Laden der Kontakte</div>';
-      }
-    }
+    const optionsContainer = document.getElementById("optionsContainer");
+    optionsContainer.innerHTML = "";
+  
+    // Kontakte vom Backend holen
+    const contacts = await getContacts();
+    // global vorhalten, damit assignContactsInEditForm sie nutzen kann
+    window.allContacts = contacts;  // ← neu
+  
+    contacts.forEach(contact => {
+      const contactData = {
+        id        : contact.id,
+        name      : contact.name,
+        color     : contact.color,
+        initials  : contact.initials
+      };
+      createCategoryOption(contactData, optionsContainer);
+    });
   }
   
   function getInitialsFromName(fullName) {

@@ -273,16 +273,16 @@ function clearAbbreviations() {
 /**
  * This function disable all checked checkboxes at the 'Assigend To' input at addTask.html.
  */
-function clearCheckedContactsAssignedTo() {
-  let optionsContainer = document.getElementById("optionsContainer");
-  for (i = 0; i < optionsContainer.children.length; i++) {
-    let option = optionsContainer.children[i];
-    let checkbox = option.querySelector('input[type="checkbox"]');
-    if (checkbox) {
-      checkbox.checked = false;
-    }
-  }
-}
+// function clearCheckedContactsAssignedTo() {
+//   let optionsContainer = document.getElementById("optionsContainer");
+//   for (i = 0; i < optionsContainer.children.length; i++) {
+//     let option = optionsContainer.children[i];
+//     let checkbox = option.querySelector('input[type="checkbox"]');
+//     if (checkbox) {
+//       checkbox.checked = false;
+//     }
+//   }
+// }
 
 /**
  * Clears the subtasks list.
@@ -392,6 +392,7 @@ function closeAddTask() {
   const successElement = document.getElementById("contact-succesfully-created");
   if (successElement) {
     successElement.style.display = "none";
+    
   }
   
   // Fenster schließen
@@ -401,6 +402,8 @@ function closeAddTask() {
   if (addTaskInEditMode === true) {
     resetAddTaskHtml();
   }
+
+  
 }
 
 /**

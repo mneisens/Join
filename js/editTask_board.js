@@ -2,58 +2,42 @@
  * Weist Kontakte im Edit-Formular zu
  * @param {Array} assignedTo - Array mit zugewiesenen Kontakten
  */
-function assignContactsInEditForm(assignedTo) {
-    try {
-        const badgeContainer = document.getElementById("showName");
-        if (!badgeContainer) return;
-        badgeContainer.innerHTML = ""; // alte Badges entfernen
-
-        // Vollständige Kontakt-Objekte zusammenstellen
-        const fullContacts = assignedTo.map(item => {
-            const id = item.id || item;
-            const name = item.name || item;
-            const found = (window.allContacts || []).find(c =>
-                c.id === String(id) ||
-                c.name.toLowerCase() === String(name).toLowerCase()
-            );
-            return found || {
-                id,
-                name,
-                initials: getInitialsFromName(name),
-                color: contact.color || getRandomColor()
-            };
-        });
-
-        // Checkboxen aktivieren und Badges rendern
-        fullContacts.forEach(contact => {
-            const checkbox = document.querySelector(`.category-checkbox[data-id="${contact.id}"]`);
-            if (checkbox) {
-                checkbox.checked = true; // Checkbox aktivieren
-                checkbox.classList.add("active"); // Optional: Klasse hinzufügen, falls CSS verwendet wird
-            }
-
-            // Badge erstellen
-            const badge = document.createElement("div");
-            badge.className = "abbreviation-badge";
-            badge.textContent = contact.initials;
-            badge.style.cssText = `
-                background-color: ${contact.color};
-                color: white;
-                padding: 5px 10px;
-                border-radius: 50%;
-                margin: 2px;
-                display: inline-block;
-            `;
-            badgeContainer.appendChild(badge);
-        });
-
-        // Für’s Speichern merken
-        window.currentAssignedContacts = [...fullContacts];
-    } catch (err) {
-        // console.error("Fehler in assignContactsInEditForm:", err);
-    }
-}
-
+// 2) Vereinfachte assignContactsInEditForm: nur anhand der IDs an­haken
+function assignContactsInEditForm(assignedToIds) {
+    const badgeContainer = document.getElementById("showName");
+    badgeContainer.innerHTML = "";             // alte Badges entfernen
+  
+    assignedToIds.forEach(id => {
+      // a) Checkbox mit diesem data-id finden
+      const checkbox = document.querySelector(`.category-checkbox[data-id="${id}"]`);
+      if (!checkbox) return;
+  
+      // b) Checkbox anhaken + Option optisch als aktiv markieren
+      checkbox.checked = true;
+      checkbox.closest(".option").classList.add("active");
+  
+      // c) Zugehörigen Badge erstellen
+      //    Farbe & Initialen aus globaler Liste oder aus data-Attribute nehmen
+      const color    = checkbox.dataset.color;
+      const initials = checkbox.dataset.initials;
+      const badge    = document.createElement("div");
+      badge.className = "abbreviation-badge";
+      badge.textContent = initials;
+      badge.style.cssText = `
+        background-color: ${color};
+        color: white;
+        padding: 5px 10px;
+        border-radius: 50%;
+        margin: 2px;
+        display: inline-block;
+      `;
+      badgeContainer.appendChild(badge);
+    });
+  
+    // zum Speichern merken
+    window.currentAssignedContacts = assignedToIds.slice();
+  }
+  
 
 /**
  * Überschreibe die updateSelectedAbbreviations-Funktion, um bestehende Badges zu erhalten
@@ -115,69 +99,49 @@ let editTaskSubtasks = [];
  * Initialize edit mode for a task
  * @param {string} id - ID of the task to edit
  */
-function initEditTask(id) {
-    console.log("Initialisiere Edit-Modus für Task:", id);
-    editTaskId = id;
+/**
+ * Initialize edit mode for a task
+ * @param {string} id - ID of the task to edit
+ */
+// 3) In initEditTask: erst loadCategories(), dann assignContactsInEditForm()
+// 3) In initEditTask: erst loadCategories(), dann assignContactsInEditForm()
+async function initEditTask(id) {
     addTaskInEditMode = true;
-
-    // Globale Variable für zugewiesene Kontakte zurücksetzen
+    editTaskId = id;
     window.currentAssignedContacts = [];
+  
+    // Modal öffnen
+    const bg = document.getElementById("boardAddTaskMainBg");
+    bg.classList.remove("d-none");
+    document.getElementById("boardHeadAddTask").innerText = "Edit Task";
+  
+    // a) Kontakte/Checkboxen neu laden
+    await loadCategories();
+  
+    // b) Task-Daten holen
+    const task = boardGetTaskById(id);
+    if (!task) return console.error("Task nicht gefunden:", id);
+  
+    // c) Formularelemente füllen ...
+    document.getElementById("input-title-addTask").value = task.header;
+    document.getElementById("textarea-addTask").value   = task.description;
+    setDateInEditForm(task.dueDate);
+    setPriorityInEditForm(task.priority);
+    document.getElementById("category").value           = task.category;
+    loadSubtasksInEditForm(task);
+    bg.dataset.category                               = task.kanbanCategory;
+    editTaskSubtasks                                 = JSON.parse(JSON.stringify(task.subtasks || []));
+  
+    // Buttons umschalten
+    document.getElementById("saveTasks").style.display      = "none";
+    document.getElementById("submitEditTask").style.display = "flex";
+    document.getElementById("clearButton").style.display    = "none";
+  
+    // d) Jetzt genau die IDs aus assigned_to anhaken und Badges bauen
+    assignContactsInEditForm(task.assignedTo.map(c => c.id));
+  }
+  
 
-    try {
-        // Task aus dem Board-Array holen
-        const task = boardGetTaskById(id);
-        if (!task) {
-            console.error("Task nicht gefunden:", id);
-            return;
-        }
-
-        console.log("Task zum Bearbeiten:", task);
-        console.log("Zugewiesene Kontakte:", task.assignedTo);
-        document.querySelectorAll(".category-checkbox").forEach(cb => {
-            console.log("Checkbox ID:", cb.dataset.id);
-        });
-
-        // Add Task Formular vorbereiten
-        document.getElementById("boardAddTaskMainBg").classList.remove("d-none");
-        document.getElementById("boardHeadAddTask").innerText = "Edit Task";
-
-        // Formulardaten befüllen
-        document.getElementById("input-title-addTask").value = task.header || "";
-        document.getElementById("textarea-addTask").value = task.description || "";
-
-        // Datum formatieren und eintragen
-        setDateInEditForm(task.dueDate);
-
-        // Priorität setzen
-        setPriorityInEditForm(task.priority);
-
-        // Kategorie setzen
-        document.getElementById("category").value = task.category || "User Story";
-
-        // Subtasks laden
-        loadSubtasksInEditForm(task);
-        // loadAllOptions();
-        // Buttons für Edit-Modus anpassen
-        document.getElementById("saveTasks").style.display = "none";
-        document.getElementById("submitEditTask").style.display = "flex";
-        document.getElementById("clearButton").style.display = "none";
-
-        // Kanban-Kategorie im Formular speichern
-        document.getElementById("boardAddTaskMainBg").dataset.category = task.kanbanCategory;
-
-        // Subtasks-Array für spätere Bearbeitung speichern
-        editTaskSubtasks = JSON.parse(JSON.stringify(task.subtasks || []));
-
-        // Zugewiesene Kontakte setzen
-        if (Array.isArray(task.assignedTo) && task.assignedTo.length > 0) {
-            assignContactsInEditForm(task.assignedTo);
-        } else {
-            console.warn("Keine zugewiesenen Kontakte gefunden.");
-        }
-    } catch (error) {
-        console.error("Fehler beim Initialisieren des Edit-Modus:", error);
-    }
-}
 
 /**
  * Setzt das Datum im Edit-Formular
