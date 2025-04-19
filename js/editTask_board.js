@@ -89,11 +89,7 @@ window.updateSelectedAbbreviations = function() {
       badge.textContent         = contact.initials;
       badge.style.cssText       =
         `background-color: ${contact.color};
-         color: white;
-         padding: 5px 10px;
-         border-radius: 50%;
-         margin: 2px;
-         display: inline-block;`;
+      `
       container.appendChild(badge);
     });
 
