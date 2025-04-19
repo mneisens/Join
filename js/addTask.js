@@ -79,7 +79,7 @@ firebase.initializeApp(firebaseConfig);
 document.addEventListener("DOMContentLoaded", () => {
     setupFormListener();
     setupPriorityButtons();
-    setupAssignedTaskButton();
+    // setupAssignedTaskButton();
     setMinDateForCalendar();
     loadCategories();
     updateSelectedAbbreviations();
@@ -239,7 +239,7 @@ function toggleOptionsContainer(event, optionsContainer) {
     event.stopPropagation();
     optionsContainer.style.display = optionsContainer.style.display === 'none' ? 'flex' : 'none';
 }
-
+let allContacts = [];
 /**
  * Loads categories from Firestore and creates options in the container.
  */
@@ -247,7 +247,10 @@ async function loadCategories() {
     try {
         // console.log("Versuche Kontakte zu laden...");
         const contacts = await getContacts();
+        console.log("Django‑Kontakte:", contacts);
         // console.log("Geladene Kontakte:", contacts);
+        allContacts = contacts;                // speichern
+        renderOptions(contacts);   
         
         let optionsContainer = document.getElementById('optionsContainer');
         if (!optionsContainer) {
@@ -283,6 +286,22 @@ async function loadCategories() {
         }
     }
 }
+
+function renderOptions(contacts) {
+    const container = document.getElementById('optionsContainer');
+    container.innerHTML = '';
+    if (!contacts || contacts.length === 0) {
+      container.innerHTML = '<div class="option">Keine Kontakte verfügbar</div>';
+      return;
+    }
+    contacts.forEach(c => createCategoryOption({
+      id:       c.id,
+      name:     c.name,
+      color:    c.color,
+      initials: c.initials
+    }, container));
+  }
+  
 /**
  * Creates a category option element and appends it to the container.
  * @param {Object} category - The category data.
@@ -292,53 +311,47 @@ async function loadCategories() {
 function createCategoryOption(contact, optionsContainer) {
     let optionDiv = document.createElement('div');
     optionDiv.className = 'option';
-    optionDiv.style.cssText = `
-        display: flex; 
-        align-items: center; 
-        justify-content: space-between; 
-        padding: 8px 10px; 
-        margin: 2px 0; 
-        border-radius: 4px; 
-        cursor: pointer;
-    `;
-    
-    // Formatiertes HTML mit dem Kontakt-Initial und Namen
+    optionDiv.style.cssText = `…`;
+  
     optionDiv.innerHTML = `
-        <div style="display: flex; align-items: center;">
-            <div style="
-                background-color: ${contact.color}; 
-                color: white; 
-                width: 32px; 
-                height: 32px; 
-                border-radius: 50%; 
-                display: flex; 
-                justify-content: center; 
-                align-items: center; 
-                margin-right: 10px;
-                font-weight: bold;
-            ">
-                ${contact.initials}
-            </div>
-            <div>${contact.name}</div>
+      <div style="display:flex; align-items:center;">
+        <div style="
+           background-color: ${contact.color};
+           color:white;
+           width:32px; height:32px;
+           border-radius:50%;
+           display:flex;
+           align-items:center;
+           justify-content:center;
+           margin-right:10px;
+           font-weight:bold;
+        ">
+          ${contact.initials}
         </div>
-      <input type="checkbox" class="category-checkbox"
-       data-id="{{ contact.id }}"
-       data-name="{{ contact.name }}"
-       data-color="{{ contact.color }}"
-       data-initials="{{ contact.initials }}" />
+        <div>${contact.name}</div>
+      </div>
+      <input
+        type="checkbox"
+        class="category-checkbox"
+        data-id="${contact.id}"
+        data-name="${contact.name}"
+        data-color="${contact.color}"
+        data-initials="${contact.initials}"
+      />
     `;
-
-    optionDiv.addEventListener('click', (event) => {
-        let checkbox = optionDiv.querySelector('.category-checkbox');
-        if (event.target !== checkbox) {
-            checkbox.checked = !checkbox.checked; 
-            updateSelectedAbbreviations(); 
-            optionDiv.classList.toggle('active', checkbox.checked); 
-        }
+  
+    optionDiv.addEventListener('click', e => {
+      const cb = optionDiv.querySelector('.category-checkbox');
+      if (e.target !== cb) {
+        cb.checked = !cb.checked;
+        updateSelectedAbbreviations();
+        optionDiv.classList.toggle('active', cb.checked);
+      }
     });
-    
+  
     optionsContainer.appendChild(optionDiv);
-}
+  }
+  
 /**
  * Updates the selected abbreviations based on checked checkboxes.
  */
@@ -518,18 +531,68 @@ function setMinDateForCalendar() {
  *
  * @param {string} searchText - The text to search for in the options.
  */
-function filterOptions(searchText) {
-    let optionsContainer = document.getElementById('optionsContainer');
-    searchText = searchText.trim(); 
+// let allContacts = [];
 
-    if (searchText.length < 2) {
-        loadAllOptions();
-    } else {
-        optionsContainer.style.display = 'flex';
-        updateOptionDisplay(searchText.toLowerCase()); 
+// 1) Wenn die Seite fertig geladen ist,  
+//    - Kontakte per REST laden  
+//    - Event-Listener für Klick/Focus und Input setzen
+document.addEventListener("DOMContentLoaded", () => {
+  loadCategories();  // füllt allContacts & rendert erstmal alle
+  
+  const selectedInput = document.getElementById('selectedCategory');
+  const optionsContainer = document.getElementById('optionsContainer');
+
+  // Klick oder Fokus aufs Feld: zeige alle Kontakte
+  selectedInput.addEventListener('click', () => {
+    optionsContainer.style.display = 'flex';
+    renderOptions(allContacts);
+  });
+  selectedInput.addEventListener('focus', () => {
+    optionsContainer.style.display = 'flex';
+    renderOptions(allContacts);
+  });
+
+  // Bei Eingabe: filterOptions aufrufen
+  selectedInput.addEventListener('input', (e) => {
+    filterOptions(e.target.value);
+  });
+
+  // Klick außerhalb schließt Dropdown
+  document.addEventListener('click', (e) => {
+    if (!optionsContainer.contains(e.target) && e.target !== selectedInput) {
+      optionsContainer.style.display = 'none';
     }
-} 
+  });
+});
 
+
+/**
+ * Filtert bei >=2 Zeichen, sonst zeige alle
+ */
+function filterOptions(searchText) {
+  const container = document.getElementById('optionsContainer');
+  const query = searchText.trim().toLowerCase();
+
+  // Immer geöffnet lassen, solange wir tippen
+  container.style.display = 'flex';
+
+  if (query.length < 2) {
+    // bei 0 oder 1 Zeichen alle Kontakte anzeigen
+    return renderOptions(allContacts);
+  }
+
+  // ab 2 Zeichen filtern
+  const filtered = allContacts.filter(c =>
+    c.name.toLowerCase().includes(query)
+  );
+
+  if (filtered.length) {
+    renderOptions(filtered);
+  } else {
+    container.innerHTML = '<div class="option">No results found</div>';
+  }
+}
+  
 /**
  * Updates the display of options based on the search text.
  *
@@ -581,6 +644,11 @@ function loadAllOptions() {
           optionsContainer.innerHTML = '<div class="option">Error loading options</div>';
       });
 }
+
+
+
+
+
 
 /**
  * Sets up event listeners for the document after it is fully loaded.
