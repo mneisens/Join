@@ -332,14 +332,10 @@ function boardTaskAddEventListener() {
  */
 async function deleteTask(taskId) {
   try {
-    // API-Aufruf
-    const response = await fetch(`${API_URL}/tasks/${taskId}/`, {
-      method: 'DELETE',
-      headers: {
-        'Content-Type': 'application/json',
-      }
-    });
-    
+    // getRequestOptions fügt Content‑Type & Authorization-Header hinzu
+    const options  = getRequestOptions('DELETE');
+    const response = await fetch(`${API_URL}/tasks/${taskId}/`, options);
+
     if (!response.ok) {
       const errorText = await response.text();
       throw new Error(`Fehler beim Löschen des Tasks: ${response.status} ${errorText}`);
@@ -347,18 +343,13 @@ async function deleteTask(taskId) {
     
     // UI aktualisieren
     hideTaskView();
-    
-    // Task aus lokalem Array entfernen
     boardTasks = boardTasks.filter(task => task.taskId != taskId);
-    
-    // Board neu rendern
     loadBoardKanbanContainer(boardTasks);
   } catch (error) {
     console.error("Fehler beim Löschen des Tasks:", error);
     alert("Beim Löschen des Tasks ist ein Fehler aufgetreten.");
   }
 }
-
 /**
  * Formatiert ein Datum für das Backend
  * @param {string} dateStr - Datum im Format DD/MM/YYYY

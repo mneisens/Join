@@ -2,15 +2,13 @@
 // Nutzt die bestehende API_URL aus api-service.js
 
 // console.log("js geladen");
-
+// import { getRequestOptions, API_URL } from './api-service.js';
 /**
  * Lädt Tasks gruppiert nach Kanban-Kategorien
  * @returns {Promise} - Objekt mit Tasks nach Kategorien
  */
 
-if (typeof API_URL === 'undefined') {
-    const API_URL = 'http://localhost:8000/api';
-  }
+const API_URL = window.API_URL || 'http://localhost:8000/api';
 
 
 /**
@@ -20,7 +18,8 @@ if (typeof API_URL === 'undefined') {
 async function getBoardTasks() {
     try {
         // Hole alle Tasks
-        const response = await fetch(`${API_URL}/tasks/`);
+        const options  = getRequestOptions('GET');
+        const response = await fetch(`${API_URL}/tasks/`, options);
         
         if (!response.ok) {
             throw new Error('Fehler beim Abrufen der Board-Tasks');
@@ -94,13 +93,8 @@ async function updateTaskCategory(taskId, newCategory) {
       
       // console.log("Gesendete Daten:", requestData);
       
-      const response = await fetch(`${API_URL}/tasks/${taskId}/`, {
-        method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(requestData),
-      });
+      const options  = getRequestOptions('PATCH', requestData);
+      const response = await fetch(`${API_URL}/tasks/${taskId}/`, options);
       
       if (!response.ok) {
         const errorText = await response.text();
@@ -119,7 +113,8 @@ async function updateTaskCategory(taskId, newCategory) {
 async function inspectTaskFormatting() {
     try {
       // Hole alle Tasks
-      const response = await fetch(`${API_URL}/tasks/`);
+      const options  = getRequestOptions();
+const response = await fetch(`${API_URL}/tasks/`, options);
       
       if (!response.ok) {
         throw new Error('Fehler beim Abrufen der Tasks');
@@ -164,3 +159,5 @@ async function inspectTaskFormatting() {
       return { id, name: contact.name, color: contact.color, initials: contact.initials };
     });
   }
+
+  window.getRequestOptions = getRequestOptions;

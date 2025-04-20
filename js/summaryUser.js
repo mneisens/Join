@@ -49,7 +49,8 @@ async function sumFinalLoadDataFromBackend() {
     const apiUrl = 'http://localhost:8000/api';
     
     // Direkter API-Aufruf zum Abrufen aller Tasks
-    const response = await fetch(`${apiUrl}/tasks/`);
+    const options = getRequestOptions('GET');
+    const response = await fetch(`${apiUrl}/tasks/`, options);
     
     if (!response.ok) {
       throw new Error('Fehler beim Abrufen der Tasks');
@@ -277,32 +278,28 @@ function returnGreeting() {
   return greeting;
 }
 
-/**
- * Creates the HTML for the mobile greeting.
- * @param {string} greeting - The greeting text.
- * @returns {string} The HTML for the mobile greeting.
- */
-function createMobilGreeting(greeting) {
-  let userInfo = JSON.parse(sessionStorage.getItem('user-info'));
-  return `<div class="sum-content-greeting-div greetAnimation">
-    <p class="greetText">${greeting}</p>
-    <p class="greetUser">${userInfo.name}</p>
-  </div>`;
+function getStoredUserInfo() {
+  const raw = sessionStorage.getItem('user-info') || '{"name":"Demo User"}';
+  return JSON.parse(raw);
 }
 
-/**
- * Creates the HTML for the desktop greeting.
- * @param {string} greeting - The greeting text.
- * @returns {string} The HTML for the desktop greeting.
- */
 function createDesktopGreeting(greeting) {
-  let userInfo = JSON.parse(sessionStorage.getItem('user-info'));
-  return `<div class="sum-content-greeting-desktop-div">
-    <p class="greetText">${greeting}</p>
-    <p class="greetUser">${userInfo.name}</p>
-  </div>`;
+  const userInfo = getStoredUserInfo();
+  return `
+    <div class="sum-content-greeting-desktop-div">
+      <p class="greetText">${greeting}</p>
+      <p class="greetUser">${userInfo.name}</p>
+    </div>`;
 }
 
+function createMobilGreeting(greeting) {
+  const userInfo = getStoredUserInfo();
+  return `
+    <div class="sum-content-greeting-div greetAnimation">
+      <p class="greetText">${greeting}</p>
+      <p class="greetUser">${userInfo.name}</p>
+    </div>`;
+}
 /**
  * Removes the greeting animation from session storage.
  */

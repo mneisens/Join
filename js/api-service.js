@@ -9,28 +9,18 @@ const API_URL = 'http://localhost:8000/api';
  * @returns {Object} Die Request-Optionen mit Authorization-Header
  */
 function getRequestOptions(method = 'GET', body = null) {
-    // Basis-Optionen mit Headers
     const options = {
-        method: method,
-        headers: {
-            'Content-Type': 'application/json',
-            // Hier den Authorization-Header hinzufügen wenn verfügbar
-        }
+      method,
+      headers: {
+        'Content-Type': 'application/json',
+        // Token wird hier eingefügt, falls vorhanden
+      }
     };
-
-    // Token aus localStorage oder sessionStorage holen, falls vorhanden
     const token = localStorage.getItem('token') || sessionStorage.getItem('token');
-    if (token) {
-        options.headers['Authorization'] = `Token ${token}`;  // oder 'Bearer' je nach API
-    }
-
-    // Body hinzufügen, wenn vorhanden
-    if (body) {
-        options.body = JSON.stringify(body);
-    }
-
+    if (token) options.headers['Authorization'] = `Token ${token}`;
+    if (body) options.body = JSON.stringify(body);
     return options;
-}
+  }
 
 /**
  * Alle Kontakte vom Backend abrufen

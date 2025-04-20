@@ -630,23 +630,26 @@ function formatDateForBackend(dateStr) {
  * @returns {Promise} - Der erstellte Task mit ID
  */
 async function createTask(taskData) {
-    try {
-      const response = await fetch('http://localhost:8000/api/tasks/', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(taskData),
-      });
-      
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(`Fehler beim Erstellen des Tasks: ${JSON.stringify(errorData)}`);
+  try {
+      const token = localStorage.getItem('token') || sessionStorage.getItem('token');
+      const headers = { 'Content-Type': 'application/json' };
+      if (token) {
+          headers['Authorization'] = `Token ${token}`;
       }
-      
+
+      const response = await fetch(`${API_URL}/tasks/`, {
+          method: 'POST',
+          headers,
+          body: JSON.stringify(taskData),
+      });
+
+      if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(`Fehler beim Erstellen des Tasks: ${JSON.stringify(errorData)}`);
+      }
       return await response.json();
-    } catch (error) {
+  } catch (error) {
       console.error('API-Fehler:', error);
       throw error;
-    }
   }
+}
