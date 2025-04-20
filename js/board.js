@@ -1,3 +1,5 @@
+
+
 let boardDraggedElementId;
 let boardTasks = [];
 let boardDragIsStarted = false;

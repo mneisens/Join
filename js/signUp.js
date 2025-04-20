@@ -1,7 +1,7 @@
-/**
- * Initializes the sign-up screen by rendering the sign-up button and changing password icons.
- * @function loadSignUp
- */
+// /**
+//  * Initializes the sign-up screen by rendering the sign-up button and changing password icons.
+//  * @function loadSignUp
+//  */
 function loadSignUp() {
     renderSignUpBtn();
     changePasswordIcon();
@@ -16,10 +16,10 @@ let signUpCheckBox = document.getElementById('signUpCheckBox');
 let signUpForm = document.getElementById('signUpForm');
 let signUpContainer = document.getElementById('signUpContainer');
 
-/**
- * Changes the password icon based on input value for the password field.
- * @function changePasswordIcon
- */
+// /**
+//  * Changes the password icon based on input value for the password field.
+//  * @function changePasswordIcon
+//  */
 function changePasswordIcon() {
     let passwordIcon = document.getElementById('passwordIcon');
     if (signUpPasswordInput.value <= 0) {
@@ -34,10 +34,10 @@ function changePasswordIcon() {
     }
 }
 
-/**
- * Changes the password icon based on input value for the confirm password field.
- * @function changeConfirmPasswordIcon
- */
+// /**
+//  * Changes the password icon based on input value for the confirm password field.
+//  * @function changeConfirmPasswordIcon
+//  */
 function changeConfirmPasswordIcon() {
     let confirmPasswordIcon = document.getElementById('confirmPasswordIcon');
     if (signUpConfirmPasswordInput.value <= 0) {
@@ -52,10 +52,10 @@ function changeConfirmPasswordIcon() {
     }
 }
 
-/**
- * Toggles the visibility of the password input field.
- * @function showPassword
- */
+// /**
+//  * Toggles the visibility of the password input field.
+//  * @function showPassword
+//  */
 function showPassword() {
     let passwordIcon = document.getElementById('passwordIcon');
     if (signUpPasswordInput.type === "password") {
@@ -69,10 +69,10 @@ function showPassword() {
     }
 }
 
-/**
- * Toggles the visibility of the confirm password input field.
- * @function showConfirmPassword
- */
+// /**
+//  * Toggles the visibility of the confirm password input field.
+//  * @function showConfirmPassword
+//  */
 function showConfirmPassword() {
     let confirmPasswordIcon = document.getElementById('confirmPasswordIcon');
     if (signUpConfirmPasswordInput.type === "password") {
@@ -86,10 +86,10 @@ function showConfirmPassword() {
     }
 }
 
-/**
- * Renders the sign-up button based on input values.
- * @function renderSignUpBtn
- */
+// /**
+//  * Renders the sign-up button based on input values.
+//  * @function renderSignUpBtn
+//  */
 function renderSignUpBtn() {
     let signUpBtn = document.getElementById('signUpBtn');
     if (signUpNameInput.value <= 0 || signUpMailInput.value <= 0
@@ -103,10 +103,10 @@ function renderSignUpBtn() {
     }
 }
 
-/**
- * Displays a password mismatch error message and styles.
- * @function wrongPassword
- */
+// /**
+//  * Displays a password mismatch error message and styles.
+//  * @function wrongPassword
+//  */
 function wrongPassword() {
     let signUpMessageBox = document.getElementById('signUpMessageBox');
     let wrongMessage = 'Ups! your password don,t match.';
@@ -114,10 +114,10 @@ function wrongPassword() {
     signUpConfirmPasswordInput.classList.add('formInputWrong');
 }
 
-/**
- * Clears the password mismatch error message and styles if passwords match.
- * @function passwordIsCorrected
- */
+// /**
+//  * Clears the password mismatch error message and styles if passwords match.
+//  * @function passwordIsCorrected
+//  */
 function passwordIsCorrected() {
     if (signUpPasswordInput.value == signUpConfirmPasswordInput.value) {
         signUpConfirmPasswordInput.classList.remove('formInputWrong');
@@ -125,19 +125,61 @@ function passwordIsCorrected() {
     }
 }
 
-/**
- * Displays a successful sign-up message and navigates to the login page.
- * @function signedUpSuccessfully
- */
+// /**
+//  * Displays a successful sign-up message and navigates to the login page.
+//  * @function signedUpSuccessfully
+//  */
 function signedUpSuccessfully() {
     document.getElementById('signedUpBtn').classList.add('signedUpBtnSlide');
     const toLogIn = setTimeout(navToLogIn, 1750);
 }
 
-/**
- * Navigates to the login page with a success message.
- * @function navToLogIn
- */
+// /**
+//  * Navigates to the login page with a success message.
+//  * @function navToLogIn
+//  */
 function navToLogIn() {
     window.location.href = 'log_in.html?msg=You Signed Up successfully.';
 }
+// Ganz oben in signUp.js
+const form       = document.getElementById('signUpForm');
+const nameInput  = document.getElementById('signUpNameInput');
+const emailInput = document.getElementById('signUpMailInput');
+const pwInput    = document.getElementById('signUpPasswordInput');
+const msgBox     = document.getElementById('signUpMessageBox');
+
+// Wenn das Formular abgesendet wird…
+form.addEventListener('submit', async (e) => {
+  e.preventDefault();
+
+  const username = emailInput.value.trim();      // wir nutzen Email als Username
+  const password = pwInput.value;
+  const name     = nameInput.value.trim();       // falls du den echten Namen speichern willst
+
+  try {
+    const res = await fetch('http://127.0.0.1:8000/api/auth/register/', {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({ username, password })
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      // Fehler vom Backend anzeigen
+      msgBox.textContent = data.error || data.detail || 'Registrierung fehlgeschlagen';
+      msgBox.classList.add('error');
+      return;
+    }
+
+    // Optional: Token sofort speichern
+    sessionStorage.setItem('token', data.token);
+
+    // Oder einfach zur Login‑Seite weiterleiten
+    window.location.href = 'log_in.html?msg=Erfolgreich registriert!';
+
+  } catch (err) {
+    msgBox.textContent = 'Netzwerk‑Fehler: ' + err.message;
+    msgBox.classList.add('error');
+  }
+});

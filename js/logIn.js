@@ -175,3 +175,52 @@ function fillLoginForm() {
 document.addEventListener('DOMContentLoaded', function () {
     fillLoginForm();
 });
+
+
+
+
+
+// logIn.js
+
+// 1. Element‑Referenzen
+const form       = document.getElementById('logInForm');
+const emailInput = document.getElementById('logInMailInput');
+const pwInput    = document.getElementById('logInPasswordInput');
+const msgBox     = document.getElementById('logInMessageBox');
+
+// 2. Submit‑Handler registrieren
+form.addEventListener('submit', async e => {
+  e.preventDefault();                     // Verhindert klassischen Submit
+  const email    = emailInput.value.trim();
+  const password = pwInput.value;
+
+  try {
+    // 3. POST an Django Login‑Endpoint
+    const res = await fetch('http://127.0.0.1:8000/api/auth/login/', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ username: email, password })
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      // 4. Fehler anzeigen
+      msgBox.textContent = data.error || data.detail || 'Login fehlgeschlagen';
+      msgBox.classList.add('error');
+      return;
+    }
+
+    // 5. Token sichern
+    sessionStorage.setItem('token', data.token);
+
+    // 6. Weiterleiten zur geschützten Seite
+    window.location.href = 'board.html';
+
+  } catch (err) {
+    msgBox.textContent = 'Server‑Error: ' + err.message;
+    msgBox.classList.add('error');
+  }
+});

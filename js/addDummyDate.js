@@ -1,4 +1,4 @@
-let dummyContacts;
+// let dummyContacts;
 let dummyTasks;
 
 /**

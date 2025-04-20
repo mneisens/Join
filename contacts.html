@@ -11,6 +11,9 @@
     <link rel="stylesheet" href="./style/contactsMobile.css">
     <link rel="stylesheet" href="./style/createMyContact.css">
     <link rel="icon" href="./assets/img/join_logo.png">
+    
+    <!-- Basis-Skripte laden, bevor der Body geladen wird -->
+    <script src="./js/script.js"></script>
 </head>
 
 <body onload="loadContact()">
@@ -161,188 +164,19 @@
         Contact succesfully created
     </div>
 
-    </div>
-    </main>
-    <script src="./js/contacts.js"></script>
-    <script src="./js/script.js"></script>
+    <!-- Weitere Skripte laden -->
     <script src="./js/htmltemplates/contactsHtml.js"></script>
-    <script src="./js/contacts_event.js"></script>
+    <!-- Falls Du dummy‑Dates brauchst -->
     <script src="./js/addDummyDate.js"></script>
+    <!-- API‑Service -->
     <script src="./js/api-service.js"></script>
-    <script type="module" src="./js/guest.js"></script>
+    <!-- Deine Haupt‑Logik -->
+    <script src="./js/contacts.js"></script>
+    <script src="./js/contacts_event.js"></script>
+    <!-- Event‑Handler -->
+    <!-- <script src="./js/contacts_event-non-module.js"></script> -->
+    <!-- Edit/Delete Hilfsfunktionen -->
     <script src="./js/edit-functions.js"></script>
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-        import { getFirestore } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-firestore.js";
-
-        // const firebaseConfig = {
-        //     apiKey: "AIzaSyBrslTwOvrS4_tnF6uODjT1KQuWR4ttzFY",
-        //     authDomain: "join193-5ae20.firebaseapp.com",
-        //     databaseURL: "https://join193-5ae20-default-rtdb.europe-west1.firebasedatabase.app",
-        //     projectId: "join193-5ae20",
-        //     storageBucket: "join193-5ae20.appspot.com",
-        //     messagingSenderId: "330884835484",
-        //     appId: "1:330884835484:web:20d71dc457ab9659d0a559"
-        // };
-
-//         const firebaseConfig = {
-//   apiKey: "AIzaSyACpY02drGC1U6QjS5_u1gGVVajUYSXjbE",
-//   authDomain: "join2-14807.firebaseapp.com",
-//   projectId: "join2-14807",
-//   storageBucket: "join2-14807.firebasestorage.app",
-//   messagingSenderId: "344947370774",
-//   appId: "1:344947370774:web:ec768c001a344583383e37"
-// };
-// const firebaseConfig = {
-//     apiKey: "AIzaSyAeIBUm7q40H52uDOsl19A6ecvv-NH3cHs",
-//     authDomain: "join-62bad.firebaseapp.com",
-//     databaseURL: "https://join-62bad-default-rtdb.firebaseio.com",
-//     projectId: "join-62bad",
-//     storageBucket: "join-62bad.firebasestorage.app",
-//     messagingSenderId: "349761837323",
-//     appId: "1:349761837323:web:970c5ea99cf750318a2a0e"
-//   };
-
-//         import { doc, setDoc, getDocs, deleteDoc, updateDoc, collection } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
-
-//         const app = initializeApp(firebaseConfig);
-//         const db = getFirestore(app);
-        
-//         let contactsListContainer = document.getElementById('contactsListContainer');
-//         let myContactContainer = document.getElementById('myContactContainer');
-//         let editNameInput = document.getElementById('editNameInput');
-
-    //     async function addContact() {
-    //         try {
-    //             const contactRef = collection(db, 'UserAuthList', userCreds.uid, 'contacts');
-    //             const newDocRef = doc(contactRef);
-    //             const docID = newDocRef.id;
-    //             const contactData = {
-    //                 name: getNameFromInput(),
-    //                 email: getEmailFromInput(),
-    //                 phone: getPhoneFromInput(),
-    //                 id: docID,
-    //                 color: getColorFromInput(),
-    //                 initials: renderContactInitials()
-    //             };
-    //             await setDoc(newDocRef, contactData);
-    //             resetForm();
-    //             hideAddContact();
-    //             slideInContactSuccesfullyBox();
-    //             await showContacts();
-    //             scrollToNewContact(docID);
-    //             showContactInfos(contactData);
-    //         } catch (error) {
-    //         }
-    //     }
-
-    //     async function showContacts() {
-    //         try {
-    //             const contactRef = collection(db, 'UserAuthList', userCreds.uid, 'contacts');
-    //             const querySnapshot = await getDocs(contactRef);
-    //             contactsListContainer.innerHTML = '';
-    //             if (!querySnapshot.empty) {
-    //                 let contacts = [];
-    //                 querySnapshot.forEach((doc) => {
-    //                     const data = doc.data();
-    //                     contacts.push(data);
-    //                 });
-    //                 renderCalendarContacts(contacts);
-    //             } else {
-    //             }
-    //         } catch (error) {
-    //         }
-    //     }
-
-    //     async function updateContacts(contactID, updatedData) {
-    //         try {
-    //             const docRef = doc(db, 'UserAuthList', userCreds.uid, 'contacts', contactID);
-    //             await updateDoc(docRef, updatedData);
-    //         } catch (error) {
-    //         }
-    //     }
-
-    //     async function deleteContacts(contactID) {
-    //         try {
-    //             const docRef = doc(db, 'UserAuthList', userCreds.uid, 'contacts', contactID);
-    //             await deleteDoc(docRef);
-    //         } catch (error) {
-    //         }
-    //     }
-
-        // async function getMyContacts() {
-        //     try {
-        //         // const contactRef = collection(db, 'UserAuthList', userCreds.uid, 'myContact');
-        //         const querySnapshot = await getDocs(contactRef);
-        //         myContactContainer.innerHTML = '';
-        //         if (!querySnapshot.empty) {
-        //             let myContacts = [];
-        //             querySnapshot.forEach((doc) => {
-        //                 const data = doc.data();
-        //                 myContacts.push(data);
-        //             });
-        //             renderMyContact(myContacts);
-        //         } else {
-
-        //         }
-        //     } catch (error) {
-        //     }
-        // }
-
-        // async function updateMyContact(contactID, updatedMyData) {
-        //     try {
-        //         const docRef = doc(db, 'UserAuthList', userCreds.uid, 'myContact', contactID);
-        //         await updateDoc(docRef, updatedMyData);
-        //         getMyContacts();
-        //     } catch (error) {
-        //     }
-        // }
-
-    //     async function updateMyAccount() {
-    //         try {
-    //             const docRef = doc(db, 'UserAuthList', userCreds.uid);
-    //             await updateDoc(docRef, {
-    //                 name: getNameFromEditInput()
-    //             });
-    //             sessionStorage.setItem("user-info", JSON.stringify({ name: getNameFromEditInput() }));
-    //         } catch (error) {
-    //             console.log(error);
-    //         }
-    //     }
-
-    //     window.updateMyAccount = updateMyAccount;
-    //     window.updateMyContact = updateMyContact;
-    //     window.deleteContacts = deleteContacts;
-    //     window.updateContacts = updateContacts;
-    //     window.showContacts = showContacts;
-    //     window.addContact = addContact;
-        // window.getMyContacts = getMyContacts;
-    // </script>
-
-
-
-  <script>
-        // Da wir Firebase entfernen, müssen wir eine einfache Session-Handhabung implementieren
-        // Dies ist nur eine Übergangslösung - später solltest du ein richtiges Authentifizierungssystem einrichten
-        
-        // function checkCred() {
-        //     // Wenn kein Benutzer in der Session, erstelle einen Demo-Benutzer
-        //     if (!sessionStorage.getItem("user-creds")) {
-        //         sessionStorage.setItem("user-creds", JSON.stringify({
-        //             uid: "demo-user-id"
-        //         }));
-        //         sessionStorage.setItem("user-info", JSON.stringify({
-        //             name: "Demo User"
-        //         }));
-        //     }
-        // }
-        
-        // window.addEventListener("load", checkCred);
-        
-        // Diese Variablen stellen wir global zur Verfügung, um den Code kompatibel zu halten
-        // const userCreds = JSON.parse(sessionStorage.getItem("user-creds") || '{"uid":"demo-user-id"}');
-        // const userInfo = JSON.parse(sessionStorage.getItem("user-info") || '{"name":"Demo User"}');
-    </script>
 </body>
 
 </html>

@@ -1,3 +1,5 @@
+
+
 /**
  * Generates the HTML for a category option.
  * @param {Object} category - The category data.

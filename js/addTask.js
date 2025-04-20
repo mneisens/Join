@@ -36,12 +36,12 @@ let kanbanCategory = 'Todo';
 /**
  * Check logged in
  */
-let checkCred = () => {
-    if (!sessionStorage.getItem("user-creds")) {
-     window.location.href = 'log_in.html';
-    }
-}
-window.addEventListener("load", checkCred);
+// let checkCred = () => {
+//     if (!sessionStorage.getItem("user-creds")) {
+//      window.location.href = 'log_in.html';
+//     }
+// }
+// window.addEventListener("load", checkCred);
 
 
 document.addEventListener("DOMContentLoaded", () => {

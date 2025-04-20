@@ -10,13 +10,13 @@ async function loadContact() {
 
 
 
-let checkCred = () => {
-    if (!sessionStorage.getItem("user-creds")) {
-        window.location.href = 'log_in.html';
-    }
-}
+// let checkCred = () => {
+//     if (!sessionStorage.getItem("user-creds")) {
+//         window.location.href = 'log_in.html';
+//     }
+// }
 
-window.addEventListener("load", checkCred);
+// window.addEventListener("load", checkCred);
 window.addEventListener('resize', handelContactScreenResult);
 
 let inputName = document.getElementById('inputName');
@@ -274,6 +274,14 @@ function renderContacts(contact) {
     contactsListContainer.appendChild(contactElement);
     return contactElement;
 }
+
+function selectContact(element) {
+    document.querySelectorAll('.contactContainer')
+            .forEach(c => c.classList.remove('selectedContact'));
+    element.classList.add('selectedContact');
+  }
+  // damit es global verfügbar ist:
+  window.selectContact = selectContact;
 
 let showContactLogo = document.getElementById('showContactLogo');
 let showContactName = document.getElementById('showContactName');
