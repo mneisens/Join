@@ -8,7 +8,7 @@
  * @returns {Promise} - Objekt mit Tasks nach Kategorien
  */
 
-const API_URL = window.API_URL || 'http://localhost:8000/api';
+// const API_URL = window.API_URL || 'http://localhost:8000/api';
 
 
 /**
