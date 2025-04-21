@@ -48,9 +48,11 @@
                     </div>
                     <div class="logInBtnContainer">
                         <button type="submit" class="logInBtn" id="logInBtn">Log in</button>
-                        <button class="logInGuestBtn" id="logInGuest">Guest Log in</button>
+                        <button class="logInGuestBtn" id="guestLoginBtn">Guest Log in</button>
+
                     </div>
                 </form>
+
             </div>
         </div>
     </div>
@@ -63,105 +65,6 @@
     <script src="./js/logIn.js"></script>
     <script src="./js/script.js"></script>
 
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-app.js";
-        import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-firestore.js";
-        import { getAuth, signInWithEmailAndPassword, signInAnonymously } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-auth.js";
-
-        // const firebaseConfig = {
-        //     apiKey: "AIzaSyBrslTwOvrS4_tnF6uODjT1KQuWR4ttzFY",
-        //     authDomain: "join193-5ae20.firebaseapp.com",
-        //     databaseURL: "https://join193-5ae20-default-rtdb.europe-west1.firebasedatabase.app/",
-        //     projectId: "join193-5ae20",
-        //     storageBucket: "join193-5ae20.appspot.com",
-        //     messagingSenderId: "330884835484",
-        //     appId: "1:330884835484:web:20d71dc457ab9659d0a559"
-        // };
-
-//         const firebaseConfig = {
-//   apiKey: "AIzaSyACpY02drGC1U6QjS5_u1gGVVajUYSXjbE",
-//   authDomain: "join2-14807.firebaseapp.com",
-//   projectId: "join2-14807",
-//   storageBucket: "join2-14807.firebasestorage.app",
-//   messagingSenderId: "344947370774",
-//   appId: "1:344947370774:web:ec768c001a344583383e37"
-// };
-// const firebaseConfig = {
-//     apiKey: "AIzaSyAeIBUm7q40H52uDOsl19A6ecvv-NH3cHs",
-//     authDomain: "join-62bad.firebaseapp.com",
-//     databaseURL: "https://join-62bad-default-rtdb.firebaseio.com",
-//     projectId: "join-62bad",
-//     storageBucket: "join-62bad.firebasestorage.app",
-//     messagingSenderId: "349761837323",
-//     appId: "1:349761837323:web:970c5ea99cf750318a2a0e"
-//   };
-//         const app = initializeApp(firebaseConfig);
-//         const db = getFirestore();
-//         const auth = getAuth(app);
-
-//         let logInMailInput = document.getElementById('logInMailInput');
-//         let logInPasswordInput = document.getElementById('logInPasswordInput');
-//         let logInForm = document.getElementById('logInForm');
-//         let logInGuest = document.getElementById('logInGuest');
-
-//         let SignInUser = evt => {
-//             evt.preventDefault();
-
-//             setLoginCookie(logInMailInput.value, logInPasswordInput.value);
-
-//             signInWithEmailAndPassword(auth, logInMailInput.value, logInPasswordInput.value)
-//                 .then(async (credentials) => {
-//                     var ref = doc(db, "UserAuthList", credentials.user.uid);
-//                     const docSnap = await getDoc(ref);
-
-//                     if (docSnap.exists()) {
-//                         sessionStorage.setItem("user-info", JSON.stringify({
-//                             name: docSnap.data().name,
-//                             email: logInMailInput.value    
-//                         }))
-//                         sessionStorage.setItem("user-creds", JSON.stringify(credentials.user))
-//                         sessionStorage.setItem("greet-Animation", JSON.stringify('animation'))
-//                         window.location.href = "summary_user.html";
-//                     }
-//                 })
-//                 .catch((error) => {
-//                     logInFailed();
-//                     // console.log(error.code);
-//                     // console.log(error.message);
-//                 })
-//         }
-
-        // let GuestSignIn = evt => {
-        //     evt.preventDefault();
-
-        //     signInAnonymously(auth)
-        //         .then(async (credentials) => {
-        //             var ref = doc(db, "UserAuthList", credentials.user.uid);
-        //             const docSnap = await getDoc(ref);
-        //             if(docSnap.exists()) {
-        //             sessionStorage.setItem("user-info", JSON.stringify({
-        //                 name: docSnap.data().name || "Guest",
-        //             }))
-        //             sessionStorage.setItem("user-creds", JSON.stringify(credentials.user));
-        //             window.location.href = "summary_user.html";
-        //         } else {
-        //             await setDoc(ref, {
-        //                 name: "Guest",
-        //                 guestFirstLogIn: true
-        //             });
-        //             sessionStorage.setItem("user-info", JSON.stringify({name: "Guest"}));
-        //             sessionStorage.setItem("user-creds", JSON.stringify(credentials.user));
-        //             window.location.href = "summary_user.html";
-        //         }
-        //         })
-        //         .catch((error) => {
-        //             // console.log(error.code);
-        //             // console.log(error.message);
-        //         });
-        // }
-
-        // logInGuest.addEventListener('click', GuestSignIn);
-        // logInForm.addEventListener('submit', SignInUser);
     </script>
 </body>
 

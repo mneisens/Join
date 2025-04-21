@@ -197,13 +197,12 @@ form.addEventListener('submit', async e => {
   try {
     // 3. POST an Django Login‑Endpoint
     const res = await fetch('http://127.0.0.1:8000/api/auth/login/', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({ username: email, password })
-    });
-
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ username: email, password })
+      });
     const data = await res.json();
 
     if (!res.ok) {
@@ -224,3 +223,35 @@ form.addEventListener('submit', async e => {
     msgBox.classList.add('error');
   }
 });
+
+document.getElementById('guestLoginBtn')
+  .addEventListener('click', async () => {
+    try {
+      // 1. Alten Token rauswerfen (optional)
+      localStorage.removeItem('authToken');
+      sessionStorage.removeItem('token')
+      // 2. Gast‑Login anstoßen
+      const resp = await fetch('http://localhost:8000/api/auth/guest-login/', {
+        method: 'POST',           // POST statt GET
+        headers: { 'Accept': 'application/json' },
+        cache: 'no-store',        // Browser‑Cache ausschalten
+      });
+
+      if (!resp.ok) {
+        const text = await resp.text();
+        console.error('Guest‑Login Error', resp.status, text);
+        alert(`Guest‑Login fehlgeschlagen (Status ${resp.status})`);
+        return;
+      }
+
+      // 3. Neues Token speichern
+      const { token } = await resp.json();
+      localStorage.setItem('authToken', token);
+
+      // 4. Weiterleiten
+      window.location.href = '/contacts.html';
+    } catch (err) {
+      console.error('Network/CORS error', err);
+      alert('Netzwerk‑ oder CORS‑Fehler beim Guest‑Login');
+    }
+  });

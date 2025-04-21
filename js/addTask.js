@@ -631,6 +631,7 @@ function formatDateForBackend(dateStr) {
  */
 async function createTask(taskData) {
   try {
+    
       const token = localStorage.getItem('token') || sessionStorage.getItem('token');
       const headers = { 'Content-Type': 'application/json' };
       if (token) {
@@ -639,7 +640,10 @@ async function createTask(taskData) {
 
       const response = await fetch(`${API_URL}/tasks/`, {
           method: 'POST',
-          headers,
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Token ${token}`
+          },
           body: JSON.stringify(taskData),
       });
 

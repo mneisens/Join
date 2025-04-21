@@ -250,4 +250,51 @@ if (typeof loadContact === 'undefined') {
             activeLink(4, window.location.href);
         }
     };
+
+
 }
+
+// document.getElementById('signOutBtn').addEventListener('click', () => {
+//     // 1) Anfrage an Backend, um Token und User zu löschen
+//     fetch('http://localhost:8000/api/auth/logout/', {
+//       method: 'POST',
+//       headers: {
+//         'Authorization': 'Token ' + localStorage.getItem('authToken'),
+//       }
+//     })
+//     .finally(() => {
+//       // 2) Unabhängig vom Ergebnis: Client‑seitig aufräumen
+//       localStorage.removeItem('authToken');
+//       // 3) Zur Login‑Seite weiterleiten
+//       window.location.href = '/login.html';
+//     });
+//   });
+
+document.getElementById('logoutBtn').addEventListener('click', () => {
+    doLogoutFetch();
+  });
+
+
+  async function doLogoutFetch() {
+    try {
+      await fetch('http://localhost:8000/api/auth/logout/', {
+        method: 'POST',
+        headers: { 'Authorization': 'Token ' + localStorage.getItem('authToken') }
+      });
+    } catch (e) {
+      console.warn('Logout-Request fehlgeschlagen:', e);
+    } finally {
+      // Client‑Cleanup und Weiterleitung
+      localStorage.removeItem('authToken');
+      sessionStorage.removeItem('user-creds');
+      sessionStorage.removeItem('user-info');
+      window.location.href = 'log_in.html';
+    }
+  }
+  
+  function handelLogOut() {
+    doLogoutFetch();
+  }
+  
+
+  

@@ -106,7 +106,7 @@
         "categoryAbbreviations": [
             "CM"
         ],
-        "description": "ls Benutzer möchte ich die Datenschutzerklärung der Anwendung einsehen können, um zu verstehen, wie meine Daten verwendet und geschützt werden.\nEs gibt einen Bereich in Join, wo Benutzer die \"Privacy Policy\" einsehen können.\nDurch Anklicken des Links werde ich zu einer Seite weitergeleitet, die detaillierte Informationen darüber enthält, wie meine Daten gesammelt, verwendet und geschützt werden.",
+        "description": "Als Benutzer möchte ich die Datenschutzerklärung der Anwendung einsehen können, um zu verstehen, wie meine Daten verwendet und geschützt werden.\nEs gibt einen Bereich in Join, wo Benutzer die \"Privacy Policy\" einsehen können.\nDurch Anklicken des Links werde ich zu einer Seite weitergeleitet, die detaillierte Informationen darüber enthält, wie meine Daten gesammelt, verwendet und geschützt werden.",
         "dueDate": "08/06/2024",
         "header": "DESIGN - Privacy Policy",
         "kanbanCategory": "InProgress",
