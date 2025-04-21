@@ -2,6 +2,12 @@
 <html lang="en">
 
 <head>
+    <script>
+        const token = sessionStorage.getItem('token') || localStorage.getItem('authToken');
+        if (!token) {      
+          window.location.replace('log_in.html');
+        }
+      </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>JOIN | Summary user</title>

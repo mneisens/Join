@@ -249,7 +249,7 @@ document.getElementById('guestLoginBtn')
       localStorage.setItem('authToken', token);
 
       // 4. Weiterleiten
-      window.location.href = '/contacts.html';
+      window.location.href = '/summary_user.html';
     } catch (err) {
       console.error('Network/CORS error', err);
       alert('Netzwerk‑ oder CORS‑Fehler beim Guest‑Login');
