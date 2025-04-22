@@ -271,22 +271,16 @@ function openAddTask(getKanbanCategy) {
 }
 
 function closeAddTask() {
-  // Erfolgsmeldung verstecken
   let successElement = document.getElementById("contact-succesfully-created");
   if (successElement) {
     successElement.style.display = "none";
     
   }
   
-  // Fenster schließen
   document.getElementById("boardAddTaskMainBg").classList.add("d-none");
-  
-  // Weitere Bereinigungslogik...
   if (addTaskInEditMode === true) {
     resetAddTaskHtml();
-  }
-
-  
+  }  
 }
 
 /**
