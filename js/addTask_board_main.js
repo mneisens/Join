@@ -128,9 +128,8 @@ async function loadAddTasks() {
     const descInput = document.getElementById('textarea-addTask');
     const dateInput = document.getElementById('date-addTask');
     const categorySelect = document.getElementById('category');
-    
-    // Priorität bestimmen
-    let priority = 'medium'; // Standard
+
+    let priority = 'medium'; 
     const priorityButtons = ['urgent', 'medium', 'low'];
     priorityButtons.forEach(btn => {
       const button = document.getElementById(btn);
@@ -139,10 +138,8 @@ async function loadAddTasks() {
       }
     });
     
-    // Kanban-Kategorie aus Formular-Datenattribut oder aktive Kategorie verwenden
     const kanbanCategory = document.getElementById('boardAddTaskMainBg').dataset.category || 'Todo';
     
-    // Subtasks sammeln
     const subtasks = [];
     const subtaskElements = document.querySelectorAll('#addedTasks .subtask-item');
     subtaskElements.forEach(element => {

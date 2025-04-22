@@ -95,16 +95,3 @@ function setupInputEventHandlers(li, span, input, inputIcons) {
         li.querySelector('.subtask-icons').style.display = 'flex';
     });
 }
-
-
-
-
-
-
-
-
-
-
-
-
-

@@ -2,7 +2,6 @@
 const API_URL = 'http://localhost:8000/api';
 
 /**
- * Hilfsfunktion zum Erstellen der Request-Optionen mit Auth-Header
  * @returns {Object} Die Request-Optionen mit Authorization-Header
  */
 function getRequestOptions(method = 'GET', body = null) {
@@ -11,7 +10,6 @@ function getRequestOptions(method = 'GET', body = null) {
     headers: {
         'Authorization': 'Token ' + localStorage.getItem('authToken'),
       'Content-Type': 'application/json',
-      // Token wird hier eingefügt, falls vorhanden
     }
   };
   const token = localStorage.getItem('token') || sessionStorage.getItem('token');
@@ -21,12 +19,11 @@ function getRequestOptions(method = 'GET', body = null) {
 }
 
 /**
- * Alle Kontakte vom Backend abrufen
+ * All contacts from backend
  * @returns {Promise<Array>} Array mit allen Kontakten
  */
 async function getContacts() {
     try {
-        // In dieser Version nutzen wir Dummy-Daten, falls das Backend nicht erreichbar ist
         try {
             const options = getRequestOptions();
             const response = await fetch(`${API_URL}/contacts/`, options);
@@ -38,8 +35,7 @@ async function getContacts() {
             return await response.json();
         } catch (error) {
             console.warn('API nicht erreichbar, verwende Dummy-Daten:', error);
-            // Dummy-Kontakte zurückgeben
-            // return getDummyContacts();
+
         }
     } catch (error) {
         console.error('API-Fehler bei getContacts:', error);
@@ -48,13 +44,12 @@ async function getContacts() {
 }
 
 /**
- * Einen neuen Kontakt erstellen
- * @param {Object} contactData - Die Kontaktdaten
- * @returns {Promise<Object>} Der erstellte Kontakt
+ * Create a new contact
+ * @param {Object} contactData 
+ * @returns {Promise<Object>} 
  */
 async function createContact(contactData) {
     try {
-        // In dieser Version simulieren wir die Erstellung, falls das Backend nicht erreichbar ist
         try {
             const options = getRequestOptions('POST', contactData);
             const response = await fetch(`${API_URL}/contacts/`, options);
@@ -67,8 +62,6 @@ async function createContact(contactData) {
             return await response.json();
         } catch (error) {
             console.warn('API nicht erreichbar, simuliere Kontakt-Erstellung:', error);
-            // Einen simulierten Kontakt mit ID zurückgeben
-            // return createDummyContact(contactData);
         }
     } catch (error) {
         console.error('API-Fehler bei createContact:', error);
@@ -84,7 +77,6 @@ async function createContact(contactData) {
  */
 async function updateContact(contactId, contactData) {
     try {
-        // In dieser Version simulieren wir die Aktualisierung, falls das Backend nicht erreichbar ist
         try {
             const options = getRequestOptions('PATCH', contactData);
             const response = await fetch(`${API_URL}/contacts/${contactId}/`, options);
@@ -97,8 +89,6 @@ async function updateContact(contactId, contactData) {
             return await response.json();
         } catch (error) {
             console.warn('API nicht erreichbar, simuliere Kontakt-Aktualisierung:', error);
-            // Einen simulierten aktualisierten Kontakt zurückgeben
-            // return updateDummyContact(contactId, contactData);
         }
     } catch (error) {
         console.error('API-Fehler bei updateContact:', error);
@@ -107,13 +97,12 @@ async function updateContact(contactId, contactData) {
 }
 
 /**
- * Einen Kontakt löschen
+ * delete a contact
  * @param {number} contactId - Die ID des Kontakts
  * @returns {Promise<void>}
  */
 async function deleteContact(contactId) {
     try {
-        // In dieser Version simulieren wir das Löschen, falls das Backend nicht erreichbar ist
         try {
             const options = getRequestOptions('DELETE');
             const response = await fetch(`${API_URL}/contacts/${contactId}/`, options);
@@ -126,8 +115,6 @@ async function deleteContact(contactId) {
             return true;
         } catch (error) {
             console.warn('API nicht erreichbar, simuliere Kontakt-Löschung:', error);
-            // Erfolg simulieren
-            // return deleteDummyContact(contactId);
         }
     } catch (error) {
         console.error('API-Fehler bei deleteContact:', error);
@@ -136,13 +123,12 @@ async function deleteContact(contactId) {
 }
 
 /**
- * Hilfsfunktion: Prüft einen einzelnen Kontakt
- * @param {number} contactId - Die ID des Kontakts
- * @returns {Promise<Object>} Der Kontakt
+ * Check existence of a contact
+ * @param {number} contactId - Contact-ID
+ * @returns {Promise<Object>} Contact-Objekt
  */
 async function getContact(contactId) {
     try {
-        // In dieser Version simulieren wir die Abfrage, falls das Backend nicht erreichbar ist
         try {
             const options = getRequestOptions();
             const response = await fetch(`${API_URL}/contacts/${contactId}/`, options);
@@ -154,8 +140,6 @@ async function getContact(contactId) {
             return await response.json();
         } catch (error) {
             console.warn('API nicht erreichbar, verwende Dummy-Kontakt:', error);
-            // Dummy-Kontakt zurückgeben
-            // return getDummyContact(contactId);
         }
     } catch (error) {
         console.error('API-Fehler bei getContact:', error);
@@ -163,9 +147,8 @@ async function getContact(contactId) {
     }
 }
 
-// ============ DUMMY DATA FUNKTIONEN ============
+// ============ DUMMY DATA FUNCTION ============
 
-// In-Memory Speicher für Dummy-Kontakte
 let dummyContacts = [
     { 
         id: 1, 
@@ -193,29 +176,28 @@ let dummyContacts = [
     }
 ];
 
-// Aktuelle höchste ID für neue Kontakte
 let nextDummyId = 4;
 
 /**
- * Gibt alle Dummy-Kontakte zurück
+ * take dummyContacts and return a copy
  */
 function getDummyContacts() {
-    return [...dummyContacts]; // Kopie zurückgeben, um das Original nicht zu verändern
+    return [...dummyContacts]; 
 }
 
 /**
- * Gibt einen bestimmten Dummy-Kontakt zurück
+ * Take a contactId and return the corresponding dummy contact
  */
 function getDummyContact(contactId) {
     const contact = dummyContacts.find(c => c.id == contactId);
     if (!contact) {
         throw new Error(`Kontakt mit ID ${contactId} nicht gefunden`);
     }
-    return {...contact}; // Kopie zurückgeben
+    return {...contact}; 
 }
 
 /**
- * Erstellt einen neuen Dummy-Kontakt
+ * Create Dummy Data
  */
 function createDummyContact(contactData) {
     const newContact = {
@@ -223,11 +205,11 @@ function createDummyContact(contactData) {
         id: nextDummyId++
     };
     dummyContacts.push(newContact);
-    return {...newContact}; // Kopie zurückgeben
+    return {...newContact}; 
 }
 
 /**
- * Aktualisiert einen Dummy-Kontakt
+ * Update Dummy Data
  */
 function updateDummyContact(contactId, contactData) {
     const index = dummyContacts.findIndex(c => c.id == contactId);
@@ -238,15 +220,15 @@ function updateDummyContact(contactId, contactData) {
     const updatedContact = {
         ...dummyContacts[index],
         ...contactData,
-        id: contactId  // ID nicht überschreiben lassen
+        id: contactId 
     };
     
     dummyContacts[index] = updatedContact;
-    return {...updatedContact}; // Kopie zurückgeben
+    return {...updatedContact}; 
 }
 
 /**
- * Löscht einen Dummy-Kontakt
+ * Delete Dummy Data
  */
 function deleteDummyContact(contactId) {
     const index = dummyContacts.findIndex(c => c.id == contactId);
@@ -258,7 +240,7 @@ function deleteDummyContact(contactId) {
     return true;
 }
 
-// Globale Verfügbarkeit für alle Funktionen
+
 window.API_URL = API_URL;
 window.getContacts = getContacts;
 window.createContact = createContact;
@@ -266,12 +248,7 @@ window.updateContact = updateContact;
 window.deleteContact = deleteContact;
 window.getContact = getContact;
 
-//Prüfen ob userInfo bereits definiert ist, wenn nicht, initialisieren
-if (typeof userInfo === 'undefined') {
-    var userInfo = JSON.parse(sessionStorage.getItem("user-info") || '{"name":"Demo User"}');
-}
 
-// Prüfen ob userCreds bereits definiert ist, wenn nicht, initialisieren
-// if (typeof userCreds === 'undefined') {
-//     var userCreds = JSON.parse(sessionStorage.getItem("user-creds") || '{"uid":"demo-user-id"}');
-// }
+if (typeof userInfo === 'undefined') {
+    var userInfo = JSON.parse(sessionStorage.getItem("user-info") || '{""}');
+}

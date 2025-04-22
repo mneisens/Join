@@ -242,7 +242,7 @@ function returnGreeting() {
 }
 
 function getStoredUserInfo() {
-  const raw = sessionStorage.getItem('user-info') || '{"name":"Demo User"}';
+  const raw = sessionStorage.getItem('user-info') || '{"name":""}';
   return JSON.parse(raw);
 }
 
