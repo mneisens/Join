@@ -6,71 +6,54 @@ let summaryTasks = [];
  */
 async function loadSummaryUser() {
   await includeHTML();
-  // Entferne checkFirstLogIn(), da es nicht mehr benötigt wird
-  // Entferne checkGuestLogIn(), da es nicht mehr benötigt wird
   activeLink(1, window.location.href);
   renderSummarySvg();
   await sumFinalLoadDataFromBackend();
   showGreeting();
-  ensureUIIsInteractive(); // Stelle sicher, dass die UI interaktiv ist
+  ensureUIIsInteractive(); 
 }
 
 function showGreeting() {
   let greeting = returnGreeting();
   greetUserDesktopContainer.innerHTML = createDesktopGreeting(greeting);
   
-  // Mobile Begrüßung, falls erforderlich
   if (window.innerWidth <= 1010) {
     greetUserDesktopContainer.innerHTML += createMobilGreeting(greeting);
   }
 }
 
 function ensureUIIsInteractive() {
-  // Entferne alle potenziellen Modal-Overlays
   const createMyContactContainer = document.getElementById('createMyContactContainer');
   if (createMyContactContainer) {
     createMyContactContainer.style.display = 'none';
   }
   
-  // Entferne alle anderen potenziellen Overlays
   const overlays = document.querySelectorAll('.popUpContainer, .modal-overlay, .overlay');
   overlays.forEach(overlay => {
     overlay.style.display = 'none';
   });
   
-  // Stelle sicher, dass der Body nicht deaktiviert ist
   document.body.style.pointerEvents = 'auto';
   document.body.style.opacity = '1';
 }
 
 async function sumFinalLoadDataFromBackend() {
   try {
-    // API_URL definieren, falls nicht vorhanden
     const apiUrl = 'http://localhost:8000/api';
-    
-    // Direkter API-Aufruf zum Abrufen aller Tasks
     const options = getRequestOptions('GET');
     const response = await fetch(`${apiUrl}/tasks/`, options);
     
     if (!response.ok) {
       throw new Error('Fehler beim Abrufen der Tasks');
     }
-    
-    // Alle Tasks vom Backend abrufen
     const allTasks = await response.json();
-    console.log("Alle Tasks vom Backend:", allTasks);
-    
-    // Tasks für die Summary vorbereiten
-    // Wir konvertieren das Datumsformat und mappen die Kategorien
     summaryTasks = allTasks.map(task => {
-      // Datumsformat konvertieren
       let dueDate = "";
       if (task.due_date) {
         const [year, month, day] = task.due_date.split("-");
         dueDate = `${day}/${month}/${year}`;
       }
-      
-      // Kategorie-Mapping für die Kompatibilität mit dem Frontend
+
       return {
         taskId: task.id,
         header: task.header || "",
@@ -79,28 +62,17 @@ async function sumFinalLoadDataFromBackend() {
         priority: task.priority || "low",
         category: task.category || "User Story",
         kanbanCategory: task.kanban_category || "Todo",
-        // Wir brauchen die assignedTo und subtasks nicht für die Summary
       };
     });
-    
-    console.log("Tasks für Summary vorbereitet:", summaryTasks);
-    
-    // Summary-Karten aktualisieren
+
     if (summaryTasks.length > 0) {
       rednerSummaryInfo();
       renderDeadline();
     } else {
-      console.log("Keine Tasks gefunden.");
     }
   } catch (error) {
-    console.error("Fehler beim Laden der Tasks für die Summary:", error);
   }
 }
-
-
-
-
-
 
 /**
  * Loads tasks from the database and updates the summary information on the page.
@@ -112,17 +84,8 @@ async function sumFinalLoadDataFromDatabase() {
     rednerSummaryInfo();
     renderDeadline();
   } else {
-    console.log("Enthält keine Elemente.");
   }
 }
-
-/**
- * Checks for user credentials in session storage.
- * If credentials are not found, redirects to the login page.
- */
-
-
-// window.addEventListener("load", checkCred);
 
 /**
  * Renders SVG elements to the summary page.

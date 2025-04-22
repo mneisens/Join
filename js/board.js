@@ -152,32 +152,21 @@ function renderHtmlBoardPreviewCards(category, taskArr) {
  * Rendert die Profilbilder der zugewiesenen Personen
  */
 function renderHtmlBoardPreviewCardProfileBadge(task) {
-  // Debugging: Prüfen, was in assignedTo ist
-  console.log("Task assignedTo:", task.assignedTo);
-  
   let htmlAssignedTo = "";
-  
-  // Sicherstellen, dass assignedTo ein Array ist
   if (Array.isArray(task.assignedTo)) {
-    // Maximal 5 Badges anzeigen
     const maxBadges = 5;
     
     for (let i = 0; i < Math.min(task.assignedTo.length, maxBadges); i++) {
       const contact = task.assignedTo[i];
-      console.log(contact.name);
-      
-      // Sicherstellen, dass contact ein gültiges Objekt ist
       if (contact && typeof contact === 'object') {
         const initials = contact.initials || boardGetInitials(contact.name || "");
         const color = contact.color ;
-        
         htmlAssignedTo += `
           <div class="board-profile-badge" style="background-color: ${color};">${initials}</div>
         `;
       }
     }
     
-    // Wenn es mehr als 5 Kontakte gibt, einen "+X" Badge hinzufügen
     if (task.assignedTo.length > maxBadges) {
       const overflow = "+" + (task.assignedTo.length - maxBadges);
       htmlAssignedTo += `
@@ -185,7 +174,6 @@ function renderHtmlBoardPreviewCardProfileBadge(task) {
       `;
     }
   }
-  
   return htmlAssignedTo;
 }
 

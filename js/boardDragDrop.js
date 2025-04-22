@@ -190,10 +190,7 @@ async function boardDropElementTo(category) {
     if (!boardDraggedElementId) {
       console.warn("Keine Task-ID zum Verschieben vorhanden");
       return;
-    }
-    
-    console.log(`Task ${boardDraggedElementId} wird nach ${category} verschoben...`);
-    
+    }    
     // API-Aufruf zum Aktualisieren der Kategorie
     await updateTaskCategory(boardDraggedElementId, category);
     

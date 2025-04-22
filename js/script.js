@@ -46,10 +46,10 @@ function logOut() {
 function createUserInitials() {
     try {
         // Implementierung für Benutzer-Initialen
-        console.log("createUserInitials wurde aufgerufen");
+
         // Hier könnte der Code stehen, um Initialen aus dem Benutzernamen zu erstellen
     } catch (error) {
-        console.error("Fehler beim Erstellen der Benutzer-Initialen:", error);
+
     }
 }
 
@@ -224,19 +224,9 @@ function handelLogOut() {
     }
 }
 
-// document.addEventListener('DOMContentLoaded', () => {
-//     const btn = document.getElementById('newContactDesktopBtn');
-//     if (btn) {
-//       btn.addEventListener('click', openAddContacts);
-//       console.log("Add‑Kontakt‑Listener gebunden");
-//     } else {
-//       console.warn("Kein Add‑Button gefunden");
-//     }
-//   });
 
 if (typeof loadContact === 'undefined') {
     window.loadContact = async function() {
-        console.log("Temporäre loadContact-Funktion aufgerufen. Warte auf die eigentliche Implementierung...");
         // Warte kurz, um sicherzustellen, dass alle Skripte geladen wurden
         await new Promise(resolve => setTimeout(resolve, 100));
         
@@ -253,22 +243,6 @@ if (typeof loadContact === 'undefined') {
 
 
 }
-
-// document.getElementById('signOutBtn').addEventListener('click', () => {
-//     // 1) Anfrage an Backend, um Token und User zu löschen
-//     fetch('http://localhost:8000/api/auth/logout/', {
-//       method: 'POST',
-//       headers: {
-//         'Authorization': 'Token ' + localStorage.getItem('authToken'),
-//       }
-//     })
-//     .finally(() => {
-//       // 2) Unabhängig vom Ergebnis: Client‑seitig aufräumen
-//       localStorage.removeItem('authToken');
-//       // 3) Zur Login‑Seite weiterleiten
-//       window.location.href = '/login.html';
-//     });
-//   });
 
 document.getElementById('logoutBtn').addEventListener('click', () => {
     doLogoutFetch();
@@ -295,6 +269,4 @@ document.getElementById('logoutBtn').addEventListener('click', () => {
   function handelLogOut() {
     doLogoutFetch();
   }
-  
 
-  

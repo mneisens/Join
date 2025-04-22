@@ -2,26 +2,15 @@
  * Adds a subtask to the list.
  */
 function addSubtask() {
-  // Input-Feld finden und Text extrahieren
   let inputField = document.getElementById("input-title-addTasks");
   let subtaskText = inputField.value.trim();
-  
-  // Nichts tun, wenn der Text leer ist
   if (subtaskText === "") return;
-  
-  // Subtask-Container finden
   let ul = document.getElementById("addedTasks");
-  
-  // Prüfen, ob wir im Edit-Modus sind
   if (window.addTaskInEditMode || window.editTaskId) {
-    // console.log("Edit-Modus erkannt, verwende addSubtaskInEditMode");
     addSubtaskInEditMode();
   } else {
-    // Im normalen Modus: Subtask zum UI hinzufügen
     ul.appendChild(createSubtaskElement(subtaskText));
   }
-  
-  // Input-Feld leeren
   inputField.value = "";
 }
 
@@ -58,41 +47,23 @@ document.getElementById("addedTasks").addEventListener("click", (event) => handl
  * @param {MouseEvent} event - The click event.
  */
 function handleSubtaskActions(event) {
-  // Task-ID vorher speichern
   const currentTaskId = editTaskId || window.editTaskId;
-  // console.log("Aktuelle Task-ID vor Subtask-Aktion:", currentTaskId);
-  
   let li = event.target.closest("li");
   if (
     event.target.classList.contains("delete-icon") ||
     event.target.classList.contains("clear-icon")
   ) {
-    // Subtask-ID extrahieren, falls vorhanden
     const subtaskId = li.id || '';
-    // console.log(`Lösche Subtask ${subtaskId}`);
-    
-    // Wenn wir im Edit-Modus sind, rufen wir die spezielle Funktion auf
     if (addTaskInEditMode && typeof editTaskChangeSubtask === 'function') {
-      // Event stoppen, um ungewollte Seiteneffekte zu verhindern
       event.stopPropagation();
-      
-      // Subtask aus dem Array entfernen
       editTaskChangeSubtask(subtaskId, "delete", "");
     }
-    
-    // Entfernen des Subtask-Elements aus dem DOM
-    li.remove();
-    
-    // Task-ID nach der Löschung überprüfen - sie sollte gleich geblieben sein
-    // console.log("Task-ID nach Subtask-Löschung:", editTaskId || window.editTaskId);
-    
+    li.remove();    
   } else if (event.target.classList.contains("edit-icon")) {
     editSubtask(li);
   }
   
-  // Sicherstellen, dass die Task-ID erhalten bleibt
   if (!editTaskId && currentTaskId) {
-    // console.log("Task-ID wurde zurückgesetzt, stelle wieder her:", currentTaskId);
     editTaskId = currentTaskId;
     window.editTaskId = currentTaskId;
   }

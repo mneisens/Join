@@ -68,7 +68,7 @@ async function addDummyContacts(dummyContact) {
         };
         await setDoc(newDocRef, contactData);
     } catch (error) {
-        console.log("Error to add Dummy Contacts:", error);
+
     }
 }
 
@@ -99,7 +99,7 @@ async function addDummyTasks(dummyTask, assignedContacts) {
         };
         await setDoc(newDocRef, taskData);
     } catch (error) {
-        console.log("Error to add Dummy Tasks:", error);
+
     }
 }
 
@@ -123,8 +123,7 @@ async function getDummyContacts() {
         } else {
         }
     } catch (error) {
-        console.log(error.code);
-        console.log(error.message);
+
     }
 }
 
@@ -148,8 +147,7 @@ async function getDummyToPushContacts() {
         } else {
         }
     } catch (error) {
-        console.log(error.code);
-        console.log(error.message);
+
     }
 }
 
@@ -173,8 +171,7 @@ async function getDummyTasks() {
         } else {
         }
     } catch (error) {
-        console.log(error.code);
-        console.log(error.message);
+
     }
 }
 
@@ -190,8 +187,7 @@ async function deleteGuestContacts(contactID) {
         const docRef = doc(db, 'UserAuthList', userCreds.uid, 'contacts', contactID);
         await deleteDoc(docRef);
     } catch (error) {
-        console.log(error.code);
-        console.log(error.message);
+
     }
 }
 
@@ -207,7 +203,7 @@ async function deleteGuestTasks(taskId) {
         const docRef = doc(db, 'UserAuthList', userCreds.uid, 'addTasks', taskId);
         await deleteDoc(docRef);
     } catch (error) {
-        console.log("Error deleting document:", error);
+
     }
 }
 
@@ -222,7 +218,6 @@ async function deleteGuestData() {
         const docRef = doc(db, 'UserAuthList', userCreds.uid);
         await deleteDoc(docRef);
     } catch (error) {
-        console.log("Error deleting document:", error);
     }
 }
 
@@ -238,8 +233,7 @@ async function deleteGuestUser() {
     .then(() => {
         logOutGuest();
     }).catch(error => {
-        console.log(error.code);
-        console.log(error.message);
+
     })
 }
 

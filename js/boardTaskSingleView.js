@@ -4,17 +4,12 @@
  */
 async function showTaskView(id) {
   try {
-    // Task-Daten abrufen
     let currentTask = boardGetTaskById(id);
-    
     if (!currentTask) {
       console.error(`Keine Task mit ID ${id} gefunden`);
       return;
     }
-
-    // Prüfen, ob die zugewiesenen Kontakte vervollständigt werden müssen
     if (Array.isArray(currentTask.assignedTo) && currentTask.assignedTo.length > 0) {
-      // Prüfen, ob es sich um IDs oder unvollständige Objekte handelt
       const needsFullContacts = currentTask.assignedTo.some(contact => 
         typeof contact === 'number' || 
         typeof contact === 'string' || 
@@ -22,24 +17,12 @@ async function showTaskView(id) {
       );
       
       if (needsFullContacts) {
-        // Alle Kontakte vom Server laden
         const allContacts = await getContacts();
-        
-        // Die assignedTo-Werte mit vollständigen Kontaktobjekten ersetzen
         currentTask.assignedTo = currentTask.assignedTo.map(contactRef => {
-          // ID extrahieren
           const contactId = typeof contactRef === 'object' ? contactRef.id : contactRef;
-          
-          // Passenden Kontakt finden
           const fullContact = allContacts.find(c => c.id == contactId);
           
-          if (fullContact) {
-            console.log(
-              `Kontakt gefunden: ${fullContact.name} (${fullContact.id})`,
-              `E-Mail: ${fullContact.email}, Telefon: ${fullContact.phone}`,
-              `Farbe: ${fullContact.color}, Initialen: ${fullContact.initials}`,
-            );
-            
+          if (fullContact) {            
             return {
               id: fullContact.id,
               name: fullContact.name,
@@ -49,7 +32,6 @@ async function showTaskView(id) {
               initials: fullContact.initials || getInitialsFromName(fullContact.name)
             };
           } else {
-            // Fallback, wenn kein passender Kontakt gefunden wurde
             return {
               id: contactId,
               name: `Kontakt ${contactId}`,
@@ -60,11 +42,7 @@ async function showTaskView(id) {
         });
       }
     }
-    
-    // Task-Ansicht mit vollständigen Daten anzeigen
     boardFillTaskWithCurrent(currentTask);
-    
-    // UI-Elemente anzeigen
     document.getElementById("taskBgDiv").style.display = "flex";
     setTimeout(() => {
       document.getElementById("taskMainDiv").classList.add("visible");
@@ -145,25 +123,19 @@ function returnBoardSubtaskConfig(task) {
  */
 async function boardClickSubtask(taskId, subtaskIndex, newState = null) {
   try {
-    // Task finden
     let task = boardGetTaskById(taskId);
     
     if (!task || !Array.isArray(task.subtasks) || subtaskIndex < 0 || subtaskIndex >= task.subtasks.length) {
       console.error(`Ungültiger Task oder Subtask-Index: ${taskId}, ${subtaskIndex}`);
       return;
     }
-    
-    // Status ändern
     const currentState = task.subtasks[subtaskIndex].done || false;
     const targetState = (newState !== null) ? newState : !currentState;
     
-    // Status aktualisieren
     task.subtasks[subtaskIndex].done = targetState;
-    
-    // UI aktualisieren
+
     updateSubtaskCheckbox(taskId, subtaskIndex, targetState);
-    
-    // API-Anfrage vorbereiten
+
     const updateData = {
       header: task.header,
       description: task.description,
@@ -177,10 +149,8 @@ async function boardClickSubtask(taskId, subtaskIndex, newState = null) {
       }))
     };
     
-    // API-Aufruf
     const result = await updateTask(taskId, updateData);
     
-    // Fortschrittsanzeige aktualisieren
     updateSubtaskProgress(taskId);
     
     return result;
@@ -257,29 +227,17 @@ function boardRenderAssignedLine(task) {
     return;
   }
   
-  // Container leeren
+
   container.innerHTML = '';
-  
-  // Prüfen, ob Kontakte vorhanden sind
+
   if (Array.isArray(task.assignedTo) && task.assignedTo.length > 0) {
-    // Debug-Ausgabe
-    console.log("Zugewiesene Kontakte:", task.assignedTo);
-    
-    // Für jeden Kontakt ein Element erstellen
     task.assignedTo.forEach(contact => {
-      // Name und Initialen extrahieren oder Fallback verwenden
       const name = contact.name || `Kontakt ${contact.id}`;
       let initials = contact.initials || '';
-      
-      // Wenn keine Initialen vorhanden, aus dem Namen erzeugen
       if (!initials && name) {
         initials = getInitialsFromName(name);
       }
-      
-      // Farbe extrahieren oder Fallback verwenden
       const color = contact.color || getRandomColor();
-      
-      // HTML für den Kontakt hinzufügen
       container.innerHTML += `
         <div class="task-assigned-users-div">
           <div class="task-assigned-user-main">
@@ -292,7 +250,6 @@ function boardRenderAssignedLine(task) {
       `;
     });
   } else {
-    // Nachricht anzeigen, wenn keine Kontakte zugewiesen sind
     container.innerHTML = '<div class="task-assigned-users-div"><p>Keine Kontakte zugewiesen</p></div>';
   }
 }
@@ -332,7 +289,6 @@ function boardTaskAddEventListener() {
  */
 async function deleteTask(taskId) {
   try {
-    // getRequestOptions fügt Content‑Type & Authorization-Header hinzu
     const options  = getRequestOptions('DELETE');
     const response = await fetch(`${API_URL}/tasks/${taskId}/`, options);
 
@@ -340,8 +296,6 @@ async function deleteTask(taskId) {
       const errorText = await response.text();
       throw new Error(`Fehler beim Löschen des Tasks: ${response.status} ${errorText}`);
     }
-    
-    // UI aktualisieren
     hideTaskView();
     boardTasks = boardTasks.filter(task => task.taskId != taskId);
     loadBoardKanbanContainer(boardTasks);

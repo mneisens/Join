@@ -24,41 +24,32 @@
     <div html-template="./templates/nav_template.html"></div>
 
     <div class="sum-bg-main">
-        <!-- summary board headline -->
         <div class="sum-header-main-div">
             <div class="summary-header">
                 <h2 class="board-h2">Join 360</h2>
                 <img class="sum-header-seperator-blueY" src="./assets/img/summary/seperatorBlueY.svg" alt="blue line">
                 <p>Key Metrics at a Glance</p>
             </div>
-
             <img class="sum-header-seperator-blueX" src="./assets/img/summary/seperatorBlueX.svg" alt="blue line">
-        </div>
-
-        <!-- summary board content -->
+        </div>    
         <div class="sum-content-div">
             <div class="sum-cards-main-div">
-                <div class="sum-cards-div-1">
-                    <!-- todo card -->
+                <div class="sum-cards-div-1">                    
                     <div onclick="window.location.href='board.html'" id="sumCardTodo" class="sum-card-first-row">
                         <div id="sumCardTodoIcon"></div>
                         <div class="sum-card-sec-lay1">
                             <div class="board-h3" id="sumCardTodoInt">0</div>
                             <p>To-do</p>
                         </div>
-                    </div>
-                    <!-- done card -->
+                    </div>           
                     <div onclick="window.location.href='board.html'" id="sumCardDone" class="sum-card-first-row">
-                        <div id="sumCardDoneIcon"></div>
-                        <!-- <img src="../assets/img/summary/checkmarkBlueBack.svg" alt="checkmark"> -->
+                        <div id="sumCardDoneIcon"></div>                    
                         <div class="sum-card-sec-lay1">
                             <div class="board-h3" id="sumCardDoneInt">0</div>
                             <p>Done</p>
                         </div>
                     </div>
-                </div>
-
-                <!-- urgent card -->
+                </div>          
                 <div onclick="window.location.href='board.html'" class="sum-cards-div-2">
                     <div class="sum-card-sec-row" id="urgentTaskContainer">
                         <div class="sum-card-sec-row-col1">
@@ -76,8 +67,7 @@
                     </div>
                 </div>
 
-                <div class="sum-cards-div-3">
-                    <!-- Tasks in Board -->
+                <div class="sum-cards-div-3">                  
                     <div onclick="window.location.href='board.html'" class="sum-card-third-row">
                         <div class="sum-card-sec-lay">
                             <div class="board-h3" id="sumCardAmountInt">0</div>
@@ -85,14 +75,14 @@
                             <p class="boardText">Board</p>
                         </div>
                     </div>
-                    <!-- Tasks in Progress -->
+               
                     <div onclick="window.location.href='/templates/board.html'" class="sum-card-third-row">
                         <div class="sum-card-sec-lay">
                             <div class="board-h3" id="sumCardInProgressInt">0</div>
                             <p>Tasks in Progress</p>
                         </div>
                     </div>
-                    <!-- Awaiting feedback -->
+         
                     <div onclick="window.location.href='board.html'" class="sum-card-third-row">
                         <div class="sum-card-sec-lay">
                             <div class="board-h3" id="sumCardAwaitInt">0</div>
@@ -144,10 +134,10 @@
                     });
                     return dataArr;
                 } else {
-                    // console.log("No Tasks found!");
+               
                 }
             } catch (error) {
-                // console.log("Error getting documents:", error);
+    
             }
         }
 
@@ -172,7 +162,7 @@
                     createUserInitials();
                 }
             } catch (error) {
-                // console.log("Error checking firstLogIn:", error);
+        
             }
         }
 
@@ -192,20 +182,9 @@
                 };
                 await setDoc(newDocRef, myContactData);
             } catch (error) {
-                // console.log(error);
             }
         }
 
-        // async function updateFirstLogIn() {
-        //     try {
-        //         const userRef = doc(db, 'UserAuthList', userCreds.uid);
-        //         await updateDoc(userRef, {
-        //             firstLogIn: false
-        //         });
-        //     } catch (error) {
-        //         console.log(error);
-        //     }
-        // }
 
         async function updateAccountData() {
             try {
@@ -215,40 +194,11 @@
                 });
                 sessionStorage.setItem("user-info", JSON.stringify({ name: getNameFromInput() }))
             } catch (error) {
-                console.log("Error updating document:", error);
             }
         }
 
-        // async function checkGuestLogIn() {
-        //     try {
-        //         const ref = doc(db, "UserAuthList", userCreds.uid);
-        //         const docSnap = await getDoc(ref);
-        //         if (docSnap.exists() && docSnap.data().guestFirstLogIn === true) {
-        //                 loadDummyJsons();
-        //                 updateGuestFirstLogIn();
-        //         }
-        //     } catch (error) {
-        //         console.log("Error checking firstLogIn:", error);
-        //     }
-        // }
-
-        // async function updateGuestFirstLogIn() {
-        //     try {
-        //         const userRef = doc(db, 'UserAuthList', userCreds.uid);
-        //         await updateDoc(userRef, {
-        //             guestFirstLogIn: false
-        //         });
-        //     } catch (error) {
-        //         console.log(error);
-        //     }
-        // }
-
-        // window.updateGuestFirstLogIn = updateGuestFirstLogIn;
-        // window.checkGuestLogIn = checkGuestLogIn;
         window.updateAccountData = updateAccountData;
-        // window.updateFirstLogIn = updateFirstLogIn;
         window.addMyContact = addMyContact;
-        // window.checkFirstLogIn = checkFirstLogIn;
         window.loadTasks = loadTasks;
     </script>
 
@@ -260,11 +210,7 @@
 <script src="./js/htmltemplates/svgHtml.js"></script>
 <script src="./js/script.js"></script>
 <script src="./js/summaryUser.js"></script>
-    <!-- <script src="./js/htmltemplates/svgHtml.js"></script>
-    <script src="./js/script.js"></script>
-    <script src="./js/summaryUser.js"></script>
-    <script src="./js/addDummyDate.js"></script>-->
-    <script type="module" src="./js/guest.js"></script> 
+<script type="module" src="./js/guest.js"></script> 
 </body>
 
 </html>

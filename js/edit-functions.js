@@ -3,7 +3,6 @@
 //    * Zeigt das Löschfenster für einen Kontakt an
 //    */
   function showDeleteContactPopUp(id, name, initials, color) {
-    console.log("showDeleteContactPopUp aufgerufen mit:", id, name, initials, color);
     
     try {
       // Zeige das Löschfenster an
@@ -76,20 +75,6 @@
     }, 180);
   }
   
-//   // Alle Funktionen global verfügbar machen
-//   window.createEditContactContent = createEditContactContent;
-//   window.fillEditForm = fillEditForm;
-//   window.renderEditContactInitials = renderEditContactInitials;
-//   window.showEditContactInitials = showEditContactInitials;
-//   window.hideEditContact = hideEditContact;
-//   window.getColorFromEditInput = getColorFromEditInput;
-//   window.handleSubmit = handleSubmit;
-//   window.showDeleteContactsFromPopUp = showDeleteContactsFromPopUp;
-//   window.showPopUpDeleteContocatInfo = showPopUpDeleteContocatInfo;
-//   window.showDeleteContactPopUp = showDeleteContactPopUp;
-//   window.showDeleteContacts = showDeleteContacts;
-//   window.showDeleteContactsInfos = showDeleteContactsInfos;
-//   window.hideDeleteContact = hideDeleteContact;
 
 /**
  * Bereitet das Formular für die Bearbeitung eines Kontakts vor
@@ -149,8 +134,6 @@ function fillEditForm(id, name, email, phone, color) {
   editNameInput.value = name;
   editEmailInput.value = email;
   editPhoneInput.value = phone || '';
-  
-  // Hintergrundfarbe des Logos setzen
   editLogo.style.backgroundColor = color;
 }
 
@@ -186,7 +169,6 @@ function renderEditContactInitials() {
 * Holt die Hintergrundfarbe aus dem Bearbeitungsformular
 */
 function getColorFromEditInput() {
-  // Wir verwenden die gespeicherte Farbe statt eine neue zu generieren
   let currentContactColor = document.getElementById('currentContactColor');
   return currentContactColor ? currentContactColor.value : getRandomColor();
 }

@@ -13,13 +13,13 @@ async function loadHelpScreen() {
  * the function redirects the user to the login page. This ensures that only authenticated
  * users can access certain parts of the application that require a login.
  */
-let checkCred = () => {
-    if (!sessionStorage.getItem("user-creds")) {
-        window.location.href = 'log_in.html';
-    }
-}
+// let checkCred = () => {
+//     if (!sessionStorage.getItem("user-creds")) {
+//         window.location.href = 'log_in.html';
+//     }
+// }
 
-window.addEventListener("load", checkCred);
+// window.addEventListener("load", checkCred);
 
 
 

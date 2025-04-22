@@ -236,129 +236,17 @@
             </div>
         </div>
     </div>
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-        import { getFirestore } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-firestore.js";
+  
 
-        // const firebaseConfig = {
-        //     apiKey: "AIzaSyBrslTwOvrS4_tnF6uODjT1KQuWR4ttzFY",
-        //     authDomain: "join193-5ae20.firebaseapp.com",
-        //     databaseURL: "https://join193-5ae20-default-rtdb.europe-west1.firebasedatabase.app",
-        //     projectId: "join193-5ae20",
-        //     storageBucket: "join193-5ae20.appspot.com",
-        //     messagingSenderId: "330884835484",
-        //     appId: "1:330884835484:web:20d71dc457ab9659d0a559"
-        // };
-
-//         const firebaseConfig = {
-//     apiKey: "AIzaSyAeIBUm7q40H52uDOsl19A6ecvv-NH3cHs",
-//     authDomain: "join-62bad.firebaseapp.com",
-//     databaseURL: "https://join-62bad-default-rtdb.firebaseio.com",
-//     projectId: "join-62bad",
-//     storageBucket: "join-62bad.firebasestorage.app",
-//     messagingSenderId: "349761837323",
-//     appId: "1:349761837323:web:970c5ea99cf750318a2a0e"
-//   };
-
-        // const app = initializeApp(firebaseConfig);
-
-        // import { doc, setDoc, getDocs, deleteDoc, updateDoc, collection } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
-
-        // const db = getFirestore(app);
-
-        // async function addTask() {
-        //     try {
-        //         const taskRef = collection(db, 'UserAuthList', userCreds.uid, 'addTasks');
-        //         const newDocRef = doc(taskRef);
-        //         const docID = newDocRef.id;
-        //         await setDoc(newDocRef,
-        //             {
-        //                 taskId: docID,
-        //                 category: "User Story",
-        //                 header: "Kochwelt Page & Recipe Recommender",
-        //                 description: "Build start page with recipe recommendation.",
-        //                 dueDate: "10/05/2023",
-        //                 priority: "medium",
-        //                 assignedTo: [
-        //                     { bg: "#FFBB2B", name: "Emmanuel Mauer" },
-        //                     { bg: "#FF4646", name: "Marcel Bauer" },
-        //                     { bg: "#FFE62B", name: "Anton Mayer" },
-        //                 ],
-        //                 subtasks: [],
-        //                 kanbanCategory: "InProgress",
-        //             }
-        //         );
-        //     } catch (error) {
-        //         console.log(error);
-        //     }
-        // }
-
-        // async function loadTasks() {
-        //     let dataArr = [];
-        //     try {
-        //         const contactRef = collection(db, 'UserAuthList', userCreds.uid, 'addTasks');
-        //         const querySnapshot = await getDocs(contactRef);
-
-        //         if (!querySnapshot.empty) {
-        //             querySnapshot.forEach((doc) => {
-        //                 const data = doc.data();
-        //                 dataArr.push(data);
-        //             });
-        //             return dataArr;
-        //         } else {
-        //             console.log("No Tasks found!");
-        //             return dataArr;
-        //         }
-        //     } catch (error) {
-        //         console.log("Error getting documents:", error);
-        //         return dataArr;
-        //     }
-        // }
-
-        // async function updateTask(taskId, updatedData) {
-        //     try {
-        //         const docRef = doc(db, 'UserAuthList', userCreds.uid, 'addTasks', taskId);
-        //         await updateDoc(docRef, updatedData);
-
-        //     } catch (error) {
-        //         console.log("Error updating document:", error);
-        //     }
-        // }
-
-
-        // window.addTask = addTask;
-        // window.loadTasks = loadTasks;
-        // window.updateTask = updateTask;
-        // window.deleteTask = deleteTask;
-    </script>
-    <!-- <script src="https://www.gstatic.com/firebasejs/8.0.0/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.0.0/firebase-firestore.js"></script> -->
-    <!-- <script src="./js/htmltemplates/svgHtml.js"></script>
-    <script src="./js/htmltemplates/boardHtml.js"></script>
-    <script src="./js/script.js"></script>
-    <script src="./js/addTask_board.js"></script>
-    <script src="./js/addTask_board_main.js"></script>
-    <script src="./js/editTask_board.js"></script>
-    <script src="./js/board.js"></script>
-    <script src="./js/boardDragDrop.js"></script>
-    <script src="./js/boardTaskSingleView.js"></script>
-    <script src="./js/htmltemplates/addTask_board.js"></script>
-    <script src="./js/addDummyDate.js"></script>
-    <script type="module" src="./js/guest.js"></script> -->
     <script src="./js/api-service.js"></script>
     <script type="module" src="./js/board-api.js"></script>
-
     <script src="./js/tasks-api.js"></script>
-    
-    <!-- Hauptscripts -->
     <script src="./js/script.js"></script>
     <script src="./js/htmltemplates/svgHtml.js"></script>
     <script src="./js/htmltemplates/boardHtml.js"></script>
     <script src="./js/board.js"></script>
     <script src="./js/boardDragDrop.js"></script>
     <script src="./js/boardTaskSingleView.js"></script>
-    
-    <!-- Task-Verwaltung -->
     <script src="./js/addTask_board_main.js"></script>
     <script src="./js/addTask_board.js"></script>
     <script src="./js/editTask_board.js"></script>

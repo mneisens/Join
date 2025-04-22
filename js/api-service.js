@@ -1,7 +1,4 @@
-// api-service-non-module.js - Funktionen für die Kommunikation mit dem Backend
-// Diese Version verwendet keine ES6-Module, sondern macht alles global verfügbar
 
-// API-URL für alle Anfragen
 const API_URL = 'http://localhost:8000/api';
 
 /**

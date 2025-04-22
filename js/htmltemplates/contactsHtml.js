@@ -136,10 +136,7 @@ function createEditContactPopUp() {
 /**
  * Wird aufgerufen, wenn der Edit-Button geklickt wird
  */
-window.editContactClicked = function(id, name, email, phone, color) {
-    console.log("editContactClicked aufgerufen mit:", id, name, email, phone, color);
-    
-    // Rufe die vorhandene editContact-Funktion auf
+window.editContactClicked = function(id, name, email, phone, color) {    
     if (typeof editContact === 'function') {
         editContact(id, name, email, phone, color);
     } else {
@@ -151,10 +148,7 @@ window.editContactClicked = function(id, name, email, phone, color) {
 /**
  * Wird aufgerufen, wenn der Delete-Button geklickt wird
  */
-window.deleteContactClicked = function(id, name, initials, color) {
-    console.log("deleteContactClicked aufgerufen mit:", id, name, initials, color);
-    
-    // Rufe die vorhandene showDeleteContactPopUp-Funktion auf
+window.deleteContactClicked = function(id, name, initials, color) {    
     if (typeof showDeleteContactPopUp === 'function') {
         showDeleteContactPopUp(id, name, initials, color);
     } else {

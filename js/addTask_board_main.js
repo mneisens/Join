@@ -154,9 +154,7 @@ async function loadAddTasks() {
         done: checkbox ? checkbox.checked : false
       });
     });
-    
-    // Zugewiesene Personen - hier muss Ihre spezifische Implementierung angepasst werden
-    // Dies ist nur ein Beispiel
+
     const assignedTo = [];
     const selectedPersons = document.querySelectorAll('#selectedAbbreviations .selected-person');
     selectedPersons.forEach(element => {
@@ -198,9 +196,6 @@ async function loadAddTasks() {
   async function submitContact() {
     try {
       const data = collectFormData();
-      // console.log("Gesammelte Formulardaten:", data);
-      
-      // Formatiere die Daten für das Backend
       const taskData = {
         header: data.header,
         description: data.description,
@@ -211,71 +206,37 @@ async function loadAddTasks() {
         assigned_to: formatAssignedToForBackend(data.assignedTo),
         subtasks: data.subtasks || []
       };
-      
-      // console.log("Formatierte Task-Daten für Backend:", taskData);
-      
-      // Verwende die createTask-Funktion aus tasks-api.js
+
       const newTask = await createTask(taskData);
-      // console.log("Neue Task erstellt:", newTask);
-      
-      // Erfolg anzeigen
       showSuccessMessage();
-      
-      // Board aktualisieren (vorhandene Funktion wiederverwenden)
       addTaskToBoardWithoutLoadNew(newTask.id, formatTaskForFrontend(newTask));
-      
-      // Formular ausblenden
       hideAddTaskBg();
     } catch (error) {
-      // console.error("Fehler beim Erstellen des Tasks:", error);
       alert("Fehler beim Erstellen des Tasks: " + error.message);
     }
   }
 
   function formatDateForBackend(dateStr) {
     if (!dateStr) return "";
-    
-    // Wenn das Datum bereits im Format DD/MM/YYYY ist
     if (dateStr.includes("/")) return dateStr;
-    
-    // Konvertierung von YYYY-MM-DD zu DD/MM/YYYY
     const [year, month, day] = dateStr.split("-");
-    return `${year}-${month}-${day}`; // Das Backend erwartet YYYY-MM-DD
+    return `${year}-${month}-${day}`;
   }
   function formatAssignedToForBackend(assignedTo) {
     if (!Array.isArray(assignedTo)) return [];
-    
-    // Extrahiere nur die IDs der zugewiesenen Kontakte
+
     return assignedTo.map(contact => {
-      // Wenn es ein Objekt mit ID ist
       if (contact.id) {
         const id = parseInt(contact.id, 10);
         return isNaN(id) ? null : id;
       }
-      // Wenn es eine direkte ID ist
       if (typeof contact === 'number') {
         return contact;
       }
       return null;
-    }).filter(id => id !== null); // Entferne ungültige IDs
+    }).filter(id => id !== null); 
   }
-  
-  
-  /**
-   * Sets the task ID in the newly added contact document.
-   * @param {firebase.firestore.CollectionReference} contactsCollection - The Firestore collection reference.
-   * @param {string} taskId - The ID of the newly added contact document.
-   * @param {Object} data - The data to add to the new contact document.
-   */
-  // function setTaskIdInDocument(contactsCollection, taskId, data) {
-  //   contactsCollection.doc(taskId).set({ taskId: taskId }, { merge: true }).then(() => {
-  //       showSuccessMessage();
-  //       addTaskToBoardWithoutLoadNew(taskId, data);
-  //       hideAddTaskBg();
-  //     })
-  //     .catch((error) => console.error("Fehler beim Aktualisieren der ID des Dokuments: ", error));
-  // }
-  
+    
   
 /**
  * Zeigt eine Erfolgsmeldung an

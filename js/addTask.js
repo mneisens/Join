@@ -2,24 +2,18 @@
 
 async function getContacts() {
     try {
-        // console.log("API-Aufruf: Kontakte abrufen");
         const response = await fetch('http://localhost:8000/api/contacts/');
-        
         if (!response.ok) {
             const errorText = await response.text();
             console.error("Server-Antwort war nicht OK:", response.status, errorText);
             throw new Error(`Fehler beim Abrufen der Kontakte: Status ${response.status}`);
         }
-        
         const data = await response.json();
-        // console.log("API-Antwort Kontakte:", data);
         return data;
     } catch (error) {
-        // console.error('API-Fehler bei getContacts:', error);
         throw error;
     }
 }
-
 
 /**
  * Include HTML
@@ -32,16 +26,6 @@ async function loadAddTasks() {
 
 let currentContactId = null;
 let kanbanCategory = 'Todo';
-
-/**
- * Check logged in
- */
-// let checkCred = () => {
-//     if (!sessionStorage.getItem("user-creds")) {
-//      window.location.href = 'log_in.html';
-//     }
-// }
-// window.addEventListener("load", checkCred);
 
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -89,14 +73,10 @@ function collectFormData() {
     let contactNamesAndColors = [];
     let checkboxes = document.querySelectorAll('.category-checkbox:checked');
     
-    // console.log("Gesammelte Checkboxen:", checkboxes);
     
     checkboxes.forEach(checkbox => {
         if (checkbox.checked) {
             const contactId = checkbox.dataset.id;
-            // console.log("Checkbox-Daten:", checkbox.dataset);
-            
-            // Stelle sicher, dass eine gültige ID vorhanden ist
             if (contactId && contactId !== "undefined" && contactId !== "null") {
                 contactNamesAndColors.push({
                     name: checkbox.dataset.name,
@@ -109,8 +89,6 @@ function collectFormData() {
             }
         }
     });
-    
-    // console.log("Gesammelte Kontakte:", contactNamesAndColors);
 
     let data = {
         header: encodeHTML(document.getElementById("input-title-addTask").value),
@@ -136,13 +114,9 @@ function collectFormData() {
 async function submitContact() {
     try {
       const data = collectFormData();
-    //   console.log("Gesammelte Formulardaten:", data);
-      
-      // Filtere ungültige IDs heraus
       const validAssignedTo = data.assignedTo
-        .filter(contact => contact && contact.id) // Entferne null, undefined und leere IDs
+        .filter(contact => contact && contact.id)
         .map(contact => {
-          // Stelle sicher, dass die ID eine Zahl ist
           const id = parseInt(contact.id, 10);
           if (isNaN(id)) {
             console.warn("Ungültige Kontakt-ID gefunden:", contact.id);
@@ -151,10 +125,6 @@ async function submitContact() {
           return id;
         })
         .filter(id => id !== null); // Entferne alle null-Werte
-      
-    //   console.log("Gültige Contact-IDs:", validAssignedTo);
-      
-      // Format für das Django-Backend anpassen
       const taskData = {
         header: data.header,
         description: data.description,
@@ -165,15 +135,7 @@ async function submitContact() {
         assigned_to: validAssignedTo,
         subtasks: data.subtasks
       };
-      
-    //   console.log("Formatierte Task-Daten für Backend:", taskData);
-      
-      // Prüfe, ob assigned_to Werte enthält
       if (taskData.assigned_to.length === 0) {
-        // console.log("Keine gültigen Kontakte zugewiesen");
-        
-        // Optional: Leere assigned_to ist OK - entferne das Feld
-        // delete taskData.assigned_to;
       }
       
       await createTask(taskData);
@@ -212,11 +174,8 @@ let allContacts = [];
  */
 async function loadCategories() {
     try {
-        // console.log("Versuche Kontakte zu laden...");
         const contacts = await getContacts();
-        console.log("Django‑Kontakte:", contacts);
-        // console.log("Geladene Kontakte:", contacts);
-        allContacts = contacts;                // speichern
+        allContacts = contacts;
         renderOptions(contacts);   
         
         let optionsContainer = document.getElementById('optionsContainer');
@@ -228,20 +187,18 @@ async function loadCategories() {
         optionsContainer.innerHTML = '';
         
         if (!contacts || contacts.length === 0) {
-            // console.log("Keine Kontakte gefunden.");
             optionsContainer.innerHTML = '<div class="option">Keine Kontakte verfügbar</div>';
             return;
         }
         
         contacts.forEach(contact => {
-            // console.log("Verarbeite Kontakt:", contact);
             const formattedContact = {
                 id: contact.id,
                 name: contact.name,
                 email: contact.email,
                 phone: contact.phone,
                 color: contact.color ,
-                initials: contact.initials //|| getInitialsFromName(contact.name)
+                initials: contact.initials 
             };
             createCategoryOption(formattedContact, optionsContainer);
         });
@@ -325,16 +282,12 @@ function createCategoryOption(contact, optionsContainer) {
     let checkboxes = document.querySelectorAll(".category-checkbox");
     let abbreviationsContainer = document.getElementById("showName");
     abbreviationsContainer.innerHTML = "";
-  
-    // Speichern der ausgewählten Kontakte für spätere Verwendung
     window.currentAssignedContacts = [];
   
     checkboxes.forEach((checkbox) => {
       let optionDiv = checkbox.closest(".option");
       if (checkbox.checked) {
         optionDiv.classList.add("active");
-        
-        // Badge erstellen
         let initialsDiv = document.createElement("div");
         initialsDiv.className = "abbreviation-badge";
         initialsDiv.textContent = checkbox.dataset.initials;
@@ -350,7 +303,6 @@ function createCategoryOption(contact, optionsContainer) {
         `;
         abbreviationsContainer.appendChild(initialsDiv);
         
-        // Kontakt für spätere Verwendung speichern
         window.currentAssignedContacts.push({
           id: checkbox.dataset.id,
           name: checkbox.dataset.name,
@@ -455,18 +407,11 @@ function setMinDateForCalendar() {
  *
  * @param {string} searchText - The text to search for in the options.
  */
-// let allContacts = [];
-
-// 1) Wenn die Seite fertig geladen ist,  
-//    - Kontakte per REST laden  
-//    - Event-Listener für Klick/Focus und Input setzen
 document.addEventListener("DOMContentLoaded", () => {
   loadCategories();  // füllt allContacts & rendert erstmal alle
   
   const selectedInput = document.getElementById('selectedCategory');
   const optionsContainer = document.getElementById('optionsContainer');
-
-  // Klick oder Fokus aufs Feld: zeige alle Kontakte
   selectedInput.addEventListener('click', () => {
     optionsContainer.style.display = 'flex';
     renderOptions(allContacts);
@@ -475,13 +420,9 @@ document.addEventListener("DOMContentLoaded", () => {
     optionsContainer.style.display = 'flex';
     renderOptions(allContacts);
   });
-
-  // Bei Eingabe: filterOptions aufrufen
   selectedInput.addEventListener('input', (e) => {
     filterOptions(e.target.value);
   });
-
-  // Klick außerhalb schließt Dropdown
   document.addEventListener('click', (e) => {
     if (!optionsContainer.contains(e.target) && e.target !== selectedInput) {
       optionsContainer.style.display = 'none';
@@ -496,16 +437,11 @@ document.addEventListener("DOMContentLoaded", () => {
 function filterOptions(searchText) {
   const container = document.getElementById('optionsContainer');
   const query = searchText.trim().toLowerCase();
-
-  // Immer geöffnet lassen, solange wir tippen
   container.style.display = 'flex';
-
   if (query.length < 2) {
-    // bei 0 oder 1 Zeichen alle Kontakte anzeigen
     return renderOptions(allContacts);
   }
 
-  // ab 2 Zeichen filtern
   const filtered = allContacts.filter(c =>
     c.name.toLowerCase().includes(query)
   );

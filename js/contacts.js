@@ -8,15 +8,6 @@ async function loadContact() {
 }
 
 
-
-
-// let checkCred = () => {
-//     if (!sessionStorage.getItem("user-creds")) {
-//         window.location.href = 'log_in.html';
-//     }
-// }
-
-// window.addEventListener("load", checkCred);
 window.addEventListener('resize', handelContactScreenResult);
 
 let inputName = document.getElementById('inputName');
@@ -250,7 +241,6 @@ function renderCalendarContacts(contacts) {
         section.appendChild(title);
         
         groupedContacts[letter].forEach(contact => {
-            // Wichtig: Das zurückgegebene Element muss zum DOM hinzugefügt werden
             const contactElement = renderContacts(contact);
             section.appendChild(contactElement);
         });
@@ -293,16 +283,14 @@ let showContactPhone = document.getElementById('showContactPhone');
  * Handle the Info Contact side if the window is smaller then 750px
  */
 function handelShowContactInfo(contact) {
-    console.log("Zeige Kontaktdetails an:", contact);
     
-    // Debugging-Meldungen hinzufügen
     if (!contact) {
-        console.error("Kein Kontakt zum Anzeigen übergeben!");
+        
         return;
     }
     
     if (!contact.id) {
-        console.error("Kontakt hat keine ID:", contact);
+        
     }
     
     if (window.innerWidth <= 750) {
@@ -361,9 +349,7 @@ let showContactContent = document.getElementById('showContactContent');
 /**
  * Show the Contact Informations in mobile view
  */
-function showContactInfoMobil(contact) {
-    console.log("showContactInfoMobil aufgerufen mit:", contact);
-    
+function showContactInfoMobil(contact) {    
     let contactListContainer = document.getElementById('contactListContainer');
     let newContactMobilBtn = document.getElementById('newContactMobilBtn');
     let newContactInfoMobilBtn = document.getElementById('newContactInfoMobilBtn');
@@ -396,9 +382,7 @@ function showContactInfoMobil(contact) {
 /**
  * show the Contact Informations, of the one contact that is clicked
  */
-function showContactInfos(contact) {
-    console.log("showContactInfos aufgerufen mit:", contact);
-    
+function showContactInfos(contact) {   
     let showContactInfoContentContainer = document.getElementById('showContactInfoContentContainer');
     
     if (!showContactInfoContentContainer) {
@@ -453,22 +437,6 @@ function closeEditOrDeletePopUp() {
 
 
 
-
-
-// Die Hauptfunktionen, die die Firebase-Funktionen ersetzen
-// Diese Funktionen müssen in deine contacts.js-Datei integriert werden
-
-/**
- * Lädt initial die Seite und Kontakte
- */
-// async function loadContact() {
-//     await includeHTML();
-//     await showContacts();
-//     renderBtns(); // Angepasst ohne myContact
-//     activeLink(4, window.location.href);
-//     handelContactScreenResult();
-// }
-
 /**
  * Erstellt einen neuen Kontakt mit dem Django-Backend
  */
@@ -495,13 +463,7 @@ async function addContact() {
             color: color,
             initials: initials
         };
-
-        console.log("Sende Daten an Backend:", contactData);
-        
-        // Sende Daten an das Backend
         const newContact = await createContact(contactData);
-        
-        // Konvertiere das Backend-Format in dein Frontend-Format
         const formattedContact = {
             id: newContact.id,
             name: newContact.name,
@@ -510,8 +472,6 @@ async function addContact() {
             color: newContact.color,
             initials: newContact.initials
         };
-
-        // UI aktualisieren
         resetForm();
         hideAddContact();
         slideInContactSuccesfullyBox();
@@ -541,19 +501,12 @@ async function showContacts() {
             return;
         }
 
-        // Kontakte vom Backend abrufen
         const contacts = await getContacts();
-        console.log("Kontakte vom Backend:", contacts);
         
         contactsListContainer.innerHTML = '';
         
         if (contacts && contacts.length > 0) {
-            // Formatiere die Kontakte für dein Frontend
             const formattedContacts = contacts.map(contact => {
-                // Log jedes Kontakts, um Struktur zu sehen
-                console.log("Einzelner Kontakt vom Backend:", contact);
-                
-                // Stellen wir sicher, dass der Name definiert ist
                 const name = contact.name || "Unbenannt";
                 
                 return {
@@ -566,7 +519,6 @@ async function showContacts() {
                 };
             });
             
-            console.log("Formatierte Kontakte für Frontend:", formattedContacts);
             renderCalendarContacts(formattedContacts);
         }
     } catch (error) {
@@ -579,10 +531,6 @@ async function showContacts() {
  */
 async function updateContacts(contactId, updatedData) {
     try {
-      console.log("updateContacts wird aufgerufen mit:", contactId, updatedData);
-      
-      // Kontakt-Daten für das Backend formatieren
-      // Anpassung für das Django-Backend - verwende nur 'name' statt first_name/last_name
       const contactData = {
         name: updatedData.name,
         email: updatedData.email,
@@ -591,11 +539,7 @@ async function updateContacts(contactId, updatedData) {
         initials: updatedData.initials 
       };
       
-      console.log("Formatierte Daten für Backend:", contactData);
-      
-      // Kontakt im Backend aktualisieren
       const updatedContact = await updateContact(contactId, contactData);
-      console.log("Antwort vom Backend:", updatedContact);
       
       return updatedContact;
     } catch (error) {
@@ -610,7 +554,6 @@ async function updateContacts(contactId, updatedData) {
  */
 async function deleteContacts(contactId) {
     try {
-        // Kontakt im Backend löschen
         await deleteContact(contactId);
     } catch (error) {
         console.error("Fehler beim Löschen des Kontakts:", error);

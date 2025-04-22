@@ -4,26 +4,14 @@
 /**
  * Öffnet das Bearbeitungsfenster für einen Kontakt
  */
-function editContact(id, name, email, phone, color, type) {
-    console.log("editContact aufgerufen mit:", id, name, email, phone, color, type);
-    
+function editContact(id, name, email, phone, color, type) {   
     try {
-        // Zeige das Bearbeitungsfenster an
         showEditContacts();
-        
-        // Erstelle den Inhalt des Bearbeitungsfensters
         createEditContactContent();
-        
-        // Fülle das Formular mit den Kontaktdaten
         fillEditForm(id, name, email, phone, color);
-        
-        // Zeige die Initialen an
         renderEditContactInitials();
-        
-        // Konfiguriere die Buttons
         renderBtns(type || 'contact');
     } catch (error) {
-        console.error("Fehler beim Bearbeiten des Kontakts:", error);
         alert("Fehler beim Öffnen des Bearbeitungsfensters: " + error.message);
     }
 }
@@ -31,14 +19,11 @@ function editContact(id, name, email, phone, color, type) {
 /**
  * Öffnet das Bearbeitungsfenster
  */
-function showEditContacts() {
-    console.log("showEditContacts wird aufgerufen");
-    
+function showEditContacts() {    
     const editContactContainer = document.getElementById('editContactContainer');
     const editContactPopUp = document.getElementById('editContactPopUp');
     
     if (!editContactContainer) {
-      console.error("Element 'editContactContainer' nicht gefunden");
       return;
     }
     
@@ -60,20 +45,14 @@ function renderBtns(type) {
     let BtnCancelEdit = document.getElementById('BtnCancelEdit');
     let btnSave = document.getElementById('btnSave');
     let btnSaveMyContact = document.getElementById('btnSaveMyContact');
-    
-    // Prüfen, ob die Elemente existieren, bevor wir sie ansprechen
     if (!btnDelete || !BtnCancelEdit || !btnSave || !btnSaveMyContact) {
         console.warn("Einige UI-Elemente für renderBtns wurden nicht gefunden. Möglicherweise sind sie noch nicht geladen.");
         return;
     }
-    
-    // Standard-Ansicht für alle Kontakte
     btnSaveMyContact.style.display = 'none';
     BtnCancelEdit.style.display = 'none';
     btnSave.style.display = 'flex';
     btnDelete.style.display = 'flex';
-    
-    // Falls es sich um den myContact handelt
     if (type === 'myContact') {
         btnSave.style.display = 'none';
         btnDelete.style.display = 'none';
@@ -94,15 +73,11 @@ async function startUpdatedContact() {
       
       // Prüfen, ob die Elemente vorhanden sind
       if (!currentContactId || !editNameInput || !editEmailInput || !editPhoneInput) {
-        console.error("Konnte nicht alle notwendigen Formularelemente finden.");
         alert("Fehler: Formularelemente nicht gefunden");
         return;
       }
       
       let id = currentContactId.value;
-      console.log("Aktualisiere Kontakt mit ID:", id);
-      
-      // Extrahiere Formulardaten und baue das Update-Objekt
       let updatedData = {
         name: editNameInput.value,
         email: editEmailInput.value,
@@ -112,21 +87,10 @@ async function startUpdatedContact() {
         id: id
       };
       
-      console.log("Gesammelte Formulardaten:", updatedData);
-      
-      // Schließe das Edit-Fenster
       hideEditContact();
-      
-      // API-Funktion aufrufen
       await updateContact(id, updatedData);
-      
-      // Kontaktliste neu laden
       await showContacts();
-      
-      // Aktualisierte Kontaktdetails anzeigen
       showContactInfos(updatedData);
-      
-      // Erfolgsmeldung anzeigen
       slideInContactSuccesfullyBox();
     } catch (error) {
       console.error("Fehler beim Aktualisieren:", error);
@@ -141,7 +105,6 @@ async function startDeleteContactDirekt() {
     let id = document.getElementById('deleteContactId').value;
     
     try {
-        // API-Funktion aufrufen
         await deleteContact(id);
         hideDeleteContact();
         let showContactInfoContentContainer = document.getElementById('showContactInfoContentContainer');
@@ -178,13 +141,10 @@ function showDeleteContactPopUp(id, name, initials, color) {
     deleteContactName.textContent = name;
     deleteContactInitials.textContent = initials;
     deleteLogo.style.backgroundColor = color;
-    
-    // Dialog anzeigen
     deleteContactContainer.classList.remove('d-none');
     deleteContact.classList.remove('slideOutBottom');
     deleteContact.classList.add('slideInBottom');
     
-    // Lösch-Button-Event-Handler einstellen
     let btnDeleteConfirm = document.getElementById('btnDeleteConfirm');
     if (btnDeleteConfirm) {
         btnDeleteConfirm.onclick = startDeleteContactDirekt;
@@ -201,8 +161,6 @@ function hideDeleteContact() {
     if (deleteContactContainer && deleteContact) {
         deleteContact.classList.remove('slideInBottom');
         deleteContact.classList.add('slideOutBottom');
-        
-        // Nach kurzer Verzögerung Dialog verstecken
         setTimeout(() => {
             deleteContactContainer.classList.add('d-none');
         }, 200);
@@ -216,8 +174,6 @@ function createEditContactContent() {
     let popUpContent = document.getElementById('popUpContent');
     if (popUpContent) {
         popUpContent.innerHTML = createEditContactPopUp();
-        
-        // Event-Listener für das Formular hinzufügen
         let editForm = document.getElementById('editContactForm');
         if (editForm) {
             editForm.addEventListener('submit', function(e) {
@@ -225,18 +181,13 @@ function createEditContactContent() {
                 startUpdatedContact();
             });
         }
-        
-        // Event-Listener für den Cancel-Button
         let btnCancel = document.getElementById('BtnCancelEdit');
         if (btnCancel) {
             btnCancel.addEventListener('click', hideEditContact);
         }
-        
-        // Event-Listener für den Delete-Button
         let btnDelete = document.getElementById('btnDelete');
         if (btnDelete) {
             btnDelete.addEventListener('click', function() {
-                // Die Daten für den Löschdialog aus dem Formular holen
                 let id = document.getElementById('currentContactId').value;
                 let name = document.getElementById('editNameInput').value;
                 let initials = renderEditContactInitials();
@@ -275,8 +226,6 @@ function hideEditContact() {
     if (editContactContainer && editContactPopUp) {
         editContactPopUp.classList.remove('slideInBottom');
         editContactPopUp.classList.add('slideOutBottom');
-        
-        // Nach kurzer Verzögerung Dialog verstecken
         setTimeout(() => {
             editContactContainer.classList.add('d-none');
         }, 200);
@@ -324,8 +273,6 @@ function getColorFromEditInput() {
  * Für Mobile-Geräte: Bearbeitungsoptionen anzeigen/verstecken
  */
 function showEditMobilBtn() {
-    // Implementation optional - kann nach Bedarf angepasst werden
-    console.log("showEditMobilBtn wurde aufgerufen");
 }
 
 // Rendert einen einzelnen Kontakt in der Liste
@@ -335,7 +282,6 @@ function renderContacts(contact) {
     contactElement.id = `${contact.id}`;
     
     contactElement.addEventListener('click', function() {
-        console.log("Kontakt angeklickt:", contact);
         
         // Inline-Implementierung der selectContact-Funktion
         document.querySelectorAll('.contactContainer').forEach(c => {
@@ -368,7 +314,7 @@ function handelContactScreenResult() {
     }
 }
 
-// Funktionen global verfügbar machen
+
 window.editContact = editContact;
 window.showEditContacts = showEditContacts;
 window.renderBtns = renderBtns;
