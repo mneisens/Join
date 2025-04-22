@@ -7,11 +7,10 @@
 // //  */
 async function createTask(taskData) {
   try {
-    // Optionen inklusive Auth‑Header holen
-    const options = getRequestOptions('POST', taskData);
-    const response = await fetch(`${API_URL}/tasks/`, options);
+    let options = getRequestOptions('POST', taskData);
+    let response = await fetch(`${API_URL}/tasks/`, options);
     if (!response.ok) {
-      const errorText = await response.text();
+      let errorText = await response.text();
       throw new Error(`Fehler beim Erstellen des Tasks: ${response.status} ${errorText}`);
     }
     return await response.json();
@@ -35,10 +34,10 @@ window.createTask = createTask;
 async function updateTask(taskId, updatedData) {
   try {
     // Options mit Auth‑Header und JSON‑Body
-    const options = getRequestOptions('PATCH', updatedData);
-    const response = await fetch(`${API_URL}/tasks/${taskId}/`, options);
+    let options = getRequestOptions('PATCH', updatedData);
+    let response = await fetch(`${API_URL}/tasks/${taskId}/`, options);
     if (!response.ok) {
-      const errorText = await response.text();
+      let errorText = await response.text();
       throw new Error(`Status ${response.status} ${errorText}`);
     }
     return await response.json();

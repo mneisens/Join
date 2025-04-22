@@ -154,7 +154,7 @@ function returnHtmlBoardTaskSingleView(task, taskConfig) {
 
 function returnHtmlBoardSubtask(subtask, config, index) {
   // Wähle das richtige Bild abhängig vom Status
-  const checkboxImg = subtask.done ? 
+  let checkboxImg = subtask.done ? 
     "/assets/symbols/Property 1=checked.svg" : 
     "/assets/symbols/Property 1=Default.svg";
   

@@ -8,13 +8,13 @@
 function boardTouchStart(e, taskId) {
   timer = setTimeout(() => {
     [...e.changedTouches].forEach((touch) => {
-      const dot = document.getElementById("boardMobileDragNav");
+      let dot = document.getElementById("boardMobileDragNav");
       dot.style.display = "flex";
       dot.style.top = `${touch.pageY}px`;
       dot.style.left = `${touch.pageX}px`;
       document.body.append(dot);
 
-      const dot2 = document.getElementById("board-mobile-nav-txt");
+      let dot2 = document.getElementById("board-mobile-nav-txt");
       dot2.style.display = "flex";
       dot2.style.top = `${touch.pageY}px`;
       dot2.style.left = `${touch.pageX}px`;
@@ -96,7 +96,7 @@ function boardRemoveTouchDropHighlight(){
  * @param {string} activeId
  */
 function highlightDropArea(activeId) {
-  const areas = [
+  let areas = [
     "touchDropTodo",
     "touchDropProgress",
     "touchDropFeedback",
@@ -131,10 +131,10 @@ function boardTouchHighlightDropDone() {
 async function boardTouchEnd(e, taskId) {
   clearTimeout(timer);
   [...e.changedTouches].forEach((touch) => {
-    const dot = document.getElementById("boardMobileDragNav");
+    let dot = document.getElementById("boardMobileDragNav");
     dot.style.display = "none";
 
-    const dot2 = document.getElementById("board-mobile-nav-txt");
+    let dot2 = document.getElementById("board-mobile-nav-txt");
     dot2.style.display = "none";
   });
   if (touchAllowDropEnoughtWaiting === true) {
@@ -158,9 +158,9 @@ async function boardTouchEnd(e, taskId) {
  * @param {string} id - The firebase document id of the dragged task card.
  */
 function boardStartDragging(event, taskId) {
-  const element = event.target;
-  const elementHeight = element.offsetHeight;
-  const elementWidth = element.offsetWidth;  
+  let element = event.target;
+  let elementHeight = element.offsetHeight;
+  let elementWidth = element.offsetWidth;  
 
   boardDragIsStarted = true;
 
@@ -191,13 +191,8 @@ async function boardDropElementTo(category) {
       console.warn("Keine Task-ID zum Verschieben vorhanden");
       return;
     }    
-    // API-Aufruf zum Aktualisieren der Kategorie
     await updateTaskCategory(boardDraggedElementId, category);
-    
-    // Board neu laden
     await boardLoadTasksFromBackend();
-    
-    // Drag & Drop-Status zurücksetzen
     boardSetMaxHeight();
     boardDragIsStarted = false;
     boardDraggedElementId = null;
@@ -227,7 +222,7 @@ function boardHighlightDropArea(
 ) {
   if (kanCatBeforeAfter.length > 0) {
     kanCatBeforeAfter.forEach((cat) => {
-      const target = document.getElementById(`boardCardsContainer${cat}`);
+      let target = document.getElementById(`boardCardsContainer${cat}`);
       if (target) {
         target.insertAdjacentHTML(
           "afterbegin",

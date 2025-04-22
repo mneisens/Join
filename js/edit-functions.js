@@ -20,8 +20,8 @@
 //    * Zeigt das Löschfenster an
 //    */
   function showDeleteContacts() {
-    const deleteContactContainer = document.getElementById('deleteContactContainer');
-    const deleteContact = document.getElementById('deleteContact');
+    let deleteContactContainer = document.getElementById('deleteContactContainer');
+    let deleteContact = document.getElementById('deleteContact');
     
     if (!deleteContactContainer || !deleteContact) {
       console.error("UI-Elemente für showDeleteContacts nicht gefunden");
@@ -37,10 +37,10 @@
 //    * Zeigt die Kontaktdaten im Löschfenster an
 //    */
   function showDeleteContactsInfos(id, name, initials, color) {
-    const deleteContactName = document.getElementById('deleteContactName');
-    const deleteLogo = document.getElementById('deleteLogo');
-    const deleteContactInitials = document.getElementById('deleteContactInitials');
-    const deleteContactId = document.getElementById('deleteContactId');
+    let deleteContactName = document.getElementById('deleteContactName');
+    let deleteLogo = document.getElementById('deleteLogo');
+    let deleteContactInitials = document.getElementById('deleteContactInitials');
+    let deleteContactId = document.getElementById('deleteContactId');
     
     if (!deleteContactName || !deleteLogo || !deleteContactInitials || !deleteContactId) {
       console.error("Elemente für showDeleteContactsInfos nicht gefunden");
@@ -57,8 +57,8 @@
    * Schließt das Löschfenster
    */
   function hideDeleteContact() {
-    const deleteContact = document.getElementById('deleteContact');
-    const deleteContactContainer = document.getElementById('deleteContactContainer');
+    let deleteContact = document.getElementById('deleteContact');
+    let deleteContactContainer = document.getElementById('deleteContactContainer');
     
     if (!deleteContact) {
       console.error("deleteContact nicht gefunden");

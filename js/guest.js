@@ -55,10 +55,10 @@ async function startDeleteDummyTasks() {
  */
 async function addDummyContacts(dummyContact) {
     try {
-        const contactRef = collection(db, 'UserAuthList', userCreds.uid, 'contacts');
-        const newDocRef = doc(contactRef);
-        const docID = newDocRef.id;
-        const contactData = {
+        let contactRef = collection(db, 'UserAuthList', userCreds.uid, 'contacts');
+        let newDocRef = doc(contactRef);
+        let docID = newDocRef.id;
+        let contactData = {
             name: dummyContact.name,
             email: dummyContact.email,
             phone: dummyContact.phone,
@@ -82,10 +82,10 @@ async function addDummyContacts(dummyContact) {
  */
 async function addDummyTasks(dummyTask, assignedContacts) {
     try {
-        const contactRef = collection(db, 'UserAuthList', userCreds.uid, 'addTasks');
-        const newDocRef = doc(contactRef);
-        const docID = newDocRef.id;
-        const taskData = {
+        let contactRef = collection(db, 'UserAuthList', userCreds.uid, 'addTasks');
+        let newDocRef = doc(contactRef);
+        let docID = newDocRef.id;
+        let taskData = {
             header: dummyTask.header,
             description: dummyTask.description,
             dueDate: dummyTask.dueDate,
@@ -111,12 +111,12 @@ async function addDummyTasks(dummyTask, assignedContacts) {
  */
 async function getDummyContacts() {
     try {
-        const contactRef = collection(db, 'UserAuthList', userCreds.uid, 'contacts');
-        const querySnapshot = await getDocs(contactRef);
+        let contactRef = collection(db, 'UserAuthList', userCreds.uid, 'contacts');
+        let querySnapshot = await getDocs(contactRef);
         if (!querySnapshot.empty) {
             let pushedDummyContacts = [];
             querySnapshot.forEach((doc) => {
-                const data = doc.data();
+                let data = doc.data();
                 pushedDummyContacts.push(data);
             });
             getDummyContactsId(pushedDummyContacts);
@@ -135,12 +135,12 @@ async function getDummyContacts() {
  */
 async function getDummyToPushContacts() {
     try {
-        const contactRef = collection(db, 'UserAuthList', userCreds.uid, 'contacts');
-        const querySnapshot = await getDocs(contactRef);
+        let contactRef = collection(db, 'UserAuthList', userCreds.uid, 'contacts');
+        let querySnapshot = await getDocs(contactRef);
         if (!querySnapshot.empty) {
             let xy = [];
             querySnapshot.forEach((doc) => {
-                const data = doc.data();
+                let data = doc.data();
                 xy.push(data);
             });
             createPushedContactsArray(xy);
@@ -159,12 +159,12 @@ async function getDummyToPushContacts() {
  */
 async function getDummyTasks() {
     try {
-        const contactRef = collection(db, 'UserAuthList', userCreds.uid, 'addTasks');
-        const querySnapshot = await getDocs(contactRef);
+        let contactRef = collection(db, 'UserAuthList', userCreds.uid, 'addTasks');
+        let querySnapshot = await getDocs(contactRef);
         if (!querySnapshot.empty) {
             let pushedDummyTasks = [];
             querySnapshot.forEach((doc) => {
-                const data = doc.data();
+                let data = doc.data();
                 pushedDummyTasks.push(data);
             });
             getDummyTasksId(pushedDummyTasks);
@@ -184,7 +184,7 @@ async function getDummyTasks() {
  */
 async function deleteGuestContacts(contactID) {
     try {
-        const docRef = doc(db, 'UserAuthList', userCreds.uid, 'contacts', contactID);
+        let docRef = doc(db, 'UserAuthList', userCreds.uid, 'contacts', contactID);
         await deleteDoc(docRef);
     } catch (error) {
 
@@ -200,7 +200,7 @@ async function deleteGuestContacts(contactID) {
  */
 async function deleteGuestTasks(taskId) {
     try {
-        const docRef = doc(db, 'UserAuthList', userCreds.uid, 'addTasks', taskId);
+        let docRef = doc(db, 'UserAuthList', userCreds.uid, 'addTasks', taskId);
         await deleteDoc(docRef);
     } catch (error) {
 
@@ -215,7 +215,7 @@ async function deleteGuestTasks(taskId) {
  */
 async function deleteGuestData() {
     try {
-        const docRef = doc(db, 'UserAuthList', userCreds.uid);
+        let docRef = doc(db, 'UserAuthList', userCreds.uid);
         await deleteDoc(docRef);
     } catch (error) {
     }
@@ -228,7 +228,7 @@ async function deleteGuestData() {
  * @returns {Promise<void>}
  */
 async function deleteGuestUser() {
-    const user = auth.currentUser;
+    let user = auth.currentUser;
     await deleteUser(user)
     .then(() => {
         logOutGuest();

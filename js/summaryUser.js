@@ -23,12 +23,12 @@ function showGreeting() {
 }
 
 function ensureUIIsInteractive() {
-  const createMyContactContainer = document.getElementById('createMyContactContainer');
+  let createMyContactContainer = document.getElementById('createMyContactContainer');
   if (createMyContactContainer) {
     createMyContactContainer.style.display = 'none';
   }
   
-  const overlays = document.querySelectorAll('.popUpContainer, .modal-overlay, .overlay');
+  let overlays = document.querySelectorAll('.popUpContainer, .modal-overlay, .overlay');
   overlays.forEach(overlay => {
     overlay.style.display = 'none';
   });
@@ -39,18 +39,18 @@ function ensureUIIsInteractive() {
 
 async function sumFinalLoadDataFromBackend() {
   try {
-    const apiUrl = 'http://localhost:8000/api';
-    const options = getRequestOptions('GET');
-    const response = await fetch(`${apiUrl}/tasks/`, options);
+    let apiUrl = 'http://localhost:8000/api';
+    let options = getRequestOptions('GET');
+    let response = await fetch(`${apiUrl}/tasks/`, options);
     
     if (!response.ok) {
       throw new Error('Fehler beim Abrufen der Tasks');
     }
-    const allTasks = await response.json();
+    let allTasks = await response.json();
     summaryTasks = allTasks.map(task => {
       let dueDate = "";
       if (task.due_date) {
-        const [year, month, day] = task.due_date.split("-");
+        let [year, month, day] = task.due_date.split("-");
         dueDate = `${day}/${month}/${year}`;
       }
 
@@ -103,7 +103,7 @@ function renderSummarySvg() {
  * Updates the summary cards with the count of tasks in each category.
  */
 function rednerSummaryInfo() {
-  const taskCounts = summaryTasks.reduce(
+  let taskCounts = summaryTasks.reduce(
     (counts, task) => {
       counts.allTasks++;
       if (task.kanbanCategory === "Todo") counts.todoTasks++;
@@ -147,10 +147,10 @@ let urgentTasksDeadline = [];
  */
 function renderDeadline() {
   for (let i = 0; i < summaryTasks.length; i++) {
-    const summaryTask = summaryTasks[i];
-    const taskDeadline = summaryTask.dueDate;
-    const taskPriotity = summaryTask.priority;
-    const taskKanbanCategory = summaryTask.kanbanCategory;
+    let summaryTask = summaryTasks[i];
+    let taskDeadline = summaryTask.dueDate;
+    let taskPriotity = summaryTask.priority;
+    let taskKanbanCategory = summaryTask.kanbanCategory;
     if (taskPriotity === 'urgent' && taskKanbanCategory !== "Done") {
       urgentTasksDeadline.push(taskDeadline);
     }
@@ -160,7 +160,7 @@ function renderDeadline() {
   }
 }
 
-const monthNames = ["January", "February", "March", "April", "May", "June",
+let monthNames = ["January", "February", "March", "April", "May", "June",
   "July", "August", "September", "October", "November", "December"
 ];
 
@@ -169,7 +169,7 @@ const monthNames = ["January", "February", "March", "April", "May", "June",
  */
 function sortUrgentTasksDeadline() {
   urgentTasksDeadline = urgentTasksDeadline.map(dateString => {
-    const parts = dateString.split('/');
+    let parts = dateString.split('/');
     return new Date(parts[2], parts[1] - 1, parts[0]);
   });
 
@@ -210,7 +210,7 @@ function checkAnimation() {
       greetUserDesktopContainer.innerHTML += createMobilGreeting(greeting);
     }
   }
-  const removeGreetAnimation = setTimeout(removeAnimation, 1200)
+  let removeGreetAnimation = setTimeout(removeAnimation, 1200)
 }
 
 /**
@@ -227,8 +227,8 @@ function showDesktopGreeting() {
  * @returns {string} The appropriate greeting for the current time of day.
  */
 function returnGreeting() {
-  const now = new Date();
-  const hours = now.getHours();
+  let now = new Date();
+  let hours = now.getHours();
   let greeting = '';
 
   if (hours < 12) {
@@ -242,12 +242,12 @@ function returnGreeting() {
 }
 
 function getStoredUserInfo() {
-  const raw = sessionStorage.getItem('user-info') || '{"name":""}';
+  let raw = sessionStorage.getItem('user-info') || '{"name":""}';
   return JSON.parse(raw);
 }
 
 function createDesktopGreeting(greeting) {
-  const userInfo = getStoredUserInfo();
+  let userInfo = getStoredUserInfo();
   return `
     <div class="sum-content-greeting-desktop-div">
       <p class="greetText">${greeting}</p>
@@ -256,7 +256,7 @@ function createDesktopGreeting(greeting) {
 }
 
 function createMobilGreeting(greeting) {
-  const userInfo = getStoredUserInfo();
+  let userInfo = getStoredUserInfo();
   return `
     <div class="sum-content-greeting-div greetAnimation">
       <p class="greetText">${greeting}</p>

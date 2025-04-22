@@ -54,8 +54,8 @@ async function loadAddTasks() {
    * @returns {Object} The collected form data.
    */
   function getTaskListItems() {
-    const ulTasks = document.getElementById("addedTasks");
-    const lisTasks = ulTasks.querySelectorAll("li");
+    let ulTasks = document.getElementById("addedTasks");
+    let lisTasks = ulTasks.querySelectorAll("li");
     return Array.from(lisTasks).map(li => ({
       subtask: encodeHTML(
         li.querySelector(".subtask-text")
@@ -71,7 +71,7 @@ async function loadAddTasks() {
    * @returns {Array<Object>} An array of objects containing the name, color, initials, and id of each checked category.
    */
   function getCheckedCategories() {
-    const checkboxes = document.querySelectorAll(".category-checkbox");
+    let checkboxes = document.querySelectorAll(".category-checkbox");
     return Array.from(checkboxes).filter(checkbox => checkbox.checked).map(checkbox => ({
       name: checkbox.dataset.name,
       color: checkbox.dataset.color,
@@ -105,7 +105,7 @@ async function loadAddTasks() {
    * @returns {Object} The assembled form data object.
    */
   function assembleData() {
-    const { header, description } = getHeaderAndDescription();
+    let { header, description } = getHeaderAndDescription();
     return {
       header,
       description,
@@ -124,54 +124,45 @@ async function loadAddTasks() {
    * @returns {Object} The form data object.
    */
   function collectFormData() {
-    const titleInput = document.getElementById('input-title-addTask');
-    const descInput = document.getElementById('textarea-addTask');
-    const dateInput = document.getElementById('date-addTask');
-    const categorySelect = document.getElementById('category');
-
-    let priority = 'medium'; 
-    const priorityButtons = ['urgent', 'medium', 'low'];
-    priorityButtons.forEach(btn => {
-      const button = document.getElementById(btn);
-      if (button && button.classList.contains('prio-btn-active')) {
-        priority = btn;
-      }
-    });
+    let ulTasks = document.getElementById('addedTasks');
+    let lisTasks = ulTasks.querySelectorAll('li');
+    let abbreviationsContainer = document.getElementById('showName');
+    let badges = abbreviationsContainer.querySelectorAll('.abbreviation-badge');
+    let contactNamesAndColors = [];
+    let checkboxes = document.querySelectorAll('.category-checkbox:checked');
     
-    const kanbanCategory = document.getElementById('boardAddTaskMainBg').dataset.category || 'Todo';
-    
-    const subtasks = [];
-    const subtaskElements = document.querySelectorAll('#addedTasks .subtask-item');
-    subtaskElements.forEach(element => {
-      const checkbox = element.querySelector('input[type="checkbox"]');
-      const text = element.querySelector('span').textContent;
-      
-      subtasks.push({
-        subtask: text,
-        done: checkbox ? checkbox.checked : false
-      });
+    checkboxes.forEach(checkbox => {
+        if (checkbox.checked) {
+            let contactId = checkbox.dataset.id;
+            if (contactId && contactId !== "undefined" && contactId !== "null") {
+                contactNamesAndColors.push({
+                    name: checkbox.dataset.name,
+                    color: checkbox.dataset.color,
+                    initials: checkbox.dataset.initials,
+                    id: contactId
+                });
+            } else {
+                console.warn("Ungültige Kontakt-ID in Checkbox:", contactId);
+            }
+        }
     });
 
-    const assignedTo = [];
-    const selectedPersons = document.querySelectorAll('#selectedAbbreviations .selected-person');
-    selectedPersons.forEach(element => {
-      assignedTo.push({
-        name: element.textContent,
-        color: element.style.backgroundColor
-      });
-    });
-    
-    return {
-      header: titleInput ? titleInput.value : '',
-      description: descInput ? descInput.value : '',
-      dueDate: dateInput ? dateInput.value : '',
-      priority: priority,
-      category: categorySelect ? categorySelect.value : 'User Story',
-      kanbanCategory: kanbanCategory,
-      subtasks: subtasks,
-      assignedTo: assignedTo
+    let data = {
+        header: encodeHTML(document.getElementById("input-title-addTask").value),
+        description: encodeHTML(document.getElementById("textarea-addTask").value),
+        dueDate: formatDate(document.getElementById("date-addTask").value),
+        priority: document.querySelector(".prio-addTask button.active")?.id || "low",
+        category: document.getElementById("category").value,
+        subtasks: Array.from(lisTasks).map(li => ({
+            subtask: encodeHTML(li.querySelector('.subtask-text').textContent.replace(/^\•\s*/, '').trim()),
+            done: false
+        })),
+        categoryAbbreviations: Array.from(badges).map(badge => badge.textContent),
+        assignedTo: contactNamesAndColors,
+        kanbanCategory: 'Todo'  // Standard-Wert
     };
-  }
+    return data;
+}
   
   /**
    * Encodes a string to HTML entities.
@@ -192,61 +183,54 @@ async function loadAddTasks() {
    */
   async function submitContact() {
     try {
-      const data = collectFormData();
-      const taskData = {
+      let data = collectFormData();
+      let validAssignedTo = data.assignedTo
+        .filter(contact => contact && contact.id)
+        .map(contact => {
+          let id = parseInt(contact.id, 10);
+          if (isNaN(id)) {
+            console.warn("Ungültige Kontakt-ID gefunden:", contact.id);
+            return null;
+          }
+          return id;
+        })
+        .filter(id => id !== null); // Entferne alle null-Werte
+      let taskData = {
         header: data.header,
         description: data.description,
         due_date: formatDateForBackend(data.dueDate), 
         priority: data.priority,
         category: data.category,
         kanban_category: data.kanbanCategory || 'Todo',
-        assigned_to: formatAssignedToForBackend(data.assignedTo),
-        subtasks: data.subtasks || []
+        assigned_to: validAssignedTo,
+        subtasks: data.subtasks
       };
-
-      const newTask = await createTask(taskData);
+      
+      await createTask(taskData);
       showSuccessMessage();
-      addTaskToBoardWithoutLoadNew(newTask.id, formatTaskForFrontend(newTask));
-      hideAddTaskBg();
     } catch (error) {
-      alert("Fehler beim Erstellen des Tasks: " + error.message);
+      console.error("Detaillierter Fehler beim Speichern des Tasks:", error);
+      alert("Fehler beim Speichern des Tasks: " + error.message);
     }
-  }
-
-  function formatDateForBackend(dateStr) {
-    if (!dateStr) return "";
-    if (dateStr.includes("/")) return dateStr;
-    const [year, month, day] = dateStr.split("-");
-    return `${year}-${month}-${day}`;
-  }
-  function formatAssignedToForBackend(assignedTo) {
-    if (!Array.isArray(assignedTo)) return [];
-
-    return assignedTo.map(contact => {
-      if (contact.id) {
-        const id = parseInt(contact.id, 10);
-        return isNaN(id) ? null : id;
-      }
-      if (typeof contact === 'number') {
-        return contact;
-      }
-      return null;
-    }).filter(id => id !== null); 
-  }
-    
+}
   
 /**
  * Zeigt eine Erfolgsmeldung an
  */
 function showSuccessMessage(message) {
-  const successContainer = document.getElementById("contact-succesfully-created");
+  let successContainer = document.getElementById("contact-succesfully-created");
   if (successContainer) {
     successContainer.textContent = message || "Task erfolgreich aktualisiert";
     successContainer.style.display = "flex";
     
-    // Nach 2 Sekunden ausblenden
     setTimeout(() => {
       successContainer.style.display = "none";
+      closeAddTask();
+      boardLoadTasksFromBackend().then(() => {
+
+    }).catch(error => {
+ 
+    });
     }, 2000);
   }
 }
@@ -269,13 +253,13 @@ function addTaskToBoardWithoutLoadNew(id, task) {
     task.taskId = id;
   }
   
-  const taskConfig = returnConfigBoardCardHtml(task);
-  const category = task.kanbanCategory;
+  let taskConfig = returnConfigBoardCardHtml(task);
+  let category = task.kanbanCategory;
   
   // Prüfe, ob eine "Keine Tasks"-Box existiert und verstecke sie ggf.
   try {
-    const container = document.getElementById(`boardCardsContainer${category}`);
-    const noTasksBox = container.querySelector('.board-no-tasks-toDo-box');
+    let container = document.getElementById(`boardCardsContainer${category}`);
+    let noTasksBox = container.querySelector('.board-no-tasks-toDo-box');
     if (noTasksBox) {
       noTasksBox.classList.add('d-none');
     }
@@ -428,16 +412,16 @@ function addTaskToBoardWithoutLoadNew(id, task) {
    * Loads categories from Firestore and creates options in the container.
    */
   async function loadCategories() {
-    const optionsContainer = document.getElementById("optionsContainer");
+    let optionsContainer = document.getElementById("optionsContainer");
     optionsContainer.innerHTML = "";
   
     // Kontakte vom Backend holen
-    const contacts = await getContacts();
+    let contacts = await getContacts();
     // global vorhalten, damit assignContactsInEditForm sie nutzen kann
     window.allContacts = contacts;  // ← neu
   
     contacts.forEach(contact => {
-      const contactData = {
+      let contactData = {
         id        : contact.id,
         name      : contact.name,
         color     : contact.color,
@@ -450,17 +434,17 @@ function addTaskToBoardWithoutLoadNew(id, task) {
   function getInitialsFromName(fullName) {
     if (!fullName) return "??";
     
-    const names = fullName.trim().split(/\s+/);
+    let names = fullName.trim().split(/\s+/);
     if (names.length === 0) {
       return "??";
     }
     
-    const firstNameInitial = names[0].charAt(0).toUpperCase();
+    let firstNameInitial = names[0].charAt(0).toUpperCase();
     if (names.length === 1) {
       return firstNameInitial;
     }
     
-    const lastNameInitial = names[names.length - 1].charAt(0).toUpperCase();
+    let lastNameInitial = names[names.length - 1].charAt(0).toUpperCase();
     return firstNameInitial + lastNameInitial;
   }
   
@@ -469,7 +453,7 @@ function addTaskToBoardWithoutLoadNew(id, task) {
    * @returns {string} Eine zufällige Farbe als HEX-Code
    */
   function getRandomColor() {
-    const colors = [
+    let colors = [
       "#FF7A00", "#FF5EB3", "#9327FF", "#00BEE8", "#1FD7C1", 
       "#FF745E", "#FFA35E", "#FC71FF", "#FFC701", "#0038FF"
     ];

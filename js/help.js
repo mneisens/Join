@@ -8,18 +8,6 @@ async function loadHelpScreen() {
     createUserInitials();
 }
 
-/**
- * Checks if user credentials are stored in sessionStorage. If no credentials are found,
- * the function redirects the user to the login page. This ensures that only authenticated
- * users can access certain parts of the application that require a login.
- */
-// let checkCred = () => {
-//     if (!sessionStorage.getItem("user-creds")) {
-//         window.location.href = 'log_in.html';
-//     }
-// }
-
-// window.addEventListener("load", checkCred);
 
 
 

@@ -3,7 +3,7 @@
 
 <head>
     <script>
-        const token = sessionStorage.getItem('token') || localStorage.getItem('authToken');
+        let token = sessionStorage.getItem('token') || localStorage.getItem('authToken');
         if (!token) {      
           window.location.replace('log_in.html');
         }
@@ -102,7 +102,7 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
         import { getFirestore } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-firestore.js";
 
-        const firebaseConfig = {
+        let firebaseConfig = {
             apiKey: "AIzaSyBrslTwOvrS4_tnF6uODjT1KQuWR4ttzFY",
             authDomain: "join193-5ae20.firebaseapp.com",
             databaseURL: "https://join193-5ae20-default-rtdb.europe-west1.firebasedatabase.app",
@@ -112,24 +112,24 @@
             appId: "1:330884835484:web:20d71dc457ab9659d0a559"
         };
 
-        const app = initializeApp(firebaseConfig);
+        let app = initializeApp(firebaseConfig);
 
         import { doc, setDoc, getDoc, getDocs, deleteDoc, updateDoc, collection } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
-        const db = getFirestore(app);
+        let db = getFirestore(app);
 
         let createMyContactNameInput = document.getElementById('createMyContactNameInput');
 
         async function loadTasks() {
             try {
-                const contactRef = collection(db, 'UserAuthList', userCreds.uid, 'addTasks');
-                const querySnapshot = await getDocs(contactRef);
+                let contactRef = collection(db, 'UserAuthList', userCreds.uid, 'addTasks');
+                let querySnapshot = await getDocs(contactRef);
 
                 let dataArr = [];
 
                 if (!querySnapshot.empty) {
                     querySnapshot.forEach((doc) => {
-                        const data = doc.data();
+                        let data = doc.data();
                         dataArr.push(data);
                     });
                     return dataArr;
@@ -145,8 +145,8 @@
 
         async function checkFirstLogIn() {
             try {
-                const ref = doc(db, "UserAuthList", userCreds.uid);
-                const docSnap = await getDoc(ref);
+                let ref = doc(db, "UserAuthList", userCreds.uid);
+                let docSnap = await getDoc(ref);
                 createMyContactContainer.innerHTML = '';
 
                 if (docSnap.exists() && docSnap.data().firstLogIn === true) {
@@ -168,10 +168,10 @@
 
         async function addMyContact() {
             try {
-                const contactRef = collection(db, 'UserAuthList', userCreds.uid, 'myContact');
-                const newDocRef = doc(contactRef);
-                const docID = newDocRef.id;
-                const myContactData = {
+                let contactRef = collection(db, 'UserAuthList', userCreds.uid, 'myContact');
+                let newDocRef = doc(contactRef);
+                let docID = newDocRef.id;
+                let myContactData = {
                     name: getNameFromInput(),
                     email: getEmailFromInput(),
                     phone: getPhoneFromInput(),
@@ -188,7 +188,7 @@
 
         async function updateAccountData() {
             try {
-                const docRef = doc(db, 'UserAuthList', userCreds.uid);
+                let docRef = doc(db, 'UserAuthList', userCreds.uid);
                 await updateDoc(docRef, {
                     name: getNameFromInput()
                 });

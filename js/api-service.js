@@ -1,18 +1,18 @@
 
-const API_URL = 'http://localhost:8000/api';
+let API_URL = 'http://localhost:8000/api';
 
 /**
- * @returns {Object} Die Request-Optionen mit Authorization-Header
+ * @returns {Object} 
  */
 function getRequestOptions(method = 'GET', body = null) {
-  const options = {
+  let options = {
     method,
     headers: {
         'Authorization': 'Token ' + localStorage.getItem('authToken'),
       'Content-Type': 'application/json',
     }
   };
-  const token = localStorage.getItem('token') || sessionStorage.getItem('token');
+  let token = localStorage.getItem('token') || sessionStorage.getItem('token');
   if (token) options.headers['Authorization'] = `Token ${token}`;
   if (body) options.body = JSON.stringify(body);
   return options;
@@ -20,13 +20,13 @@ function getRequestOptions(method = 'GET', body = null) {
 
 /**
  * All contacts from backend
- * @returns {Promise<Array>} Array mit allen Kontakten
+ * @returns {Promise<Array>}
  */
 async function getContacts() {
     try {
         try {
-            const options = getRequestOptions();
-            const response = await fetch(`${API_URL}/contacts/`, options);
+            let options = getRequestOptions();
+            let response = await fetch(`${API_URL}/contacts/`, options);
             
             if (!response.ok) {
                 throw new Error(`Fehler beim Abrufen der Kontakte: ${response.status}`);
@@ -51,11 +51,11 @@ async function getContacts() {
 async function createContact(contactData) {
     try {
         try {
-            const options = getRequestOptions('POST', contactData);
-            const response = await fetch(`${API_URL}/contacts/`, options);
+            let options = getRequestOptions('POST', contactData);
+            let response = await fetch(`${API_URL}/contacts/`, options);
             
             if (!response.ok) {
-                const errorText = await response.text();
+                let errorText = await response.text();
                 throw new Error(`Fehler beim Erstellen des Kontakts: ${response.status} ${errorText}`);
             }
             
@@ -78,11 +78,11 @@ async function createContact(contactData) {
 async function updateContact(contactId, contactData) {
     try {
         try {
-            const options = getRequestOptions('PATCH', contactData);
-            const response = await fetch(`${API_URL}/contacts/${contactId}/`, options);
+            let options = getRequestOptions('PATCH', contactData);
+            let response = await fetch(`${API_URL}/contacts/${contactId}/`, options);
             
             if (!response.ok) {
-                const errorText = await response.text();
+                let errorText = await response.text();
                 throw new Error(`Fehler beim Aktualisieren des Kontakts: ${response.status} ${errorText}`);
             }
             
@@ -104,11 +104,11 @@ async function updateContact(contactId, contactData) {
 async function deleteContact(contactId) {
     try {
         try {
-            const options = getRequestOptions('DELETE');
-            const response = await fetch(`${API_URL}/contacts/${contactId}/`, options);
+            let options = getRequestOptions('DELETE');
+            let response = await fetch(`${API_URL}/contacts/${contactId}/`, options);
             
             if (!response.ok) {
-                const errorText = await response.text();
+                let errorText = await response.text();
                 throw new Error(`Fehler beim Löschen des Kontakts: ${response.status} ${errorText}`);
             }
             
@@ -130,8 +130,8 @@ async function deleteContact(contactId) {
 async function getContact(contactId) {
     try {
         try {
-            const options = getRequestOptions();
-            const response = await fetch(`${API_URL}/contacts/${contactId}/`, options);
+            let options = getRequestOptions();
+            let response = await fetch(`${API_URL}/contacts/${contactId}/`, options);
             
             if (!response.ok) {
                 throw new Error(`Fehler beim Abrufen des Kontakts: ${response.status}`);
@@ -189,7 +189,7 @@ function getDummyContacts() {
  * Take a contactId and return the corresponding dummy contact
  */
 function getDummyContact(contactId) {
-    const contact = dummyContacts.find(c => c.id == contactId);
+    let contact = dummyContacts.find(c => c.id == contactId);
     if (!contact) {
         throw new Error(`Kontakt mit ID ${contactId} nicht gefunden`);
     }
@@ -200,7 +200,7 @@ function getDummyContact(contactId) {
  * Create Dummy Data
  */
 function createDummyContact(contactData) {
-    const newContact = {
+    let newContact = {
         ...contactData,
         id: nextDummyId++
     };
@@ -212,12 +212,12 @@ function createDummyContact(contactData) {
  * Update Dummy Data
  */
 function updateDummyContact(contactId, contactData) {
-    const index = dummyContacts.findIndex(c => c.id == contactId);
+    let index = dummyContacts.findIndex(c => c.id == contactId);
     if (index === -1) {
         throw new Error(`Kontakt mit ID ${contactId} nicht gefunden`);
     }
     
-    const updatedContact = {
+    let updatedContact = {
         ...dummyContacts[index],
         ...contactData,
         id: contactId 
@@ -231,7 +231,7 @@ function updateDummyContact(contactId, contactData) {
  * Delete Dummy Data
  */
 function deleteDummyContact(contactId) {
-    const index = dummyContacts.findIndex(c => c.id == contactId);
+    let index = dummyContacts.findIndex(c => c.id == contactId);
     if (index === -1) {
         throw new Error(`Kontakt mit ID ${contactId} nicht gefunden`);
     }
@@ -250,5 +250,5 @@ window.getContact = getContact;
 
 
 if (typeof userInfo === 'undefined') {
-    var userInfo = JSON.parse(sessionStorage.getItem("user-info") || '{""}');
+    var userInfo = JSON.parse(sessionStorage.getItem("user-info") || '{}');
 }

@@ -75,7 +75,7 @@
         import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-firestore.js";
         import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-auth.js";
 
-const firebaseConfig = {
+let firebaseConfig = {
     apiKey: "AIzaSyAeIBUm7q40H52uDOsl19A6ecvv-NH3cHs",
     authDomain: "join-62bad.firebaseapp.com",
     databaseURL: "https://join-62bad-default-rtdb.firebaseio.com",
@@ -84,9 +84,9 @@ const firebaseConfig = {
     messagingSenderId: "349761837323",
     appId: "1:349761837323:web:970c5ea99cf750318a2a0e"
   };
-        const app = initializeApp(firebaseConfig);
-        const db = getFirestore();
-        const auth = getAuth(app);
+        let app = initializeApp(firebaseConfig);
+        let db = getFirestore();
+        let auth = getAuth(app);
 
         let signUpNameInput = document.getElementById('signUpNameInput');
         let signUpMailInput = document.getElementById('signUpMailInput');

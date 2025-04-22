@@ -10,17 +10,17 @@ async function showTaskView(id) {
       return;
     }
     if (Array.isArray(currentTask.assignedTo) && currentTask.assignedTo.length > 0) {
-      const needsFullContacts = currentTask.assignedTo.some(contact => 
+      let needsFullContacts = currentTask.assignedTo.some(contact => 
         typeof contact === 'number' || 
         typeof contact === 'string' || 
         (typeof contact === 'object' && !contact.name)
       );
       
       if (needsFullContacts) {
-        const allContacts = await getContacts();
+        let allContacts = await getContacts();
         currentTask.assignedTo = currentTask.assignedTo.map(contactRef => {
-          const contactId = typeof contactRef === 'object' ? contactRef.id : contactRef;
-          const fullContact = allContacts.find(c => c.id == contactId);
+          let contactId = typeof contactRef === 'object' ? contactRef.id : contactRef;
+          let fullContact = allContacts.find(c => c.id == contactId);
           
           if (fullContact) {            
             return {
@@ -68,7 +68,7 @@ function hideTaskView() {
  * @param {Object} task - Die anzuzeigende Task
  */
 function boardFillTaskWithCurrent(task) {
-  const taskConfig = returnConfigBoardCardHtml(task);
+  let taskConfig = returnConfigBoardCardHtml(task);
   document.getElementById("taskBgDiv").innerHTML =
     returnHtmlBoardTaskSingleView(task, taskConfig);
 
@@ -82,14 +82,14 @@ function boardFillTaskWithCurrent(task) {
  * @param {Object} task - Die anzuzeigende Task
  */
 function renderBoardSingleViewSubtasks(task) {
-  const container = document.getElementById("boardTaskSingleSubtasks");
+  let container = document.getElementById("boardTaskSingleSubtasks");
   container.innerHTML = "";
 
   if (task.subtasks && task.subtasks.length > 0) {
     let subtasksConfig = returnBoardSubtaskConfig(task);
 
     for (let i = 0; i < task.subtasks.length; i++) {
-      const subtask = task.subtasks[i];
+      let subtask = task.subtasks[i];
       if (!subtask.done) {
         subtasksConfig.svgSrc = "/assets/symbols/Property 1=Default.svg";
       } else {
@@ -129,14 +129,14 @@ async function boardClickSubtask(taskId, subtaskIndex, newState = null) {
       console.error(`Ungültiger Task oder Subtask-Index: ${taskId}, ${subtaskIndex}`);
       return;
     }
-    const currentState = task.subtasks[subtaskIndex].done || false;
-    const targetState = (newState !== null) ? newState : !currentState;
+    let currentState = task.subtasks[subtaskIndex].done || false;
+    let targetState = (newState !== null) ? newState : !currentState;
     
     task.subtasks[subtaskIndex].done = targetState;
 
     updateSubtaskCheckbox(taskId, subtaskIndex, targetState);
 
-    const updateData = {
+    let updateData = {
       header: task.header,
       description: task.description,
       due_date: formatDateForBackend(task.dueDate),
@@ -149,7 +149,7 @@ async function boardClickSubtask(taskId, subtaskIndex, newState = null) {
       }))
     };
     
-    const result = await updateTask(taskId, updateData);
+    let result = await updateTask(taskId, updateData);
     
     updateSubtaskProgress(taskId);
     
@@ -168,10 +168,10 @@ async function boardClickSubtask(taskId, subtaskIndex, newState = null) {
  */
 function updateSubtaskCheckbox(taskId, subtaskIndex, checked) {
   try {
-    const subtaskRow = document.querySelector(`[data-task-id="${taskId}"][data-subtask-index="${subtaskIndex}"]`);
+    let subtaskRow = document.querySelector(`[data-task-id="${taskId}"][data-subtask-index="${subtaskIndex}"]`);
     
     if (subtaskRow) {
-      const checkboxImg = subtaskRow.querySelector('.board-task-single-subtask-checkbox img');
+      let checkboxImg = subtaskRow.querySelector('.board-task-single-subtask-checkbox img');
       if (checkboxImg) {
         checkboxImg.src = checked ? 
           "/assets/symbols/Property 1=checked.svg" : 
@@ -194,17 +194,17 @@ function updateSubtaskCheckbox(taskId, subtaskIndex, checked) {
  * @param {string} taskId - ID der Task
  */
 function updateSubtaskProgress(taskId) {
-  const task = boardGetTaskById(taskId);
+  let task = boardGetTaskById(taskId);
   if (!task || !Array.isArray(task.subtasks) || task.subtasks.length === 0) return;
   
   // Fortschritt berechnen
-  const total = task.subtasks.length;
-  const completed = task.subtasks.filter(subtask => subtask.done).length;
-  const percent = Math.round((completed / total) * 100);
+  let total = task.subtasks.length;
+  let completed = task.subtasks.filter(subtask => subtask.done).length;
+  let percent = Math.round((completed / total) * 100);
   
   // Fortschrittsanzeige aktualisieren
-  const progressBarInner = document.querySelector(`#subtask-progress-bar-${taskId} .progress-bar-inner`);
-  const progressText = document.querySelector(`#subtask-progress-bar-${taskId} .progress-text`);
+  let progressBarInner = document.querySelector(`#subtask-progress-bar-${taskId} .progress-bar-inner`);
+  let progressText = document.querySelector(`#subtask-progress-bar-${taskId} .progress-text`);
   
   if (progressBarInner) {
     progressBarInner.style.width = `${percent}%`;
@@ -221,7 +221,7 @@ function updateSubtaskProgress(taskId) {
  */
 function boardRenderAssignedLine(task) {
   // Container für zugewiesene Kontakte finden
-  const container = document.getElementById("boardTaskSingleViewAssigned");
+  let container = document.getElementById("boardTaskSingleViewAssigned");
   if (!container) {
     console.error("Container für zugewiesene Kontakte nicht gefunden");
     return;
@@ -232,12 +232,12 @@ function boardRenderAssignedLine(task) {
 
   if (Array.isArray(task.assignedTo) && task.assignedTo.length > 0) {
     task.assignedTo.forEach(contact => {
-      const name = contact.name || `Kontakt ${contact.id}`;
+      let name = contact.name || `Kontakt ${contact.id}`;
       let initials = contact.initials || '';
       if (!initials && name) {
         initials = getInitialsFromName(name);
       }
-      const color = contact.color || getRandomColor();
+      let color = contact.color || getRandomColor();
       container.innerHTML += `
         <div class="task-assigned-users-div">
           <div class="task-assigned-user-main">
@@ -257,10 +257,10 @@ function boardRenderAssignedLine(task) {
  * Fügt Event-Listener zu den Task-Elementen hinzu
  */
 function boardTaskAddEventListener() {
-  const deleteDiv = document.getElementById("taskFooterDel");
-  const deleteIcon = document.getElementById("deleteIcon");
-  const editDiv = document.getElementById("taskFooterEdit");
-  const editIcon = document.getElementById("editIcon");
+  let deleteDiv = document.getElementById("taskFooterDel");
+  let deleteIcon = document.getElementById("deleteIcon");
+  let editDiv = document.getElementById("taskFooterEdit");
+  let editIcon = document.getElementById("editIcon");
 
   if (deleteDiv && deleteIcon) {
     deleteDiv.addEventListener("mouseenter", () => {
@@ -289,11 +289,11 @@ function boardTaskAddEventListener() {
  */
 async function deleteTask(taskId) {
   try {
-    const options  = getRequestOptions('DELETE');
-    const response = await fetch(`${API_URL}/tasks/${taskId}/`, options);
+    let options  = getRequestOptions('DELETE');
+    let response = await fetch(`${API_URL}/tasks/${taskId}/`, options);
 
     if (!response.ok) {
-      const errorText = await response.text();
+      let errorText = await response.text();
       throw new Error(`Fehler beim Löschen des Tasks: ${response.status} ${errorText}`);
     }
     hideTaskView();
@@ -313,7 +313,7 @@ function formatDateForBackend(dateStr) {
   if (!dateStr) return "";
   if (dateStr.includes("-")) return dateStr;
   
-  const [day, month, year] = dateStr.split("/");
+  let [day, month, year] = dateStr.split("/");
   return `${year}-${month}-${day}`;
 }
 

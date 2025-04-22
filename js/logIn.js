@@ -35,8 +35,8 @@ document.addEventListener('DOMContentLoaded', function () {
  * @function startLogInAnimation
  */
 function startLogInAnimation() {
-    const logoSlideTimeOut = setTimeout(slideToCorner, 300);
-    const logoChangeTimeOut = setTimeout(changeLogo, 550);
+    let logoSlideTimeOut = setTimeout(slideToCorner, 300);
+    let logoChangeTimeOut = setTimeout(changeLogo, 550);
     startScreenContainer.classList.add('changeBgColor');
     startScreenLogo.classList.remove('d-none');
     setTimeout(function () {
@@ -160,9 +160,9 @@ function setLoginCookie(email, password) {
  * @function fillLoginForm
  */
 function fillLoginForm() {
-    const cookies = document.cookie.split('; ');
-    for (const cookie of cookies) {
-        const [name, value] = cookie.split('=');
+    let cookies = document.cookie.split('; ');
+    for (let cookie of cookies) {
+        let [name, value] = cookie.split('=');
         if (name === 'email') {
             logInMailInput.value = decodeURIComponent(value);
         } else if (name === 'password') {
@@ -177,45 +177,32 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 
+let form       = document.getElementById('logInForm');
+let emailInput = document.getElementById('logInMailInput');
+let pwInput    = document.getElementById('logInPasswordInput');
+let msgBox     = document.getElementById('logInMessageBox');
 
-
-
-// logIn.js
-
-// 1. Element‑Referenzen
-const form       = document.getElementById('logInForm');
-const emailInput = document.getElementById('logInMailInput');
-const pwInput    = document.getElementById('logInPasswordInput');
-const msgBox     = document.getElementById('logInMessageBox');
-
-// 2. Submit‑Handler registrieren
 form.addEventListener('submit', async e => {
-  e.preventDefault();                     // Verhindert klassischen Submit
-  const email    = emailInput.value.trim();
-  const password = pwInput.value;
+  e.preventDefault();   
+  let email    = emailInput.value.trim();
+  let password = pwInput.value;
 
   try {
-    // 3. POST an Django Login‑Endpoint
-    const res = await fetch('http://127.0.0.1:8000/api/auth/login/', {
+    let res = await fetch('http://127.0.0.1:8000/api/auth/login/', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({ username: email, password })
       });
-    const data = await res.json();
+    let data = await res.json();
 
     if (!res.ok) {
-      // 4. Fehler anzeigen
       msgBox.textContent = data.error || data.detail || 'Login fehlgeschlagen';
       msgBox.classList.add('error');
       return;
     }
-
-    // 5. Token sichern
     sessionStorage.setItem('token', data.token);
-
-    // 6. Weiterleiten zur geschützten Seite
     window.location.href = 'board.html';
 
   } catch (err) {
@@ -227,28 +214,24 @@ form.addEventListener('submit', async e => {
 document.getElementById('guestLoginBtn')
   .addEventListener('click', async () => {
     try {
-      // 1. Alten Token rauswerfen (optional)
       localStorage.removeItem('authToken');
       sessionStorage.removeItem('token')
-      // 2. Gast‑Login anstoßen
-      const resp = await fetch('http://localhost:8000/api/auth/guest-login/', {
-        method: 'POST',           // POST statt GET
+
+      let resp = await fetch('http://localhost:8000/api/auth/guest-login/', {
+        method: 'POST',          
         headers: { 'Accept': 'application/json' },
-        cache: 'no-store',        // Browser‑Cache ausschalten
+        cache: 'no-store',     
       });
 
       if (!resp.ok) {
-        const text = await resp.text();
+        let text = await resp.text();
         console.error('Guest‑Login Error', resp.status, text);
         alert(`Guest‑Login fehlgeschlagen (Status ${resp.status})`);
         return;
       }
 
-      // 3. Neues Token speichern
-      const { token } = await resp.json();
+      let { token } = await resp.json();
       localStorage.setItem('authToken', token);
-
-      // 4. Weiterleiten
       window.location.href = '/summary_user.html';
     } catch (err) {
       console.error('Network/CORS error', err);

@@ -4,17 +4,15 @@
  */
 async function getBoardTasks() {
     try {
-        // Hole alle Tasks
-        const options  = getRequestOptions('GET');
-        const response = await fetch(`${API_URL}/tasks/`, options);
+        let options  = getRequestOptions('GET');
+        let response = await fetch(`${API_URL}/tasks/`, options);
         
         if (!response.ok) {
             throw new Error('Fehler beim Abrufen der Board-Tasks');
         }
         
-        // Gruppiere Tasks nach Kanban-Kategorie
-        const tasks = await response.json();
-        const groupedTasks = {
+        let tasks = await response.json();
+        let groupedTasks = {
             Todo: [],
             InProgress: [],
             AwaitFeedback: [],
@@ -22,11 +20,10 @@ async function getBoardTasks() {
         };
         
         tasks.forEach(task => {
-            const category = task.kanban_category || 'Todo';
+            let category = task.kanban_category || 'Todo';
             if (groupedTasks[category]) {
                 groupedTasks[category].push(task);
             } else {
-                // Fallback, falls die Kategorie nicht bekannt ist
                 groupedTasks.Todo.push(task);
             }
         });
@@ -38,18 +35,7 @@ async function getBoardTasks() {
     }
 }
   
-  /**
-   * Ändert die Kanban-Kategorie eines Tasks (für Drag & Drop)
-   * @param {number} taskId - Die ID des Tasks
-   * @param {string} newCategory - Die neue Kanban-Kategorie
-   * @returns {Promise} - Der aktualisierte Task
-   */
-/**
- * Ändert die Kanban-Kategorie eines Tasks (für Drag & Drop)
- * @param {number} taskId - Die ID des Tasks
- * @param {string} newCategory - Die neue Kanban-Kategorie
- * @returns {Promise} - Der aktualisierte Task
- */
+
 /**
  * Ändert die Kanban-Kategorie eines Tasks (für Drag & Drop)
  * @param {number} taskId - Die ID des Tasks
@@ -58,21 +44,21 @@ async function getBoardTasks() {
  */
 async function updateTaskCategory(taskId, newCategory) {
     try {
-      const categoryMapping = {
-        "Todo": "Todo",                  // Original beibehalten
-        "InProgress": "InProgress",      // Original beibehalten
+      let categoryMapping = {
+        "Todo": "Todo",                  
+        "InProgress": "InProgress",      
         "AwaitFeedback": "AwaitFeedback",
         "Done": "Done"
       };
-      const formattedCategory = categoryMapping[newCategory] || newCategory;      
-      const requestData = {
+      let formattedCategory = categoryMapping[newCategory] || newCategory;      
+      let requestData = {
         kanban_category: formattedCategory
       };
-      const options  = getRequestOptions('PATCH', requestData);
-      const response = await fetch(`${API_URL}/tasks/${taskId}/`, options);
+      let options  = getRequestOptions('PATCH', requestData);
+      let response = await fetch(`${API_URL}/tasks/${taskId}/`, options);
       
       if (!response.ok) {
-        const errorText = await response.text();
+        let errorText = await response.text();
         console.error("Server-Antwort:", response.status, errorText);
         throw new Error(`Fehler beim Aktualisieren der Task-Kategorie: ${response.status} ${errorText}`);
       }
@@ -84,18 +70,17 @@ async function updateTaskCategory(taskId, newCategory) {
     }
   }
 
-  // Füge diese Funktion zur board-api.js hinzu
+
 async function inspectTaskFormatting() {
     try {
-      // Hole alle Tasks
-      const options  = getRequestOptions();
-const response = await fetch(`${API_URL}/tasks/`, options);
+      let options  = getRequestOptions();
+let response = await fetch(`${API_URL}/tasks/`, options);
       
       if (!response.ok) {
         throw new Error('Fehler beim Abrufen der Tasks');
       }
       
-      const tasks = await response.json();
+      let tasks = await response.json();
       
       if (tasks.length > 0) {
         return tasks[0];
@@ -104,14 +89,13 @@ const response = await fetch(`${API_URL}/tasks/`, options);
     } catch (error) {
     }
   }
-  
-  // Rufe diese Funktion beim Laden der Seite auf
+
   window.addEventListener('DOMContentLoaded', function() {
     inspectTaskFormatting().then(task => {
 
     });
   });
-  // Globale Verfügbarkeit
+
   window.getBoardTasks = getBoardTasks;
   window.updateTaskCategory = updateTaskCategory;
 
@@ -119,7 +103,7 @@ const response = await fetch(`${API_URL}/tasks/`, options);
   function formatAssignedToForFrontend(assignedTo) {
     if (!Array.isArray(assignedTo)) return [];
     return assignedTo.map(contact => {
-      const id = typeof contact === 'number'
+      let id = typeof contact === 'number'
                  ? contact
                  : parseInt(contact, 10);
       return { id, name: contact.name, color: contact.color, initials: contact.initials };

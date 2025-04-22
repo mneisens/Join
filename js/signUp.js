@@ -131,7 +131,7 @@ function passwordIsCorrected() {
 //  */
 function signedUpSuccessfully() {
     document.getElementById('signedUpBtn').classList.add('signedUpBtnSlide');
-    const toLogIn = setTimeout(navToLogIn, 1750);
+    let toLogIn = setTimeout(navToLogIn, 1750);
 }
 
 // /**
@@ -141,41 +141,37 @@ function signedUpSuccessfully() {
 function navToLogIn() {
     window.location.href = 'log_in.html?msg=You Signed Up successfully.';
 }
-// Ganz oben in signUp.js
-const form       = document.getElementById('signUpForm');
-const nameInput  = document.getElementById('signUpNameInput');
-const emailInput = document.getElementById('signUpMailInput');
-const pwInput    = document.getElementById('signUpPasswordInput');
-const msgBox     = document.getElementById('signUpMessageBox');
 
-// Wenn das Formular abgesendet wird…
+let form       = document.getElementById('signUpForm');
+let nameInput  = document.getElementById('signUpNameInput');
+let emailInput = document.getElementById('signUpMailInput');
+let pwInput    = document.getElementById('signUpPasswordInput');
+let msgBox     = document.getElementById('signUpMessageBox');
+
 form.addEventListener('submit', async (e) => {
   e.preventDefault();
 
-  const username = emailInput.value.trim();      // wir nutzen Email als Username
-  const password = pwInput.value;
-  const name     = nameInput.value.trim();       // falls du den echten Namen speichern willst
+  let username = emailInput.value.trim();      
+  let password = pwInput.value;
+  let name     = nameInput.value.trim();       
 
   try {
-    const res = await fetch('http://127.0.0.1:8000/api/auth/register/', {
+    let res = await fetch('http://127.0.0.1:8000/api/auth/register/', {
       method: 'POST',
       headers: {'Content-Type':'application/json'},
       body: JSON.stringify({ username, password })
     });
 
-    const data = await res.json();
+    let data = await res.json();
 
     if (!res.ok) {
-      // Fehler vom Backend anzeigen
       msgBox.textContent = data.error || data.detail || 'Registrierung fehlgeschlagen';
       msgBox.classList.add('error');
       return;
     }
 
-    // Optional: Token sofort speichern
     sessionStorage.setItem('token', data.token);
 
-    // Oder einfach zur Login‑Seite weiterleiten
     window.location.href = 'log_in.html?msg=Erfolgreich registriert!';
 
   } catch (err) {

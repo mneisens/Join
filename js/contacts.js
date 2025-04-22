@@ -32,7 +32,7 @@ function hideAddContact() {
     document.getElementById('newContact').classList.remove('slideInBottom');
     document.getElementById('newContact').classList.add('slideOutBottom');
     resetForm();
-    const delayContactDisplayNone = setTimeout(contactDisplayNone, 180);
+    let delayContactDisplayNone = setTimeout(contactDisplayNone, 180);
 }
 
 
@@ -44,7 +44,7 @@ function slideInContactSuccesfullyBox() {
     contactSuccesfullyBox.classList.remove('d-none');
     contactSuccesfullyBox.classList.remove('slideOutBottom');
     contactSuccesfullyBox.classList.add('slideInRight');
-    const delaysuccesfullyBoxDisplayNone = setTimeout(succesfullyBoxSlideOut, 2000)
+    let delaysuccesfullyBoxDisplayNone = setTimeout(succesfullyBoxSlideOut, 2000)
 }
 
 /**
@@ -178,7 +178,7 @@ function showContactInitials(firstContactInitial, secondContactInitail) {
 /**
  * The color for the random generate initialien background
  */
-const contactsBgColors = [
+let contactsBgColors = [
     "#FF7A00", "#FF5EB3", "#9327FF",
     "#00BEE8", "#1FD7C1", "#FF745E",
     "#FFA35E", "#FC71FF", "#FFC701",
@@ -221,10 +221,10 @@ function renderAddContactIcon() {
  * Render all contacts from the firebase database
  */
 function renderCalendarContacts(contacts) {
-    const groupedContacts = {};
+    let groupedContacts = {};
     contacts.forEach(contact => {
         if (contact.name && typeof contact.name === 'string') {
-            const firstLetter = contact.name.charAt(0).toUpperCase();
+            let firstLetter = contact.name.charAt(0).toUpperCase();
             if (!groupedContacts[firstLetter]) {
                 groupedContacts[firstLetter] = [];
             }
@@ -233,15 +233,15 @@ function renderCalendarContacts(contacts) {
     });
 
     Object.keys(groupedContacts).sort().forEach(letter => {
-        const section = document.createElement("div");
+        let section = document.createElement("div");
         section.className = "letterSection";
-        const title = document.createElement("div");
+        let title = document.createElement("div");
         title.className = "letterTitle";
         title.textContent = letter;
         section.appendChild(title);
         
         groupedContacts[letter].forEach(contact => {
-            const contactElement = renderContacts(contact);
+            let contactElement = renderContacts(contact);
             section.appendChild(contactElement);
         });
         
@@ -253,7 +253,7 @@ function renderCalendarContacts(contacts) {
  * Render all contacts from the firebase database
  */
 function renderContacts(contact) {
-    const contactElement = document.createElement("div");
+    let contactElement = document.createElement("div");
     contactElement.className = "contactContainer";
     contactElement.id = `${contact.id}`;
     contactElement.onclick = function () {
@@ -443,11 +443,11 @@ function closeEditOrDeletePopUp() {
 async function addContact() {
     try {
         // Hole die Werte aus den Formularfeldern
-        const name = getNameFromInput(); // Den vollständigen Namen verwenden, nicht aufteilen!
-        const email = getEmailFromInput();
-        const phone = getPhoneFromInput();
-        const color = getColorFromInput();
-        const initials = renderContactInitials(); 
+        let name = getNameFromInput(); // Den vollständigen Namen verwenden, nicht aufteilen!
+        let email = getEmailFromInput();
+        let phone = getPhoneFromInput();
+        let color = getColorFromInput();
+        let initials = renderContactInitials(); 
 
         // Prüfe, ob die E-Mail ein gültiges Format hat
         if (!validateEmail(email)) {
@@ -456,15 +456,15 @@ async function addContact() {
         }
         
         // Formatiere die Daten für das Django-Backend
-        const contactData = {
+        let contactData = {
             name: name,                // Vollständiger Name, nicht aufgeteilt
             email: email,
             phone: phone,
             color: color,
             initials: initials
         };
-        const newContact = await createContact(contactData);
-        const formattedContact = {
+        let newContact = await createContact(contactData);
+        let formattedContact = {
             id: newContact.id,
             name: newContact.name,
             email: newContact.email,
@@ -486,7 +486,7 @@ async function addContact() {
 
 // E-Mail-Validator hinzufügen
 function validateEmail(email) {
-    const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    let re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     return re.test(String(email).toLowerCase());
 }
 
@@ -495,19 +495,19 @@ function validateEmail(email) {
  */
 async function showContacts() {
     try {
-        const contactsListContainer = document.getElementById('contactsListContainer');
+        let contactsListContainer = document.getElementById('contactsListContainer');
         if (!contactsListContainer) {
             console.error("Container für Kontakte nicht gefunden");
             return;
         }
 
-        const contacts = await getContacts();
+        let contacts = await getContacts();
         
         contactsListContainer.innerHTML = '';
         
         if (contacts && contacts.length > 0) {
-            const formattedContacts = contacts.map(contact => {
-                const name = contact.name || "Unbenannt";
+            let formattedContacts = contacts.map(contact => {
+                let name = contact.name || "Unbenannt";
                 
                 return {
                     id: contact.id,
@@ -531,7 +531,7 @@ async function showContacts() {
  */
 async function updateContacts(contactId, updatedData) {
     try {
-      const contactData = {
+      let contactData = {
         name: updatedData.name,
         email: updatedData.email,
         phone: updatedData.phone,
@@ -539,7 +539,7 @@ async function updateContacts(contactId, updatedData) {
         initials: updatedData.initials 
       };
       
-      const updatedContact = await updateContact(contactId, contactData);
+      let updatedContact = await updateContact(contactId, contactData);
       
       return updatedContact;
     } catch (error) {
@@ -572,7 +572,7 @@ function getFirstNameFromFullName(fullName) {
  * Hilfsfunktion: Extrahiert den Nachnamen aus einem vollständigen Namen
  */
 function getLastNameFromFullName(fullName) {
-    const nameParts = fullName.split(' ');
+    let nameParts = fullName.split(' ');
     return nameParts.length > 1 ? nameParts.slice(1).join(' ') : '';
 }
 
@@ -580,7 +580,7 @@ function getLastNameFromFullName(fullName) {
  * Hilfsfunktion: Extrahiert den Vornamen aus dem Eingabefeld
  */
 function getFirstName() {
-    const fullName = getNameFromInput();
+    let fullName = getNameFromInput();
     return getFirstNameFromFullName(fullName);
 }
 
@@ -588,7 +588,7 @@ function getFirstName() {
  * Hilfsfunktion: Extrahiert den Nachnamen aus dem Eingabefeld
  */
 function getLastName() {
-    const fullName = getNameFromInput();
+    let fullName = getNameFromInput();
     return getLastNameFromFullName(fullName);
 }
 
@@ -596,7 +596,7 @@ function getLastName() {
  * Hilfsfunktion: Generiert Initialen aus einem Namen
  */
 function getInitialsFromName(fullName) {
-    const names = fullName.split(' ');
+    let names = fullName.split(' ');
     let firstInitial = names[0] ? names[0].substring(0, 1).toUpperCase() : '';
     let secondInitial = '';
     

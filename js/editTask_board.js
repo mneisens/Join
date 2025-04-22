@@ -3,17 +3,17 @@
  * @param {Array} assignedTo - Array mit zugewiesenen Kontakten
  */
 function assignContactsInEditForm(assignedToIds) {
-    const badgeContainer = document.getElementById("showName");
+    let badgeContainer = document.getElementById("showName");
     badgeContainer.innerHTML = "";       
   
     assignedToIds.forEach(id => {
-      const checkbox = document.querySelector(`.category-checkbox[data-id="${id}"]`);
+      let checkbox = document.querySelector(`.category-checkbox[data-id="${id}"]`);
       if (!checkbox) return;
       checkbox.checked = true;
       checkbox.closest(".option").classList.add("active");
-      const color    = checkbox.dataset.color;
-      const initials = checkbox.dataset.initials;
-      const badge    = document.createElement("div");
+      let color    = checkbox.dataset.color;
+      let initials = checkbox.dataset.initials;
+      let badge    = document.createElement("div");
       badge.className = "abbreviation-badge";
       badge.textContent = initials;
       badge.style.cssText = `
@@ -40,10 +40,10 @@ function assignContactsInEditForm(assignedToIds) {
  * Läuft in Add‑ und in Edit‑Modus.
  */
 window.updateSelectedAbbreviations = function() {
-    const container = document.getElementById("showName");
+    let container = document.getElementById("showName");
     container.innerHTML = "";  // alte Badges löschen
     document.querySelectorAll(".category-checkbox:checked").forEach(cb => {
-      const badge = document.createElement("div");
+      let badge = document.createElement("div");
       badge.className = "abbreviation-badge";
       badge.textContent = cb.dataset.initials;
       badge.style.cssText = `
@@ -82,11 +82,11 @@ async function initEditTask(id) {
     addTaskInEditMode = true;
     editTaskId = id;
     window.currentAssignedContacts = [];
-    const bg = document.getElementById("boardAddTaskMainBg");
+    let bg = document.getElementById("boardAddTaskMainBg");
     bg.classList.remove("d-none");
     document.getElementById("boardHeadAddTask").innerText = "Edit Task";
     await loadCategories();
-    const task = boardGetTaskById(id);
+    let task = boardGetTaskById(id);
     if (!task) return console.error("Task nicht gefunden:", id);
     document.getElementById("input-title-addTask").value = task.header;
     document.getElementById("textarea-addTask").value   = task.description;
@@ -112,9 +112,9 @@ function setDateInEditForm(dueDate) {
     if (!dueDate) return;
     
     try {
-        const parts = dueDate.split('/');
+        let parts = dueDate.split('/');
         if (parts.length === 3) {
-            const formattedDate = `${parts[2]}-${parts[1]}-${parts[0]}`;
+            let formattedDate = `${parts[2]}-${parts[1]}-${parts[0]}`;
             document.getElementById("date-addTask").value = formattedDate;
         }
     } catch (error) {
@@ -128,7 +128,7 @@ function setDateInEditForm(dueDate) {
  */
 function setPriorityInEditForm(priority) {
     try {
-        const buttons = document.querySelectorAll(".prio-addTask button");
+        let buttons = document.querySelectorAll(".prio-addTask button");
         buttons.forEach(button => {
             button.classList.remove("active", "prio-btn-active");
             button.style.backgroundColor = "";
@@ -143,7 +143,7 @@ function setPriorityInEditForm(priority) {
         document.getElementById("prio-medium-white").classList.add("d-none");
         document.getElementById("prio-down-white").classList.add("d-none");
 
-        const selectedButton = document.getElementById(priority);
+        let selectedButton = document.getElementById(priority);
         if (selectedButton) {
             selectedButton.classList.add("active", "prio-btn-active");
             selectedButton.setAttribute("value", "true");
@@ -163,7 +163,7 @@ function setPriorityInEditForm(priority) {
             
             selectedButton.classList.add("btn-font");
         } else {
-            const mediumButton = document.getElementById("medium");
+            let mediumButton = document.getElementById("medium");
             mediumButton.classList.add("active", "prio-btn-active");
             mediumButton.setAttribute("value", "true");
             mediumButton.style.backgroundColor = "rgba(255, 168, 0, 1)";
@@ -182,13 +182,13 @@ function setPriorityInEditForm(priority) {
  */
 function loadSubtasksInEditForm(task) {
     try {
-        const subtasksContainer = document.getElementById("addedTasks");
+        let subtasksContainer = document.getElementById("addedTasks");
         subtasksContainer.innerHTML = "";
         
         if (Array.isArray(task.subtasks) && task.subtasks.length > 0) {
             task.subtasks.forEach((subtask, index) => {
-                const subtaskText = subtask.subtask || subtask.text || "";
-                const subtaskElement = document.createElement("li");
+                let subtaskText = subtask.subtask || subtask.text || "";
+                let subtaskElement = document.createElement("li");
                 subtaskElement.className = "one-subtask";
                 subtaskElement.id = index;
                 subtaskElement.innerHTML = `
@@ -222,14 +222,14 @@ function createContactBadges(contacts, container) {
         } else if (contact.name) {
             initials = getInitialsFromName(contact.name);
         } else if (typeof contact === 'object' && contact !== null) {
-            const nameSource = contact.fullName || contact.userName || contact.email || "";
+            let nameSource = contact.fullName || contact.userName || contact.email || "";
             if (nameSource) {
                 initials = getInitialsFromName(nameSource);
             }
         }
         
-        const color = contact.color || getRandomColor();
-        const badge = document.createElement("div");
+        let color = contact.color || getRandomColor();
+        let badge = document.createElement("div");
         badge.className = "abbreviation-badge";
         badge.textContent = initials;
         badge.style.backgroundColor = color;
@@ -259,7 +259,7 @@ function getInitialsFromName(fullName) {
         fullName = fullName.replace(/^[^a-zA-Z]*[a-zA-Z]+\.\s*/g, "");
     }
     
-    const names = fullName.trim().split(/\s+/);
+    let names = fullName.trim().split(/\s+/);
     let firstInitial = names[0] ? names[0].charAt(0).toUpperCase() : '';
     let secondInitial = '';
     
@@ -286,7 +286,7 @@ function editTaskChangeSubtask(subtaskId, action, newText) {
     switch (action) {
         case "add":
             // Neuen Subtask hinzufügen
-            const newId = editTaskSubtasks.length;
+            let newId = editTaskSubtasks.length;
             editTaskSubtasks.push({
                 subtask: newText,
                 done: false
@@ -295,7 +295,7 @@ function editTaskChangeSubtask(subtaskId, action, newText) {
             
         case "edit":
             // Subtask bearbeiten
-            const index = parseInt(subtaskId, 10);
+            let index = parseInt(subtaskId, 10);
             if (!isNaN(index) && index >= 0 && index < editTaskSubtasks.length) {
                 editTaskSubtasks[index].subtask = newText;
             }
@@ -303,12 +303,12 @@ function editTaskChangeSubtask(subtaskId, action, newText) {
             
         case "delete":
             // Subtask löschen
-            const deleteIndex = parseInt(subtaskId, 10);
+            let deleteIndex = parseInt(subtaskId, 10);
             if (!isNaN(deleteIndex) && deleteIndex >= 0 && deleteIndex < editTaskSubtasks.length) {
                 editTaskSubtasks.splice(deleteIndex, 1);
                 
                 // IDs der Elemente im DOM aktualisieren
-                const subtaskElements = document.querySelectorAll("#addedTasks .one-subtask");
+                let subtaskElements = document.querySelectorAll("#addedTasks .one-subtask");
                 subtaskElements.forEach((element, i) => {
                     element.id = i;
                 });
@@ -326,16 +326,16 @@ function editTaskChangeSubtask(subtaskId, action, newText) {
  */
 async function pushEditTaskToDatabase() {
     try {
-      const oldIds = Array.isArray(window.currentAssignedContacts)
+      let oldIds = Array.isArray(window.currentAssignedContacts)
         ? window.currentAssignedContacts.map(c => typeof c === 'object' ? c.id : c)
         : [];
-      const newIds = Array.from(
+      let newIds = Array.from(
         document.querySelectorAll('.category-checkbox:checked')
       ).map(cb => parseInt(cb.dataset.id, 10));
   
-      const mergedIds = Array.from(new Set([...oldIds, ...newIds]));
+      let mergedIds = Array.from(new Set([...oldIds, ...newIds]));
       window.currentAssignedContacts = mergedIds;
-      const updatedTask = {
+      let updatedTask = {
         header        : document.getElementById("input-title-addTask").value || "",
         description   : document.getElementById("textarea-addTask").value || "",
         due_date      : formatDateForBackend(document.getElementById("date-addTask").value),
@@ -381,7 +381,7 @@ function resetAddTaskHtml() {
 function formatDateForBackend(dateStr) {
     if (!dateStr) return "";
     if (dateStr.includes("-")) return dateStr;
-    const [day, month, year] = dateStr.split("/");
+    let [day, month, year] = dateStr.split("/");
     return `${year}-${month}-${day}`;
 }
 
@@ -395,7 +395,7 @@ function formatAssignedToForBackend(assignedTo) {
     
     return assignedTo.map(contact => {
         if (contact.id) {
-            const id = parseInt(contact.id, 10);
+            let id = parseInt(contact.id, 10);
             return isNaN(id) ? null : id;
         }
         if (typeof contact === 'number') {
@@ -410,13 +410,13 @@ function formatAssignedToForBackend(assignedTo) {
  */
 function addSubtaskInEditMode() {
     // Input-Feld finden und Text extrahieren
-    const inputField = document.getElementById("input-title-addTasks");
-    const subtaskText = inputField.value.trim();
+    let inputField = document.getElementById("input-title-addTasks");
+    let subtaskText = inputField.value.trim();
     
     if (subtaskText === "") return;
-    const newId = editTaskChangeSubtask("new", "add", subtaskText);
-    const ul = document.getElementById("addedTasks");
-    const li = document.createElement("li");
+    let newId = editTaskChangeSubtask("new", "add", subtaskText);
+    let ul = document.getElementById("addedTasks");
+    let li = document.createElement("li");
     li.className = "one-subtask";
     li.id = newId;
     li.innerHTML = `
@@ -436,11 +436,11 @@ function addSubtaskInEditMode() {
  * @param {Array} contacts – Liste von {id,name,initials,color}
  */
 function renderContactBadges(contacts) {
-  const container = document.getElementById("showName");
+  let container = document.getElementById("showName");
   if (!container) return;
   container.innerHTML = "";
   contacts.forEach(c => {
-    const badge = document.createElement("div");
+    let badge = document.createElement("div");
     badge.className = "abbreviation-badge";
     badge.dataset.contactId   = c.id;
     badge.dataset.contactName = c.name;

@@ -5,10 +5,10 @@
 async function includeHTML() {
     let includeElements = document.querySelectorAll('[html-template]');
     for (let i = 0; i < includeElements.length; i++) {
-        const element = includeElements[i];
-        const file = element.getAttribute("html-template");
+        let element = includeElements[i];
+        let file = element.getAttribute("html-template");
         try {
-            const resp = await fetch(file);
+            let resp = await fetch(file);
             if (resp.ok) {
                 element.innerHTML = await resp.text();
             } else {
@@ -126,7 +126,7 @@ function stopPropagation(event) {
     event.stopPropagation();
 }
 
-const activePage = window.location.href;
+let activePage = window.location.href;
 
 /**
  * Activates a navigation link if the current page URL matches the specified URL.
@@ -136,24 +136,20 @@ const activePage = window.location.href;
  */
 function activeLink(index, path) {
     try {
-        const links = document.querySelectorAll('.nav-list li');
+        let links = document.querySelectorAll('.nav-list li');
         if (links && links.length > 0) {
             for (let i = 0; i < links.length; i++) {
                 links[i].classList.remove('active-link');
             }
-            
-            // Wenn ein aktueller Pfad übergeben wurde, den entsprechenden Link markieren
             if (path) {
                 for (let i = 0; i < links.length; i++) {
-                    const linkHref = links[i].querySelector('a')?.getAttribute('href');
+                    let linkHref = links[i].querySelector('a')?.getAttribute('href');
                     if (linkHref && path.includes(linkHref)) {
                         links[i].classList.add('active-link');
                         return;
                     }
                 }
             }
-            
-            // Fallback: Wenn kein Match gefunden oder kein Pfad übergeben wurde, den angegebenen Index verwenden
             if (index >= 0 && index < links.length) {
                 links[index].classList.add('active-link');
             }
@@ -227,15 +223,11 @@ function handelLogOut() {
 
 if (typeof loadContact === 'undefined') {
     window.loadContact = async function() {
-        // Warte kurz, um sicherzustellen, dass alle Skripte geladen wurden
         await new Promise(resolve => setTimeout(resolve, 100));
-        
-        // Prüfe, ob die eigentliche Funktion inzwischen geladen wurde
         if (typeof window.__originalLoadContact === 'function') {
             return window.__originalLoadContact();
         } else {
             console.error("Die eigentliche loadContact-Funktion wurde nicht gefunden!");
-            // Grundlegende Implementierung für den Notfall
             await includeHTML();
             activeLink(4, window.location.href);
         }
@@ -244,9 +236,6 @@ if (typeof loadContact === 'undefined') {
 
 }
 
-document.getElementById('logoutBtn').addEventListener('click', () => {
-    doLogoutFetch();
-  });
 
 
   async function doLogoutFetch() {
@@ -258,7 +247,6 @@ document.getElementById('logoutBtn').addEventListener('click', () => {
     } catch (e) {
       console.warn('Logout-Request fehlgeschlagen:', e);
     } finally {
-      // Client‑Cleanup und Weiterleitung
       localStorage.removeItem('authToken');
       sessionStorage.removeItem('user-creds');
       sessionStorage.removeItem('user-info');
@@ -269,4 +257,3 @@ document.getElementById('logoutBtn').addEventListener('click', () => {
   function handelLogOut() {
     doLogoutFetch();
   }
-

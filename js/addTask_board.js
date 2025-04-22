@@ -47,13 +47,13 @@ document.getElementById("addedTasks").addEventListener("click", (event) => handl
  * @param {MouseEvent} event - The click event.
  */
 function handleSubtaskActions(event) {
-  const currentTaskId = editTaskId || window.editTaskId;
+  let currentTaskId = editTaskId || window.editTaskId;
   let li = event.target.closest("li");
   if (
     event.target.classList.contains("delete-icon") ||
     event.target.classList.contains("clear-icon")
   ) {
-    const subtaskId = li.id || '';
+    let subtaskId = li.id || '';
     if (addTaskInEditMode && typeof editTaskChangeSubtask === 'function') {
       event.stopPropagation();
       editTaskChangeSubtask(subtaskId, "delete", "");
@@ -216,9 +216,9 @@ function clearAbbreviations() {
 function clearCheckedContactsAssignedTo() {
    
    
-   const optionsContainer = document.getElementById("optionsContainer");
+   let optionsContainer = document.getElementById("optionsContainer");
    Array.from(optionsContainer.children).forEach(option => {
-     const checkbox = option.querySelector('input[type="checkbox"]');
+     let checkbox = option.querySelector('input[type="checkbox"]');
      if (checkbox) {
        checkbox.checked = false;
      }
@@ -265,14 +265,14 @@ function openAddTask(getKanbanCategy) {
     document.getElementById("prio-down-white").classList.add("d-none");
     document.getElementById("prio-medium-white").classList.add("d-none");
     clearInput();
-    const mediumButton = document.getElementById("medium");
+    let mediumButton = document.getElementById("medium");
     setButtonValues(mediumButton);
   }
 }
 
 function closeAddTask() {
   // Erfolgsmeldung verstecken
-  const successElement = document.getElementById("contact-succesfully-created");
+  let successElement = document.getElementById("contact-succesfully-created");
   if (successElement) {
     successElement.style.display = "none";
     

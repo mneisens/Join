@@ -1,6 +1,3 @@
-// contacts_event-non-module.js - Ereignishandhabung für Kontakte
-// Diese Version verwendet keine ES6-Module, sondern globale Funktionen
-
 /**
  * Öffnet das Bearbeitungsfenster für einen Kontakt
  */
@@ -20,8 +17,8 @@ function editContact(id, name, email, phone, color, type) {
  * Öffnet das Bearbeitungsfenster
  */
 function showEditContacts() {    
-    const editContactContainer = document.getElementById('editContactContainer');
-    const editContactPopUp = document.getElementById('editContactPopUp');
+    let editContactContainer = document.getElementById('editContactContainer');
+    let editContactPopUp = document.getElementById('editContactPopUp');
     
     if (!editContactContainer) {
       return;
@@ -277,19 +274,15 @@ function showEditMobilBtn() {
 
 // Rendert einen einzelnen Kontakt in der Liste
 function renderContacts(contact) {
-    const contactElement = document.createElement("div");
+    let contactElement = document.createElement("div");
     contactElement.className = "contactContainer";
     contactElement.id = `${contact.id}`;
     
     contactElement.addEventListener('click', function() {
-        
-        // Inline-Implementierung der selectContact-Funktion
         document.querySelectorAll('.contactContainer').forEach(c => {
             c.classList.remove('selectedContact');
         });
         contactElement.classList.add('selectedContact');
-        
-        // Zeige Kontaktinformationen
         handelShowContactInfo(contact);
     });
     
@@ -297,7 +290,6 @@ function renderContacts(contact) {
     return contactElement;
 }
 
-// Abgesicherte Funktion zur Mobil/Desktop-Anzeige
 function handelContactScreenResult() {
     if (!document.getElementById('showContactContainer') || 
         !document.getElementById('contactListContainer') ||
