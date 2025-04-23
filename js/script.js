@@ -257,3 +257,28 @@ if (typeof loadContact === 'undefined') {
   function handelLogOut() {
     doLogoutFetch();
   }
+
+  function createUserInitials() {
+    try {
+        let user = JSON.parse(sessionStorage.getItem("user-info"));
+        console.log(user);
+        
+        if (!user || !user.name) return 
+           
+
+        let fullName = user.name.trim(); 
+        let firstInitial = fullName.charAt(0).toUpperCase();
+      
+        console.log(firstInitial);
+        
+        document.getElementById('firstInitial').innerHTML = firstInitial;
+        
+        return firstInitial;
+    } catch (error) {
+        console.error("Fehler beim Erstellen der Initialen:", error);
+    }
+}
+window.addEventListener('load', async () => {
+    await includeHTML();       
+    createUserInitials();       
+});

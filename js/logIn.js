@@ -193,7 +193,7 @@ form.addEventListener('submit', async e => {
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ username: email, password })
+        body: JSON.stringify({ username: email, password, })
       });
     let data = await res.json();
 
@@ -202,7 +202,15 @@ form.addEventListener('submit', async e => {
       msgBox.classList.add('error');
       return;
     }
+
     sessionStorage.setItem('token', data.token);
+    
+    let rawName = email.split('@')[0];
+
+  let formattedName = rawName
+    .split('.').map(part => part.charAt(0).toUpperCase() + part.slice(1)).join(' ');
+
+  sessionStorage.setItem('user-info', JSON.stringify({ name: formattedName }));
     window.location.href = 'board.html';
 
   } catch (err) {
@@ -215,12 +223,12 @@ document.getElementById('guestLoginBtn')
   .addEventListener('click', async () => {
     try {
       localStorage.removeItem('authToken');
-      sessionStorage.removeItem('token')
+      sessionStorage.removeItem('token');
 
       let resp = await fetch('http://localhost:8000/api/auth/guest-login/', {
-        method: 'POST',          
+        method: 'POST',
         headers: { 'Accept': 'application/json' },
-        cache: 'no-store',     
+        cache: 'no-store',
       });
 
       if (!resp.ok) {
@@ -231,7 +239,9 @@ document.getElementById('guestLoginBtn')
       }
 
       let { token } = await resp.json();
+
       localStorage.setItem('authToken', token);
+      sessionStorage.setItem('user-info', JSON.stringify({ name: 'Guest' })); 
       window.location.href = '/summary_user.html';
     } catch (err) {
       console.error('Network/CORS error', err);
